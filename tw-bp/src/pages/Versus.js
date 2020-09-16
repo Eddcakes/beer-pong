@@ -2,19 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { Swatch } from '../components/Swatch';
 import { Card } from '../components/Card';
 import { Match } from '../components/Match';
+import { PlayerPicker } from '../components/PlayerPicker';
 
 /* could have some defaults like *current player -> player 1 by default
   if only one player filled in - fetch player stats not the comparison stats?
 */
 
 export function Versus({ updatePageTitle }) {
-  const [players, setPlayers] = useState({ player1: '', player2: '' });
+  const [players, setPlayers] = useState({
+    player1: '',
+    player2: '',
+  });
   const [loading, setLoading] = useState(false);
   const [playerNames, setPlayerNames] = useState([]);
   const [gameData, setGameData] = useState([]);
 
-  const updatePlayer = (evt) => {
-    setPlayers({ ...players, [evt.target.name]: evt.target.value });
+  const selectPlayer = (name, value) => {
+    setPlayers({ ...players, [name]: value });
   };
 
   const goCompare = () => {
@@ -46,51 +50,22 @@ export function Versus({ updatePageTitle }) {
   }, []);
   return (
     <div>
-      <div className='bg-sec-background rounded-lg p-6 m-6'>
-        <div className='flex flex-col md:flex-row text-center'>
-          <div className='md:text-left md:w-1/2 flex flex-col'>
-            <label htmlFor='player1'>Player 1</label>
-            <select
-              name='player1'
-              value={players.player1}
-              onChange={updatePlayer}
-            >
-              {playerNames.length > 0 ? (
-                <>
-                  <option value='0'></option>
-                  {playerNames.map((player) => (
-                    <option key={player.player_ID} value={player.player_ID}>
-                      {player.name}
-                    </option>
-                  ))}
-                </>
-              ) : (
-                <option value='0'></option>
-              )}
-            </select>
-          </div>
-          <div className='md:text-right md:w-1/2 flex flex-col'>
-            <label htmlFor='player2'>Player 2</label>
-            <select
-              name='player2'
-              value={players.player2}
-              onChange={updatePlayer}
-            >
-              {playerNames.length > 0 ? (
-                <>
-                  <option value='0'></option>
-                  {playerNames.map((player) => (
-                    <option key={player.player_ID} value={player.player_ID}>
-                      {player.name}
-                    </option>
-                  ))}
-                </>
-              ) : (
-                <option value='0'></option>
-              )}
-            </select>
-          </div>
+      <Card title='Player search'>
+        <div className='flex justify-between p-2'>
+          <PlayerPicker
+            players={players}
+            playerNames={playerNames}
+            name='player1'
+            selectPlayer={selectPlayer}
+          />
+          <PlayerPicker
+            players={players}
+            playerNames={playerNames}
+            name='player2'
+            selectPlayer={selectPlayer}
+          />
         </div>
+
         <div className='text-center mt-2'>
           <button
             className='bg-primary-text hover:bg-positive text-secondary font-bold py-2 px-4 rounded w-1/2'
@@ -99,7 +74,8 @@ export function Versus({ updatePageTitle }) {
             GO
           </button>
         </div>
-      </div>
+      </Card>
+
       <Card title='Games'>
         {gameData.length > 0 ? (
           gameData.map((game) => <Match key={game.game_ID} game={game} />)

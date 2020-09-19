@@ -6,6 +6,7 @@ import { players } from './routes/players.js';
 import { tournaments } from './routes/tournaments.js';
 import { venues } from './routes/venues.js';
 import { versusResults } from './routes/versusResults.js';
+import { overview } from './routes/overview.js';
 
 const router = express.Router();
 
@@ -14,6 +15,7 @@ router.get('/', (req, res) => {
 });
 
 router.use('/games', games);
+router.use('/overview', overview);
 router.use('/players', players);
 router.use('/tournaments', tournaments);
 router.use('/venues', venues);

@@ -24,11 +24,11 @@ export function PlayerPicker({
   return (
     <>
       <div className='flex flex-col w-20'>
-        <div className='rounded-full h-20 w-20 bg-primary flex items-center justify-center'>
-          <span
-            className='text-2xl cursor-pointer p-2 select-none'
-            onClick={toggleModal}
-          >
+        <div
+          className='rounded-full h-20 w-20 bg-primary flex items-center cursor-pointer justify-center'
+          onClick={toggleModal}
+        >
+          <span className='text-2xl  p-2 select-none'>
             {players[name] !== '' ? playerNames[players[name] - 1].name : '+'}
           </span>
         </div>

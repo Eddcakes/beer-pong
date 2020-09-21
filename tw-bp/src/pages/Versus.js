@@ -18,8 +18,8 @@ export function Versus({ updatePageTitle }) {
   const [gameData, setGameData] = useState([]);
   //can ichange player1 to be details object rather than array
   const [playerOverview, setPlayerOverview] = useState({
-    player1: [],
-    player2: [],
+    player1: {},
+    player2: {},
   });
 
   const selectPlayer = (name, value) => {
@@ -27,7 +27,7 @@ export function Versus({ updatePageTitle }) {
     setPlayers({ ...players, [name]: value });
     // fetch player overview
     fetchPlayerOverview(value).then((overview) => {
-      setPlayerOverview({ ...playerOverview, [name]: overview });
+      setPlayerOverview({ ...playerOverview, [name]: overview[0] });
     });
   };
 

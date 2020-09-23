@@ -21,11 +21,13 @@ export function Modal({ isOpen = false, dismiss = () => {}, title, children }) {
             aria-modal='true'
             aria-labelledby='modal-headline'
           >
-            <div className='p-4 flex justify-between'>
-              <h3 className='text-lg' id='modal-headline'>
+            <div className='flex justify-between'>
+              <h3 className='text-lg p-4' id='modal-headline'>
                 {title}
               </h3>
-              <span onClick={dismiss}>X</span>
+              <button onClick={dismiss} className='cursor-pointer px-2 text-lg'>
+                ×
+              </button>
             </div>
             <div>{children}</div>
           </div>

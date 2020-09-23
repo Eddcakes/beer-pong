@@ -12,20 +12,30 @@ export function PlayerOverview({ details }) {
     'Reached final',
     'Tournament Wins',
   ];
+  let showHeaders;
+  if (
+    Object.keys(details.player1).length > 0 ||
+    Object.keys(details.player2).length > 0
+  ) {
+    showHeaders = true;
+  } else {
+    showHeaders = false;
+  }
   return (
-    <div className='flex justify-between items-center'>
-      <ColumnHeader labels={headers} />
+    <div className='flex flex-row items-center '>
+      <ColumnHeader labels={headers} show={showHeaders} />
       <ColumnPlayer playerData={details.player1} />
       <ColumnPlayer playerData={details.player2} />
     </div>
   );
 }
 
-function ColumnHeader({ labels }) {
+function ColumnHeader({ labels, show }) {
+  if (!show) return <div className='w-1/2'></div>;
   return (
-    <div>
+    <div className='w-1/2'>
       {labels.map((label) => (
-        <div key={label} className='header'>
+        <div key={label} className='header border'>
           {label}
         </div>
       ))}
@@ -35,18 +45,24 @@ function ColumnHeader({ labels }) {
 
 function ColumnPlayer({ playerData }) {
   if (Object.keys(playerData).length < 1) {
-    return <div className='text-center'>please select player</div>;
+    return (
+      <div className='text-center text-sm w-1/4'>Please select player</div>
+    );
   } else {
     return (
-      <div className='text-right'>
-        <div>{playerData.games ? playerData.games : '0'}</div>
-        <div>{playerData.forfeits ? playerData.forfeits : '0'}</div>
-        <div>
+      <div className='text-right w-1/4'>
+        <div className='border'>
+          {playerData.games ? playerData.games : '0'}
+        </div>
+        <div className='border'>
+          {playerData.forfeits ? playerData.forfeits : '0'}
+        </div>
+        <div className='border'>
           {playerData.homeWins && playerData.awayWins
             ? playerData.homeWins + playerData.awayWins
             : '0'}
-        </div>{' '}
-        <div>
+        </div>
+        <div className='border'>
           {playerData.homeWins && playerData.awayWins && playerData.games
             ? (
                 ((playerData.homeWins + playerData.awayWins) /
@@ -54,11 +70,19 @@ function ColumnPlayer({ playerData }) {
                 100
               ).toFixed(2) + '%'
             : '0'}
-        </div>{' '}
-        <div>{playerData.quarterFinals ? playerData.quarterFinals : '0'}</div>
-        <div>{playerData.semiFinals ? playerData.semiFinals : '0'}</div>
-        <div>{playerData.finals ? playerData.finals : '0'}</div>
-        <div>{playerData.finalsWon ? playerData.finalsWon : '0'}</div>
+        </div>
+        <div className='border'>
+          {playerData.quarterFinals ? playerData.quarterFinals : '0'}
+        </div>
+        <div className='border'>
+          {playerData.semiFinals ? playerData.semiFinals : '0'}
+        </div>
+        <div className='border'>
+          {playerData.finals ? playerData.finals : '0'}
+        </div>
+        <div className='border'>
+          {playerData.finalsWon ? playerData.finalsWon : '0'}
+        </div>
       </div>
     );
   }

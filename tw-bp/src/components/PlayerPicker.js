@@ -25,10 +25,10 @@ export function PlayerPicker({
     <>
       <div className='flex flex-col w-20'>
         <div
-          className='rounded-full h-20 w-20 bg-primary flex items-center cursor-pointer justify-center'
+          className='rounded-full h-20 w-20 bg-primary hover:bg-secondary flex items-center cursor-pointer justify-center'
           onClick={toggleModal}
         >
-          <span className='text-2xl  p-2 select-none'>
+          <span className='text-2xl p-2 select-none'>
             {players[name] !== '' ? playerNames[players[name] - 1].name : '+'}
           </span>
         </div>
@@ -41,13 +41,12 @@ export function PlayerPicker({
             <form role='search'>
               <input
                 placeholder='Filter names'
-                className='p-2 shadow'
+                className='p-2 shadow mb-2'
                 onChange={handleSearchInput}
                 value={searchText}
               />
             </form>
           </div>
-
           <div className='h-48 overflow-y-scroll'>
             <ul role='listbox'>
               {search(playerNames).map((player) => (
@@ -55,7 +54,7 @@ export function PlayerPicker({
                   key={player.player_ID}
                   value={player.player_ID}
                   role='option'
-                  className='flex justify-between px-6 py-2 border-b'
+                  className='flex justify-between px-6 py-2 border-b cursor-pointer hover:bg-gray-200'
                   onClick={() => {
                     selectPlayer(name, `${player.player_ID}`);
                     toggleModal();

@@ -2,33 +2,42 @@ import React, { useEffect, useState } from 'react';
 import { Swatch } from '../components/Swatch';
 import { Card } from '../components/Card';
 import { Match } from '../components/Match';
+import { PlayerPicker } from '../components/PlayerPicker';
+import { PlayerOverview } from '../components/PlayerOverview';
 
 /* could have some defaults like *current player -> player 1 by default
   if only one player filled in - fetch player stats not the comparison stats?
 */
 
 export function Versus({ updatePageTitle }) {
-  const [players, setPlayers] = useState({ player1: '', player2: '' });
-  const [loading, setLoading] = useState(false);
+  const [players, setPlayers] = useState({
+    player1: '',
+    player2: '',
+  });
   const [playerNames, setPlayerNames] = useState([]);
   const [gameData, setGameData] = useState([]);
+  //can ichange player1 to be details object rather than array
+  const [playerOverview, setPlayerOverview] = useState({
+    player1: {},
+    player2: {},
+  });
 
-  const updatePlayer = (evt) => {
-    setPlayers({ ...players, [evt.target.name]: evt.target.value });
+  const selectPlayer = (name, value) => {
+    //how to prevent picking the same player?
+    setPlayers({ ...players, [name]: value });
+    // fetch player overview
+    fetchPlayerOverview(value).then((overview) => {
+      setPlayerOverview({ ...playerOverview, [name]: overview[0] });
+    });
   };
 
-  const goCompare = () => {
-    if (players.player1.length > 0 && players.player2.length > 0) {
-      fetch(
-        `http://localhost:1337/api/v1/versus/${players.player1}/${players.player2}`
-      )
+  const goCompare = (player1, player2) => {
+    if (player1.length > 0 && player2.length > 0) {
+      fetch(`http://localhost:1337/api/v1/versus/${player1}/${player2}`)
         .then((response) => response.json())
         .then((data) => {
           setGameData(data);
-          setLoading(false);
         });
-    } else {
-      alert('You need to fill in both players to see versus stats');
     }
   };
 
@@ -44,62 +53,35 @@ export function Versus({ updatePageTitle }) {
         setPlayerNames(data);
       });
   }, []);
+
+  //when player changes goCompare
+  useEffect(() => {
+    if (players.player1.length > 0 && players.player2.length > 0) {
+      goCompare(players.player1, players.player2);
+    }
+  }, [players]);
+
   return (
     <div>
-      <div className='bg-sec-background rounded-lg p-6 m-6'>
-        <div className='flex flex-col md:flex-row text-center'>
-          <div className='md:text-left md:w-1/2 flex flex-col'>
-            <label htmlFor='player1'>Player 1</label>
-            <select
-              name='player1'
-              value={players.player1}
-              onChange={updatePlayer}
-            >
-              {playerNames.length > 0 ? (
-                <>
-                  <option value='0'></option>
-                  {playerNames.map((player) => (
-                    <option key={player.player_ID} value={player.player_ID}>
-                      {player.name}
-                    </option>
-                  ))}
-                </>
-              ) : (
-                <option value='0'></option>
-              )}
-            </select>
-          </div>
-          <div className='md:text-right md:w-1/2 flex flex-col'>
-            <label htmlFor='player2'>Player 2</label>
-            <select
-              name='player2'
-              value={players.player2}
-              onChange={updatePlayer}
-            >
-              {playerNames.length > 0 ? (
-                <>
-                  <option value='0'></option>
-                  {playerNames.map((player) => (
-                    <option key={player.player_ID} value={player.player_ID}>
-                      {player.name}
-                    </option>
-                  ))}
-                </>
-              ) : (
-                <option value='0'></option>
-              )}
-            </select>
-          </div>
+      <Card title='Player search'>
+        <div className='flex justify-between p-2'>
+          <PlayerPicker
+            players={players}
+            playerNames={playerNames}
+            name='player1'
+            selectPlayer={selectPlayer}
+          />
+          <PlayerPicker
+            players={players}
+            playerNames={playerNames}
+            name='player2'
+            selectPlayer={selectPlayer}
+          />
         </div>
-        <div className='text-center mt-2'>
-          <button
-            className='bg-primary-text hover:bg-positive text-secondary font-bold py-2 px-4 rounded w-1/2'
-            onClick={goCompare}
-          >
-            GO
-          </button>
-        </div>
-      </div>
+      </Card>
+      <Card title='Overview'>
+        <PlayerOverview details={playerOverview} />
+      </Card>
       <Card title='Games'>
         {gameData.length > 0 ? (
           gameData.map((game) => <Match key={game.game_ID} game={game} />)
@@ -107,15 +89,15 @@ export function Versus({ updatePageTitle }) {
           <div>No games played ⚠</div>
         )}
       </Card>
-
-      <div>
-        notes
-        <div>WINS</div>
-        <div>Win %</div>
-        <div>times played</div>
-        <div>recent results</div>
-      </div>
       <Swatch />
     </div>
   );
+}
+
+async function fetchPlayerOverview(playerId) {
+  const overviewResp = await fetch(
+    `http://localhost:1337/api/v1/overview/${playerId}`
+  );
+  const overview = await overviewResp.json();
+  return overview;
 }

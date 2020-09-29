@@ -41,25 +41,42 @@ function App() {
     <ThemeProvider theme={theme} changeTheme={changeTheme}>
       <Router>
         <div>
-          <nav className='border-b-2 border-sec-background'>
+          <nav className='text-center border-b-2'>
             <ul className='flex flex-row justify-between'>
-              <li className='p-2 hover:bg-secondary'>
-                <NavLink to={'/'} activeStyle={{ fontWeight: 'bold' }} exact>
+              <li className='w-full'>
+                <NavLink
+                  to={'/'}
+                  activeStyle={{ fontWeight: 'bold' }}
+                  exact
+                  className='p-2 hover:bg-secondary inline-block w-full'
+                >
                   Home
                 </NavLink>
               </li>
-              <li className='p-2 hover:bg-secondary'>
-                <NavLink to={'/player'} activeStyle={{ fontWeight: 'bold' }}>
+              <li className='w-full'>
+                <NavLink
+                  to={'/player'}
+                  activeStyle={{ fontWeight: 'bold' }}
+                  className='p-2 hover:bg-secondary inline-block w-full'
+                >
                   Player details
                 </NavLink>
               </li>
-              <li className='p-2 hover:bg-secondary'>
-                <NavLink to={'/versus'} activeStyle={{ fontWeight: 'bold' }}>
+              <li className='w-full'>
+                <NavLink
+                  to={'/versus'}
+                  activeStyle={{ fontWeight: 'bold' }}
+                  className='p-2 hover:bg-secondary inline-block w-full'
+                >
                   Versus
                 </NavLink>
-              </li>{' '}
-              <li className='p-2 hover:bg-secondary'>
-                <NavLink to={'/settings'} activeStyle={{ fontWeight: 'bold' }}>
+              </li>
+              <li className='w-full'>
+                <NavLink
+                  to={'/settings'}
+                  activeStyle={{ fontWeight: 'bold' }}
+                  className='p-2 hover:bg-secondary inline-block w-full'
+                >
                   Settings
                 </NavLink>
               </li>

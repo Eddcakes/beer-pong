@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+//should i use fetchPlayerOverview here too?
 export function Player({ updatePageTitle }) {
   const { playerId } = useParams();
+  const [playerData, setPlayerData] = useState({});
   const [loading, setLoading] = useState(true);
 
   //set page title
@@ -13,21 +15,26 @@ export function Player({ updatePageTitle }) {
 
   //load details
   useEffect(() => {
-    // player id passed through
-    /*     if (playerId !== undefined) {
+    if (playerId !== undefined) {
       setLoading(true);
-      fetch(`http://localhost:1337/api/v1/players/${playerId}`);
-    } */
-  });
+      fetchPlayer(playerId).then((player) => {
+        setPlayerData(player[0]);
+      });
+    }
+  }, [playerId]);
 
   return (
     <div>
-      Player page
-      <div>
-        <label>
-          Player id? <input />
-        </label>
-      </div>
+      <div>hi</div>
+      {playerData && <div>{playerData.name}</div>}
     </div>
   );
+}
+
+async function fetchPlayer(playerId) {
+  const player = await fetch(
+    `http://localhost:1337/api/v1/players/${playerId}`
+  );
+  const resp = await player.json();
+  return resp;
 }

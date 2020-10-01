@@ -1,5 +1,6 @@
 import express from 'express';
 //const express = require('express');
+import { auth } from './auth/index.js';
 import { message } from './placeholder.js';
 import { games } from './routes/games.js';
 import { players } from './routes/players.js';
@@ -14,6 +15,7 @@ router.get('/', (req, res) => {
   res.json({ message: message });
 });
 
+router.use('/auth', auth);
 router.use('/games', games);
 router.use('/overview', overview);
 router.use('/players', players);

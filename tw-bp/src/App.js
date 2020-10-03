@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  NavLink,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { ThemeProvider } from './ThemeProvider';
-import { Card } from './components/Card';
+import { Card, Nav } from './components';
 import { applyTheme, DEFAULT_THEME } from './theme';
-import { E404, Player, Settings, Tournament, Versus } from './pages/';
+import {
+  E404,
+  Player,
+  Settings,
+  Tournament,
+  Versus,
+  SignIn,
+  SignUp,
+} from './pages';
 
 const defaultTheme = () => {
   if (localStorage.getItem('tw-bp:theme'))
@@ -40,49 +43,6 @@ function App() {
   return (
     <ThemeProvider theme={theme} changeTheme={changeTheme}>
       <Router>
-        <div>
-          <nav className='text-center border-b-2'>
-            <ul className='flex flex-row justify-between'>
-              <li className='w-full'>
-                <NavLink
-                  to={'/'}
-                  activeStyle={{ fontWeight: 'bold' }}
-                  exact
-                  className='p-2 hover:bg-secondary inline-block w-full'
-                >
-                  Home
-                </NavLink>
-              </li>
-              <li className='w-full'>
-                <NavLink
-                  to={'/player'}
-                  activeStyle={{ fontWeight: 'bold' }}
-                  className='p-2 hover:bg-secondary inline-block w-full'
-                >
-                  Player details
-                </NavLink>
-              </li>
-              <li className='w-full'>
-                <NavLink
-                  to={'/versus'}
-                  activeStyle={{ fontWeight: 'bold' }}
-                  className='p-2 hover:bg-secondary inline-block w-full'
-                >
-                  Versus
-                </NavLink>
-              </li>
-              <li className='w-full'>
-                <NavLink
-                  to={'/settings'}
-                  activeStyle={{ fontWeight: 'bold' }}
-                  className='p-2 hover:bg-secondary inline-block w-full'
-                >
-                  Settings
-                </NavLink>
-              </li>
-            </ul>
-          </nav>
-        </div>
         <Switch>
           <Route path='/versus/:player1Id(\d+)?/:player2Id(\d+)?'>
             <Versus updatePageTitle={updatePageTitle} />
@@ -96,11 +56,20 @@ function App() {
           <Route path='/settings'>
             <Settings updatePageTitle={updatePageTitle} />
           </Route>
+          <Route path='/signin'>
+            <SignIn updatePageTitle={updatePageTitle} />
+          </Route>
+          <Route path='/signup'>
+            <SignUp updatePageTitle={updatePageTitle} />
+          </Route>
           <Route path='/' exact>
-            <Card
-              title='Placeholder'
-              children={<div className='text-primary-text'>Landing page</div>}
-            />
+            <>
+              <Nav />
+              <Card
+                title='Placeholder'
+                children={<div className='text-primary-text'>Landing page</div>}
+              />
+            </>
           </Route>
           <Route path='/*'>
             <E404 updatePageTitle={updatePageTitle} />

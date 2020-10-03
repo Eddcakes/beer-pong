@@ -1,10 +1,13 @@
 import React from 'react';
-import { ThemeSwitcher } from '../components/ThemeSwitcher';
+import { Nav, ThemeSwitcher } from '../components';
 
 export function Settings() {
   return (
-    <div>
-      <ThemeSwitcher />
-    </div>
+    <>
+      <Nav />
+      <div>
+        <ThemeSwitcher />
+      </div>
+    </>
   );
 }

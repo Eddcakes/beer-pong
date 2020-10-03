@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { Nav } from '../components';
 
 //should i use fetchPlayerOverview here too?
 export function Player({ updatePageTitle }) {
   const { playerId } = useParams();
   const [playerData, setPlayerData] = useState({});
-  const [loading, setLoading] = useState(true);
+  //const [loading, setLoading] = useState(true);
 
   //set page title
   useEffect(() => {
@@ -16,7 +17,7 @@ export function Player({ updatePageTitle }) {
   //load details
   useEffect(() => {
     if (playerId !== undefined) {
-      setLoading(true);
+      //setLoading(true);
       fetchPlayer(playerId).then((player) => {
         setPlayerData(player[0]);
       });
@@ -24,10 +25,13 @@ export function Player({ updatePageTitle }) {
   }, [playerId]);
 
   return (
-    <div>
-      <div>hi</div>
-      {playerData && <div>{playerData.name}</div>}
-    </div>
+    <>
+      <Nav />
+      <div>
+        <div>hi</div>
+        {playerData && <div>{playerData.name}</div>}
+      </div>
+    </>
   );
 }
 

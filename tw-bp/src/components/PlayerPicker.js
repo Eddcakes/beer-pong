@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ButtonSquare } from './ButtonSquare';
 import { Modal } from './Modal';
 
 export function PlayerPicker({
@@ -24,15 +25,12 @@ export function PlayerPicker({
   return (
     <>
       <div className='flex flex-col w-20'>
-        <div
-          className='rounded-full h-20 w-20 bg-primary hover:bg-secondary flex items-center cursor-pointer justify-center'
-          onClick={toggleModal}
+        <ButtonSquare
+          handleClick={toggleModal}
+          text={players[name] !== '' ? playerNames[players[name] - 1].name : 'Click to pick player'}
         >
-          <span className='text-2xl p-2 select-none'>
-            {players[name] !== '' ? playerNames[players[name] - 1].name : '+'}
-          </span>
-        </div>
-        <span className='text-center text-xs'>Click to pick player</span>
+        </ButtonSquare>
+       
       </div>
 
       <Modal isOpen={showModal} dismiss={toggleModal} title='Add Player'>

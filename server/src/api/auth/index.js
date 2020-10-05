@@ -39,6 +39,8 @@ router.post('/signup', async (req, res, next) => {
         const userAlreadyExists = new Error(
           'Sorry username is taken. Please choose another one.'
         );
+        // conflict status code (same username)
+        res.status(409);
         next(userAlreadyExists);
       } else {
         //create the new account
@@ -54,6 +56,8 @@ router.post('/signup', async (req, res, next) => {
       next(err);
     }
   } else {
+    // unprocessable entity, validation issue (using unuseable chars ect)
+    res.status(422);
     next(creds.error);
   }
 });

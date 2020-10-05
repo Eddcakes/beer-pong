@@ -1,27 +1,75 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import Joi from 'joi';
 import { Card, Button } from '../components';
+
+const schema = Joi.object().keys({
+  username: Joi.string()
+    .trim()
+    .regex(/^[a-zA-Z0-9_]+$/)
+    .min(2)
+    .max(30)
+    .required(),
+  password: Joi.string().trim().min(6).required(),
+  confirmPassword: Joi.string().trim().min(6).required(),
+});
 
 export function SignUp({ updatePageTitle }) {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
   const handleUsername = (evt) => setUsername(evt.target.value);
   const handleEmail = (evt) => setEmail(evt.target.value);
   const handlePassword = (evt) => setPassword(evt.target.value);
   const handleConfirmPassword = (evt) => setConfirmPassword(evt.target.value);
 
-  const handleSubmit = () => {
-    if (password !== confirmPassword) {
+  const handleSubmit = async (evt) => {
+    evt.preventDefault();
+    if (validUser()) {
+      //post to server
+      const newUserCreds = {
+        username: username,
+        password: password,
+      };
+      try {
+        const signupResp = await postSignUp(newUserCreds);
+        if (signupResp.error !== undefined) {
+          setErrorMsg(signupResp.error);
+        }
+      } catch (err) {
+        setErrorMsg('Something went wrong!');
+        console.log('error', err);
+      }
     }
     console.log(`user: ${username} email: ${email} pass: ${password}`);
   };
 
+  function validUser() {
+    if (password === confirmPassword) {
+      const valid = schema.validate({
+        username: username,
+        password: password,
+        confirmPassword: confirmPassword,
+      });
+      if (valid.error === undefined) {
+        return true;
+      } else {
+        // could check what type of error to make sure we create a good error for the user
+        setErrorMsg(valid.error.message);
+        return false;
+      }
+    } else {
+      setErrorMsg('Password and Confirm password must be the same');
+    }
+  }
+
   useEffect(() => {
     updatePageTitle('Sign up');
   }, [updatePageTitle]);
+
   return (
     <div>
       <div className='text-center'>Icon</div>
@@ -66,7 +114,7 @@ export function SignUp({ updatePageTitle }) {
             </small>
           </div>
           <div className='flex flex-col'>
-            <label htmlFor='password'>Password</label>
+            <label htmlFor='password'>Confirm Password</label>
             <input
               name='confirmPassword'
               minLength='6'
@@ -76,6 +124,7 @@ export function SignUp({ updatePageTitle }) {
               onChange={handleConfirmPassword}
             />
           </div>
+          {errorMsg.length > 0 && <p className='text-red-700'>{errorMsg}</p>}
           <div className='pt-2'>
             <Button text='Sign up' handleClick={handleSubmit} />
           </div>
@@ -86,4 +135,16 @@ export function SignUp({ updatePageTitle }) {
       </Card>
     </div>
   );
+}
+
+async function postSignUp(data) {
+  const signup = await fetch(`http://localhost:1337/api/v1/auth/signup`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {
+      'content-type': 'application/json',
+    },
+  });
+  const dataJson = await signup.json();
+  return dataJson;
 }

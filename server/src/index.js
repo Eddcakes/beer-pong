@@ -1,26 +1,16 @@
 import express from 'express';
 import morgan from 'morgan';
+import cors from 'cors';
 import { notFound, errorHandler } from './middlewares.js';
 import { api } from './api/index.js';
 import { message } from './api/placeholder.js';
 // do i want to use helmet?
-// do i want cors?
 // do i want to use knex?
 
 const app = express();
 
-//CORS
-app.use((req, res, next) => {
-  res.header({
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers':
-      'Origin, X-Requested-With, Content-Type, Accept',
-    'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, HEAD, OPTIONS',
-  });
-  next();
-});
-
 app.use(morgan('common'));
+app.use(cors({ origin: process.env.CORS_ORIGIN }));
 app.use(express.json());
 // app.use(express.urlencoded({extended: true}));
 

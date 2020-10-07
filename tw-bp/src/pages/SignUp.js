@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import Joi from 'joi';
 import { Card, Button } from '../components';
 
@@ -15,6 +15,7 @@ const schema = Joi.object().keys({
 });
 
 export function SignUp({ updatePageTitle }) {
+  let history = useHistory();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,22 +30,23 @@ export function SignUp({ updatePageTitle }) {
   const handleSubmit = async (evt) => {
     evt.preventDefault();
     if (validUser()) {
-      //post to server
       const newUserCreds = {
         username: username,
         password: password,
       };
       try {
+        //post to server
         const signupResp = await postSignUp(newUserCreds);
         if (signupResp.error !== undefined) {
-          setErrorMsg(signupResp.error);
+          return setErrorMsg(signupResp.error);
         }
+        //redirect to login page on successful account creation
+        history.push('/signin');
       } catch (err) {
         setErrorMsg('Something went wrong!');
         console.log('error', err);
       }
     }
-    console.log(`user: ${username} email: ${email} pass: ${password}`);
   };
 
   function validUser() {

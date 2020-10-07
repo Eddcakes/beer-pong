@@ -16,6 +16,28 @@ const schema = Joi.object().keys({
   password: Joi.string().trim().min(6).required(),
 });
 
+function createTokenResponse(user, res, next) {
+  const payload = {
+    id: user.user_ID,
+    username: user.username,
+  };
+  jwt.sign(
+    payload,
+    process.env.JWT_SECRET,
+    {
+      expiresIn: '1d',
+    },
+    (err, token) => {
+      if (err) {
+        respondError422(res, next);
+      } else {
+        //respond with token
+        res.json({ token: token });
+      }
+    }
+  );
+}
+
 const selectUser = `SELECT users.username FROM users WHERE users.username = ?`;
 const selectUserLogin = `SELECT users.user_ID, users.username, users.password FROM users WHERE users.username = ?`;
 const insertUser = 'INSERT INTO users (username, password) VALUES (?, ?)';
@@ -53,7 +75,7 @@ router.post('/signup', async (req, res, next) => {
             req.body.username,
             hashedPass,
           ]);
-          res.json(signupUser);
+          createTokenResponse(signupUser, res, next);
         });
       }
     } catch (err) {
@@ -87,25 +109,7 @@ router.post('/signin', async (req, res, next) => {
           .then(async (loginResponse) => {
             if (loginResponse === true) {
               //user should be logged in
-              const payload = {
-                id: userData.user_ID,
-                username: userData.username,
-              };
-              jwt.sign(
-                payload,
-                process.env.JWT_SECRET,
-                {
-                  expiresIn: '1d',
-                },
-                (err, token) => {
-                  if (err) {
-                    respondError422(res, next);
-                  } else {
-                    //respond with token
-                    res.json({ token: token });
-                  }
-                }
-              );
+              createTokenResponse(userData, res, next);
             } else {
               respondError422(res, next);
             }

@@ -75,7 +75,7 @@ router.post('/signup', async (req, res, next) => {
             req.body.username,
             hashedPass,
           ]);
-          createTokenResponse(signupUser, res, next);
+          createTokenResponse(signupUser[0], res, next);
         });
       }
     } catch (err) {
@@ -109,7 +109,7 @@ router.post('/signin', async (req, res, next) => {
           .then(async (loginResponse) => {
             if (loginResponse === true) {
               //user should be logged in
-              createTokenResponse(userData, res, next);
+              createTokenResponse(userData[0], res, next);
             } else {
               respondError422(res, next);
             }

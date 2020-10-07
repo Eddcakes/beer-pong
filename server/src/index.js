@@ -1,7 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
-import { notFound, errorHandler } from './middlewares.js';
+import { notFound, errorHandler, checkTokenSetUser } from './middlewares.js';
 import { api } from './api/index.js';
 import { message } from './api/placeholder.js';
 // do i want to use helmet?
@@ -14,9 +14,12 @@ app.use(cors({ origin: process.env.CORS_ORIGIN }));
 app.use(express.json());
 // app.use(express.urlencoded({extended: true}));
 
-app.get('/', (_, res) => {
+app.use(checkTokenSetUser);
+
+app.get('/', (req, res) => {
   res.json({
     message: message,
+    user: req.user,
   });
 });
 

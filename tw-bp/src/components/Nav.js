@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import AuthContext from '../AuthContext';
 
 /* uld like to break nav down for mobile view 
   have bottom nav similar to Youtube mobile
@@ -46,15 +47,30 @@ export function Nav() {
             Settings
           </NavLink>
         </li>
-        <li className='w-full'>
-          <NavLink
-            to={'/signin'}
-            activeStyle={{ fontWeight: 'bold' }}
-            className='p-2 hover:bg-secondary inline-block w-full'
-          >
-            Sign in
-          </NavLink>
-        </li>
+        <AuthContext.Consumer>
+          {({ user, signOut }) =>
+            user === null || user === undefined ? (
+              <li className='w-full'>
+                <NavLink
+                  to={'/signin'}
+                  activeStyle={{ fontWeight: 'bold' }}
+                  className='p-2 hover:bg-secondary inline-block w-full'
+                >
+                  Sign in
+                </NavLink>
+              </li>
+            ) : (
+              <li className='w-full'>
+                <button
+                  className='p-2 hover:bg-secondary inline-block w-full'
+                  onClick={signOut}
+                >
+                  Sign out
+                </button>
+              </li>
+            )
+          }
+        </AuthContext.Consumer>
       </ul>
     </nav>
   );

@@ -38,4 +38,14 @@ function checkTokenSetUser(req, res, next) {
   }
 }
 
-export { notFound, errorHandler, checkTokenSetUser };
+function isLoggedIn(req, res, next) {
+  if (req.user) {
+    next();
+  } else {
+    const error = new Error('Unauthorised ⛔');
+    res.status(401);
+    next(error);
+  }
+}
+
+export { notFound, errorHandler, checkTokenSetUser, isLoggedIn };

@@ -9,4 +9,5 @@ export { PlayerOverview } from './PlayerOverview';
 export { PlayerPicker } from './PlayerPicker';
 export { Swatch } from './Swatch';
 export { ThemeSwitcher } from './ThemeSwitcher';
+export { UserPreferences } from './UserPreferences';
 // tailwind dropdown for account/profile

@@ -1,12 +1,17 @@
 import React from 'react';
-import { Nav, ThemeSwitcher } from '../components';
+import { Card, Nav, ThemeSwitcher, UserPreferences } from '../components';
 
 export function Settings() {
   return (
     <>
       <Nav />
       <div>
-        <ThemeSwitcher />
+        <Card title='Local browser preferences'>
+          <ThemeSwitcher />
+        </Card>
+        <Card title='My preferences'>
+          <UserPreferences />
+        </Card>
       </div>
     </>
   );

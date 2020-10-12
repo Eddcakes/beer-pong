@@ -136,7 +136,7 @@ function validToken(userToken) {
 async function fetchCurrentUser(token) {
   const user = await fetch('http://localhost:1337/api/v1/', {
     headers: {
-      Authorization: `BEARER ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   });
   const resp = await user.json();

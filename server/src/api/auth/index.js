@@ -38,10 +38,10 @@ function createTokenResponse(user, res, next) {
   );
 }
 
-const selectUser = `SELECT users.username FROM users WHERE users.username = ?`;
+const selectUserByUsername = `SELECT users.username, users.user_ID, users.active, users.role FROM users WHERE users.username = ?`;
+const selectUserById = `SELECT users.username, users.user_ID, users.active, users.role FROM users WHERE users.user_ID = ?`;
 const selectUserLogin = `SELECT users.user_ID, users.username, users.password FROM users WHERE users.username = ?`;
 const insertUser = 'INSERT INTO users (username, password) VALUES (?, ?)';
-// could use RETURNING if i want to return username?
 const router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -58,9 +58,12 @@ router.post('/signup', async (req, res, next) => {
     try {
       pool = await poolPromise;
       //check username is unique
-      const userData = await pool.query(`${selectUser}`, req.body.username);
+      const userData = await pool.query(
+        selectUserByUsername,
+        req.body.username
+      );
 
-      if (userData.length > 0) {
+      if (userData && userData.length > 0) {
         //user already exists with this username
         const userAlreadyExists = new Error(
           'Sorry username is taken. Please choose another one.'
@@ -70,13 +73,21 @@ router.post('/signup', async (req, res, next) => {
         next(userAlreadyExists);
       } else {
         //create the new account
-        bcrypt.hash(req.body.password, 12).then(async (hashedPass) => {
-          const signupUser = await pool.query(`${insertUser}`, [
-            req.body.username,
-            hashedPass,
-          ]);
-          createTokenResponse(signupUser[0], res, next);
-        });
+        const newHashedPass = await bcrypt.hash(req.body.password, 12);
+        const signUpUser = await pool.query(insertUser, [
+          req.body.username,
+          newHashedPass,
+        ]);
+        if (signUpUser) {
+          //successfully signed up
+          const getNewUser = await pool.query(
+            selectUserById,
+            signUpUser.insertId
+          );
+          if (getNewUser) {
+            createTokenResponse(getNewUser[0], res, next);
+          }
+        }
       }
     } catch (err) {
       next(err);
@@ -98,10 +109,7 @@ router.post('/signin', async (req, res, next) => {
     try {
       pool = await poolPromise;
       //check username is unique
-      const userData = await pool.query(
-        `${selectUserLogin}`,
-        req.body.username
-      );
+      const userData = await pool.query(selectUserLogin, req.body.username);
       if (userData.length > 0) {
         // found user now check password
         bcrypt
@@ -115,7 +123,6 @@ router.post('/signin', async (req, res, next) => {
             }
           })
           .catch((err) => {
-            console.log('bcrypt promise err', err);
             respondError422(res, next);
           });
       } else {

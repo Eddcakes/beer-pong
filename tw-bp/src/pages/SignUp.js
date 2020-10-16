@@ -41,12 +41,11 @@ export function SignUp({ updatePageTitle }) {
           return setErrorMsg(signupResp.error);
         }
         //redirect to login page on successful account creation
-        // changing to store login token
+        // change to http secure cookies store login token
         localStorage.setItem('tw-bp:jwt', signupResp.token);
         history.push('/');
       } catch (err) {
         setErrorMsg('Something went wrong!');
-        console.log('error', err);
       }
     }
   };

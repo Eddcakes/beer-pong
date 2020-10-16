@@ -25,7 +25,7 @@ function checkTokenSetUser(req, res, next) {
     if (token) {
       jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (err) {
-          console.log(err);
+          // console.log(err);
         }
         req.user = user;
         next();

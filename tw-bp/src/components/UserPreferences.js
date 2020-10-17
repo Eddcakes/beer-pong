@@ -6,6 +6,13 @@ const schema = Joi.object().keys({
   avatar_link: Joi.string().trim().uri(),
 });
 
+/* 
+TODO
+need to have some way to refresh JWT
+do not show preferences to not logged in users
+compare original and new preferences on save to decide if to post
+*/
+
 export function UserPreferences() {
   //do i need to use authcontext to decide to only show preferences to logged in users
   // const { user } = useContext(AuthContext);import AuthContext from '../AuthContext';
@@ -63,7 +70,6 @@ export function UserPreferences() {
     async function fetchData() {
       const myPreferences = await fetchPreferences();
       //am i happy setting it to undefined if user not logged in?
-      console.log(myPreferences);
       if (myPreferences.length > 0) {
         setPreferences(myPreferences[0]);
       }

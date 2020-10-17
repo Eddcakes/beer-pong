@@ -17,9 +17,9 @@ const schema = Joi.object().keys({
 const router = express.Router();
 
 const allUsers = `
-SELECT user_ID, username, player_ID FROM ${process.env.DATABASE}.users`;
+SELECT user_ID, username, player_ID, active, role FROM ${process.env.DATABASE}.users`;
 
-const getUser = `SELECT user_ID, username, player_ID, active FROM ${process.env.DATABASE}.users WHERE user_ID = ?`;
+const getUser = `SELECT user_ID, username, player_ID, active, role FROM ${process.env.DATABASE}.users WHERE user_ID = ?`;
 
 // why doesnt this work, o shit i think parameters have to be 1 thing, not strings
 //const updateUser = `UPDATE ${process.env.DATABASE}.users SET ? WHERE user_ID = ?`;

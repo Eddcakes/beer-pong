@@ -48,4 +48,14 @@ function isLoggedIn(req, res, next) {
   }
 }
 
-export { notFound, errorHandler, checkTokenSetUser, isLoggedIn };
+function isAdmin(req, res, next) {
+  if (req.user.role === 'admin') {
+    next();
+  } else {
+    const error = new Error('Unauthorised ⛔');
+    res.status(401);
+    next(error);
+  }
+}
+
+export { notFound, errorHandler, checkTokenSetUser, isLoggedIn, isAdmin };

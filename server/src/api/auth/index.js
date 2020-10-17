@@ -20,6 +20,9 @@ function createTokenResponse(user, res, next) {
   const payload = {
     id: user.user_ID,
     username: user.username,
+    playerId: user.player_ID,
+    active: user.active,
+    role: user.role,
   };
   jwt.sign(
     payload,
@@ -38,9 +41,9 @@ function createTokenResponse(user, res, next) {
   );
 }
 
-const selectUserByUsername = `SELECT users.username, users.user_ID, users.active, users.role FROM users WHERE users.username = ?`;
-const selectUserById = `SELECT users.username, users.user_ID, users.active, users.role FROM users WHERE users.user_ID = ?`;
-const selectUserLogin = `SELECT users.user_ID, users.username, users.password FROM users WHERE users.username = ?`;
+const selectUserByUsername = `SELECT users.user_ID, users.username, users.player_ID, users.active, users.role FROM users WHERE users.username = ?`;
+const selectUserById = `SELECT users.user_ID, users.username, users.player_ID, users.active, users.role FROM users WHERE users.user_ID = ?`;
+const selectUserLogin = `SELECT users.user_ID, users.password, users.username, users.active, users.role FROM users WHERE users.username = ?`;
 const insertUser = 'INSERT INTO users (username, password) VALUES (?, ?)';
 const router = express.Router();
 
@@ -111,20 +114,21 @@ router.post('/signin', async (req, res, next) => {
       //check username is unique
       const userData = await pool.query(selectUserLogin, req.body.username);
       if (userData.length > 0) {
-        // found user now check password
-        bcrypt
-          .compare(req.body.password, userData[0].password)
-          .then(async (loginResponse) => {
-            if (loginResponse === true) {
-              //user should be logged in
-              createTokenResponse(userData[0], res, next);
-            } else {
-              respondError422(res, next);
-            }
-          })
-          .catch((err) => {
+        //check if user is active
+        if (userData[0].active === 1) {
+          const compareHashedPassword = await bcrypt.compare(
+            req.body.password,
+            userData[0].password
+          );
+          if (compareHashedPassword) {
+            createTokenResponse(userData[0], res, next);
+          } else {
             respondError422(res, next);
-          });
+          }
+        } else {
+          //bcause we throw it gets caught and respondError422 takes over
+          throw new Error('User account inactive');
+        }
       } else {
         // username not found
         respondError422(res, next);

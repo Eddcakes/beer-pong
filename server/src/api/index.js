@@ -10,7 +10,7 @@ import { venues } from './routes/venues.js';
 import { versusResults } from './routes/versusResults.js';
 import { overview } from './routes/overview.js';
 import { userPreferences } from './routes/userPreferences.js';
-import { isAdmin, isLoggedIn } from '../middlewares.js';
+import { isAdmin, isLoggedIn } from './auth/auth.middlewares.js';
 
 const router = express.Router();
 

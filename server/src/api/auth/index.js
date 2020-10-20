@@ -1,45 +1,9 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
-import Joi from 'joi'; // joi or yup
-import jwt from 'jsonwebtoken';
+
 import { poolPromise } from '../../db.js';
-
+import { validateUser, createTokenResponse } from './auth.middlewares.js';
 // todo rate limit
-
-const schema = Joi.object().keys({
-  username: Joi.string()
-    .trim()
-    .regex(/^[a-zA-Z0-9_]+$/)
-    .min(2)
-    .max(30)
-    .required(),
-  password: Joi.string().trim().min(6).required(),
-});
-
-function createTokenResponse(user, res, next) {
-  const payload = {
-    id: user.user_ID,
-    username: user.username,
-    playerId: user.player_ID,
-    active: user.active,
-    role: user.role,
-  };
-  jwt.sign(
-    payload,
-    process.env.JWT_SECRET,
-    {
-      expiresIn: '1d',
-    },
-    (err, token) => {
-      if (err) {
-        respondError422(res, next);
-      } else {
-        //respond with token
-        res.json({ token: token });
-      }
-    }
-  );
-}
 
 const selectUserByUsername = `SELECT users.user_ID, users.username, users.player_ID, users.active, users.role FROM users WHERE users.username = ?`;
 const selectUserById = `SELECT users.user_ID, users.username, users.player_ID, users.active, users.role FROM users WHERE users.user_ID = ?`;
@@ -51,63 +15,48 @@ router.get('/', async (req, res) => {
   res.json({ message: 'hitting auth endpoint ✨🔐' });
 });
 
-router.post('/signup', async (req, res, next) => {
-  const creds = schema.validate({
-    username: req.body.username,
-    password: req.body.password,
-  });
-  if (creds.error === undefined) {
-    let pool;
-    try {
-      pool = await poolPromise;
-      //check username is unique
-      const userData = await pool.query(
-        selectUserByUsername,
-        req.body.username
-      );
+router.post('/signup', validateUser(), async (req, res, next) => {
+  let pool;
+  try {
+    pool = await poolPromise;
+    //check username is unique
+    const userData = await pool.query(selectUserByUsername, req.body.username);
 
-      if (userData && userData.length > 0) {
-        //user already exists with this username
-        const userAlreadyExists = new Error(
-          'Sorry username is taken. Please choose another one.'
+    if (userData && userData.length > 0) {
+      //user already exists with this username
+      const userAlreadyExists = new Error(
+        'Sorry username is taken. Please choose another one.'
+      );
+      // conflict status code (same username)
+      res.status(409);
+      next(userAlreadyExists);
+    } else {
+      //create the new account
+      const newHashedPass = await bcrypt.hash(req.body.password, 12);
+      const signUpUser = await pool.query(insertUser, [
+        req.body.username,
+        newHashedPass,
+      ]);
+      if (signUpUser) {
+        //successfully signed up
+        const getNewUser = await pool.query(
+          selectUserById,
+          signUpUser.insertId
         );
-        // conflict status code (same username)
-        res.status(409);
-        next(userAlreadyExists);
-      } else {
-        //create the new account
-        const newHashedPass = await bcrypt.hash(req.body.password, 12);
-        const signUpUser = await pool.query(insertUser, [
-          req.body.username,
-          newHashedPass,
-        ]);
-        if (signUpUser) {
-          //successfully signed up
-          const getNewUser = await pool.query(
-            selectUserById,
-            signUpUser.insertId
-          );
-          if (getNewUser) {
-            createTokenResponse(getNewUser[0], res, next);
-          }
+        if (getNewUser) {
+          createTokenResponse(getNewUser[0], res, next);
         }
       }
-    } catch (err) {
-      next(err);
     }
-  } else {
-    // unprocessable entity, validation issue (using unuseable chars ect)
-    res.status(422);
-    next(creds.error);
+  } catch (err) {
+    next(err);
   }
 });
 
-router.post('/signin', async (req, res, next) => {
-  const creds = schema.validate({
-    username: req.body.username,
-    password: req.body.password,
-  });
-  if (creds.error === undefined) {
+router.post(
+  '/signin',
+  validateUser('Unable to login'),
+  async (req, res, next) => {
     let pool;
     try {
       pool = await poolPromise;
@@ -136,11 +85,8 @@ router.post('/signin', async (req, res, next) => {
     } catch (err) {
       next(err);
     }
-  } else {
-    // unprocessable entity, validation issue (using unuseable chars ect)
-    respondError422(res, next);
   }
-});
+);
 
 // error 422 helper function
 function respondError422(res, next) {

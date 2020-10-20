@@ -1,7 +1,8 @@
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
-import { notFound, errorHandler, checkTokenSetUser } from './middlewares.js';
+import { notFound, errorHandler } from './middlewares.js';
+import { checkTokenSetUser } from './api/auth/auth.middlewares.js';
 import { api } from './api/index.js';
 import { message } from './api/placeholder.js';
 // do i want to use helmet?

@@ -28,7 +28,6 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-  console.log('wop');
   let pool;
   try {
     pool = await poolPromise;

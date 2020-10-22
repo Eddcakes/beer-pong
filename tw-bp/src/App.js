@@ -3,12 +3,22 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  NavLink,
+  Redirect,
 } from 'react-router-dom';
 import { ThemeProvider } from './ThemeProvider';
-import { Card } from './components/Card';
+import { AuthProvider } from './AuthProvider';
+import { Card, Nav } from './components';
 import { applyTheme, DEFAULT_THEME } from './theme';
-import { E404, Player, Settings, Tournament, Versus } from './pages/';
+import {
+  E404,
+  Player,
+  Settings,
+  Tournament,
+  Versus,
+  SignIn,
+  SignUp,
+} from './pages';
+import { Avatar } from './components/Avatar';
 
 const defaultTheme = () => {
   if (localStorage.getItem('tw-bp:theme'))
@@ -21,15 +31,22 @@ const defaultTheme = () => {
 };
 
 function App() {
+  //probably want a authentication provider so in <Route render can redirect depending if logged in or not
+  const userToken = localStorage.getItem('tw-bp:jwt');
+  const [loggedIn, setLoggedIn] = useState(validToken(userToken));
+  //if its null, its not loaded yet. if undefined user not logge in
+  const [user, setUser] = useState(null);
   const [theme, setTheme] = useState(defaultTheme);
   const [pageTitle, setPageTitle] = useState('');
   const updatePageTitle = (newTitle) => setPageTitle(newTitle);
-
   const changeTheme = (evt) => {
     localStorage.setItem('tw-bp:theme', evt.target.value);
     setTheme(evt.target.value);
   };
-
+  const signOut = (evt) => {
+    localStorage.removeItem('tw-bp:jwt');
+    setLoggedIn(false);
+  };
   useEffect(() => {
     applyTheme(theme);
   }, [theme]);
@@ -37,78 +54,92 @@ function App() {
   useEffect(() => {
     document.title = pageTitle;
   }, [pageTitle]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const check = await fetchCurrentUser(userToken);
+      //am i happy setting it to undefined if user not logged in?
+      setUser(check.user);
+    }
+    fetchData();
+  }, [userToken]);
   return (
     <ThemeProvider theme={theme} changeTheme={changeTheme}>
-      <Router>
-        <div>
-          <nav className='text-center border-b-2'>
-            <ul className='flex flex-row justify-between'>
-              <li className='w-full'>
-                <NavLink
-                  to={'/'}
-                  activeStyle={{ fontWeight: 'bold' }}
-                  exact
-                  className='p-2 hover:bg-secondary inline-block w-full'
-                >
-                  Home
-                </NavLink>
-              </li>
-              <li className='w-full'>
-                <NavLink
-                  to={'/player'}
-                  activeStyle={{ fontWeight: 'bold' }}
-                  className='p-2 hover:bg-secondary inline-block w-full'
-                >
-                  Player details
-                </NavLink>
-              </li>
-              <li className='w-full'>
-                <NavLink
-                  to={'/versus'}
-                  activeStyle={{ fontWeight: 'bold' }}
-                  className='p-2 hover:bg-secondary inline-block w-full'
-                >
-                  Versus
-                </NavLink>
-              </li>
-              <li className='w-full'>
-                <NavLink
-                  to={'/settings'}
-                  activeStyle={{ fontWeight: 'bold' }}
-                  className='p-2 hover:bg-secondary inline-block w-full'
-                >
-                  Settings
-                </NavLink>
-              </li>
-            </ul>
-          </nav>
-        </div>
-        <Switch>
-          <Route path='/versus/:player1Id(\d+)?/:player2Id(\d+)?'>
-            <Versus updatePageTitle={updatePageTitle} />
-          </Route>
-          <Route path='/player/:playerId(\d+)?'>
-            <Player updatePageTitle={updatePageTitle} />
-          </Route>
-          <Route path='/tournament/:tournamentId(\d+)'>
-            <Tournament updatePageTitle={updatePageTitle} />
-          </Route>
-          <Route path='/settings'>
-            <Settings updatePageTitle={updatePageTitle} />
-          </Route>
-          <Route path='/' exact>
-            <Card
-              title='Placeholder'
-              children={<div className='text-primary-text'>Landing page</div>}
+      <AuthProvider user={user} signOut={signOut}>
+        <Router>
+          <Switch>
+            <Route path='/versus/:player1Id(\d+)?/:player2Id(\d+)?'>
+              <Versus updatePageTitle={updatePageTitle} />
+            </Route>
+            <Route path='/player/:playerId(\d+)?'>
+              <Player updatePageTitle={updatePageTitle} />
+            </Route>
+            <Route path='/tournament/:tournamentId(\d+)'>
+              <Tournament updatePageTitle={updatePageTitle} />
+            </Route>
+            <Route path='/settings'>
+              <Settings updatePageTitle={updatePageTitle} />
+            </Route>
+            <Route
+              path='/signin'
+              render={() => {
+                if (!loggedIn) {
+                  return <SignIn updatePageTitle={updatePageTitle} />;
+                } else {
+                  return <Redirect to='/' />;
+                }
+              }}
             />
-          </Route>
-          <Route path='/*'>
-            <E404 updatePageTitle={updatePageTitle} />
-          </Route>
-        </Switch>
-      </Router>
+            <Route
+              path='/signup'
+              render={() => {
+                if (!loggedIn) {
+                  return <SignUp updatePageTitle={updatePageTitle} />;
+                } else {
+                  return <Redirect to='/' />;
+                }
+              }}
+            />
+            <Route path='/' exact>
+              <>
+                <Nav />
+                <Card
+                  title='Placeholder'
+                  children={
+                    <div className='text-primary-text'>
+                      <Avatar />
+                    </div>
+                  }
+                />
+              </>
+            </Route>
+            <Route path='/*'>
+              <E404 updatePageTitle={updatePageTitle} />
+            </Route>
+          </Switch>
+        </Router>
+      </AuthProvider>
     </ThemeProvider>
   );
 }
 
 export default App;
+
+// todo migrate from localstorage to httponly cookies, then to auth service or pasport.js
+function validToken(userToken) {
+  //do something with token
+  if (userToken === null) {
+    return false;
+  }
+  return true;
+}
+
+async function fetchCurrentUser(token) {
+  const user = await fetch('http://localhost:1337/api/v1/', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const resp = await user.json();
+  return resp;
+}

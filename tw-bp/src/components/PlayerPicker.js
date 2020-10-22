@@ -24,14 +24,14 @@ export function PlayerPicker({
   //should i look at useCallback instead of the extending selectPlayer on li onclick
   return (
     <>
-      <div className='flex flex-col w-20'>
-        <ButtonSquare
-          handleClick={toggleModal}
-          text={players[name] !== '' ? playerNames[players[name] - 1].name : 'Click to pick player'}
-        >
-        </ButtonSquare>
-       
-      </div>
+      <ButtonSquare
+        handleClick={toggleModal}
+        text={
+          players[name] !== ''
+            ? playerNames[players[name] - 1].name
+            : 'Click to pick player'
+        }
+      ></ButtonSquare>
 
       <Modal isOpen={showModal} dismiss={toggleModal} title='Add Player'>
         <div className='px-2'>

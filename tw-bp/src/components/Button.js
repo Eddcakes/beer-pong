@@ -29,6 +29,12 @@ export function Button({
       focus:outline-none
       w-full
       md:w-auto
+      transform 
+      duration-75
+      ease-in-out
+      active:scale-y-95
+      origin-bottom
+      select-none
       `}
       onClick={handleClick}
       {...props}

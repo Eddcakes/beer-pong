@@ -5,14 +5,12 @@ export function ButtonSquare({
   text,
   handleClick = () => {},
   loading = false,
-  props,
-  children
 }) {
   return (
     <button
       className={`g-transparent
-      h-20
-      w-20
+      h-28
+      w-28
       hover:bg-blue-300
       hover:border-blue-500
       active:bg-blue-400
@@ -28,16 +26,25 @@ export function ButtonSquare({
       rounded
       border-b-4
       active:border-b
-      active:mt-press
       focus:outline-none
-      w-full
       md:w-auto
-      text-xs
+      transform 
+      duration-75
+      ease-in-out
+      active:scale-y-95
+      origin-bottom
+      select-none
       `}
       onClick={handleClick}
-      {...props}
     >
-      {text}
+      <div className='items-center text-center'>{text}</div>
     </button>
   );
 }
+
+/*
+Picture button
+<span> background image </span> absolute 
+<span> background mask color </span>
+<span> <span>text</span> <span>icon</span> </span> flex
+*/

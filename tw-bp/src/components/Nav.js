@@ -1,5 +1,5 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { NavLink, useHistory, useLocation } from 'react-router-dom';
 import AuthContext from '../AuthContext';
 
 /* uld like to break nav down for mobile view 
@@ -7,6 +7,15 @@ import AuthContext from '../AuthContext';
   keep logo/search/profile icon in the header
 */
 export function Nav() {
+  const location = useLocation();
+  const history = useHistory();
+  const auth = useContext(AuthContext);
+
+  const handleSignOut = () => {
+    auth.signOut();
+    history.push(location.pathname);
+    //send toast?
+  };
   return (
     <nav className='text-center border-b-2'>
       <ul className='flex flex-row justify-between'>
@@ -47,30 +56,26 @@ export function Nav() {
             Settings
           </NavLink>
         </li>
-        <AuthContext.Consumer>
-          {({ user, signOut }) =>
-            user === null || user === undefined ? (
-              <li className='w-full'>
-                <NavLink
-                  to={'/signin'}
-                  activeStyle={{ fontWeight: 'bold' }}
-                  className='p-2 hover:bg-secondary inline-block w-full'
-                >
-                  Sign in
-                </NavLink>
-              </li>
-            ) : (
-              <li className='w-full'>
-                <button
-                  className='p-2 hover:bg-secondary inline-block w-full'
-                  onClick={signOut}
-                >
-                  Sign out
-                </button>
-              </li>
-            )
-          }
-        </AuthContext.Consumer>
+        {auth.user === null || auth.user === undefined ? (
+          <li className='w-full'>
+            <NavLink
+              to={'/signin'}
+              activeStyle={{ fontWeight: 'bold' }}
+              className='p-2 hover:bg-secondary inline-block w-full'
+            >
+              Sign in
+            </NavLink>
+          </li>
+        ) : (
+          <li className='w-full'>
+            <button
+              className='p-2 hover:bg-secondary inline-block w-full'
+              onClick={handleSignOut}
+            >
+              Sign out
+            </button>
+          </li>
+        )}
       </ul>
     </nav>
   );

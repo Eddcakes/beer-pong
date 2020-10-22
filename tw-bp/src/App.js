@@ -43,7 +43,7 @@ function App() {
     localStorage.setItem('tw-bp:theme', evt.target.value);
     setTheme(evt.target.value);
   };
-  const signOut = (evt, location) => {
+  const signOut = (evt) => {
     localStorage.removeItem('tw-bp:jwt');
     setLoggedIn(false);
   };
@@ -125,6 +125,7 @@ function App() {
 
 export default App;
 
+// todo migrate from localstorage to httponly cookies, then to auth service or pasport.js
 function validToken(userToken) {
   //do something with token
   if (userToken === null) {

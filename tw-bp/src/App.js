@@ -17,6 +17,7 @@ import {
   Versus,
   SignIn,
   SignUp,
+  Test,
 } from './pages';
 import { Avatar } from './components/Avatar';
 
@@ -100,6 +101,9 @@ function App() {
                 }
               }}
             />
+            <Route path='/test'>
+              <Test updatePageTitle={updatePageTitle} />
+            </Route>
             <Route path='/' exact>
               <>
                 <Nav />

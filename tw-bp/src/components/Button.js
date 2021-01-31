@@ -5,7 +5,7 @@ export function Button({
   text,
   handleClick = () => {},
   loading = false,
-  props,
+  ...props
 }) {
   return (
     <button

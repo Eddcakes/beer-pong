@@ -3,6 +3,7 @@ import React from 'react';
 //slot 1 (title and player 1) slot 2 (player2)
 export function PlayerOverview({ details }) {
   const headers = [
+    '',
     'Games played',
     'Forfeits',
     'Total Wins',

@@ -11,3 +11,4 @@ export { Swatch } from './Swatch';
 export { ThemeSwitcher } from './ThemeSwitcher';
 export { UserPreferences } from './UserPreferences';
 // tailwind dropdown for account/profile
+export { Container } from './Container';

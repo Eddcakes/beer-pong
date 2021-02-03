@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  pgdb:
+    container_name: beer_pong
+    image: mariadb
+    restart: always
+    ports:
+      - 3316:3306
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DB_PWD}"
+      MYSQL_DATABASE: "${DATABASE}"
+      MYSQL_USER: "${DB_USER}"
+      #MYSQL_PASSWORD: ""

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Nav } from '../components';
+import { Container, Nav } from '../components';
 
 export function Tournament({ updatePageTitle }) {
   const { tournamentId } = useParams();
@@ -10,7 +10,7 @@ export function Tournament({ updatePageTitle }) {
   return (
     <>
       <Nav />
-      <div>tournament page {tournamentId}</div>
+      <Container>tournament page {tournamentId}</Container>
     </>
   );
 }

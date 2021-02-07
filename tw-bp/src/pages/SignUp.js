@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import Joi from 'joi';
-import { Card, Button } from '../components';
+import { Card, Button, Container, Input } from '../components';
 
 const schema = Joi.object().keys({
   username: Joi.string()
@@ -74,59 +74,48 @@ export function SignUp({ updatePageTitle }) {
   }, [updatePageTitle]);
 
   return (
-    <div>
+    <Container>
       <div className='text-center'>Icon</div>
       <Card title='Sign up'>
         <form>
-          <div className='flex flex-col'>
-            <label htmlFor='username'>Username</label>
-            <input
-              name='username'
-              required
-              value={username}
-              onChange={handleUsername}
-              aria-describedby='usernameHelp'
-            />
-            <small id='usernameHelp'>
-              Username must be between 2 and 30 characters. Alphanumeric and
-              underscores only.
-            </small>
-          </div>
-          <div className='flex flex-col'>
-            <label htmlFor='email'>Email address</label>
-            <input
-              name='email'
-              type='email'
-              value={email}
-              onChange={handleEmail}
-            />
-          </div>
-          <div className='flex flex-col'>
-            <label htmlFor='password'>Password</label>
-            <input
-              name='password'
-              minLength='6'
-              type='password'
-              required
-              value={password}
-              onChange={handlePassword}
-              aria-describedby='passwordHelp'
-            />
-            <small id='passwordHelp'>
-              Password must be at least 6 characters.
-            </small>
-          </div>
-          <div className='flex flex-col'>
-            <label htmlFor='password'>Confirm Password</label>
-            <input
-              name='confirmPassword'
-              minLength='6'
-              type='password'
-              required
-              value={confirmPassword}
-              onChange={handleConfirmPassword}
-            />
-          </div>
+          <Input
+            label='Username'
+            name='username'
+            required={true}
+            value={username}
+            onChange={handleUsername}
+            aria-describedby='usernameHelp'
+            helpText='Username must be between 2 and 30 characters. Alphanumeric and
+              underscores only.'
+          />
+          <Input
+            label='Email address'
+            name='email'
+            type='email'
+            value={email}
+            onChange={handleEmail}
+          />
+          <Input
+            label='Password'
+            name='password'
+            minLength='6'
+            type='password'
+            required
+            value={password}
+            onChange={handlePassword}
+            aria-describedby='passwordHelp'
+            helpText='Password must be at least 6 characters.'
+          />
+
+          <Input
+            label='Confirm Password'
+            name='confirmPassword'
+            minLength='6'
+            type='password'
+            required
+            value={confirmPassword}
+            onChange={handleConfirmPassword}
+          />
           {errorMsg.length > 0 && <p className='text-red-700'>{errorMsg}</p>}
           <div className='pt-2'>
             <Button text='Sign up' handleClick={handleSubmit} />
@@ -136,7 +125,7 @@ export function SignUp({ updatePageTitle }) {
           </Link>
         </form>
       </Card>
-    </div>
+    </Container>
   );
 }
 

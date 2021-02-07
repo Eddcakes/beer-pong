@@ -1,7 +1,10 @@
 //barrel components
+export { Avatar } from './Avatar';
 export { Button } from './Button';
 export { ButtonSquare } from './ButtonSquare';
 export { Card } from './Card';
+export { Container } from './Container';
+export { Input } from './Input';
 export { Match } from './Match';
 export { Modal } from './Modal';
 export { Nav } from './Nav';
@@ -11,4 +14,3 @@ export { Swatch } from './Swatch';
 export { ThemeSwitcher } from './ThemeSwitcher';
 export { UserPreferences } from './UserPreferences';
 // tailwind dropdown for account/profile
-export { Container } from './Container';

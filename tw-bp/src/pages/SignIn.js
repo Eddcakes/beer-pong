@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Joi from 'joi';
 import { Link, useHistory } from 'react-router-dom';
-import { Card, Button } from '../components';
+import { Card, Button, Container, Input } from '../components';
 
 const schema = Joi.object().keys({
   username: Joi.string()
@@ -63,30 +63,25 @@ export function SignIn({ updatePageTitle }) {
     updatePageTitle('Sign in');
   }, [updatePageTitle]);
   return (
-    <div>
+    <Container>
       <div className='text-center'>Icon</div>
       <Card title='Sign in'>
         <form>
-          <div className='flex flex-col'>
-            <label htmlFor='username'>Username</label>
-            <input
-              name='username'
-              required
-              value={username}
-              onChange={handleUsername}
-            />
-          </div>
-          <div className='flex flex-col'>
-            <label htmlFor='password'>Password</label>
-            <input
-              name='password'
-              minLength='6'
-              type='password'
-              required
-              value={password}
-              onChange={handlePassword}
-            />
-          </div>
+          <Input
+            label='Username'
+            name='username'
+            required={true}
+            value={username}
+            onChange={handleUsername}
+          />
+          <Input
+            label='Password'
+            name='password'
+            type='password'
+            required={true}
+            value={password}
+            onChange={handlePassword}
+          />
           <Link to='/' className='text-link-text hover:underline'>
             Forgotten password?
           </Link>
@@ -99,7 +94,7 @@ export function SignIn({ updatePageTitle }) {
           </Link>
         </form>
       </Card>
-    </div>
+    </Container>
   );
 }
 

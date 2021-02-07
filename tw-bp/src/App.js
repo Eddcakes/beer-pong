@@ -7,10 +7,10 @@ import {
 } from 'react-router-dom';
 import { ThemeProvider } from './ThemeProvider';
 import { AuthProvider } from './AuthProvider';
-import { Card, Nav } from './components';
 import { applyTheme, DEFAULT_THEME } from './theme';
 import {
   E404,
+  Home,
   Player,
   Settings,
   Tournament,
@@ -19,7 +19,6 @@ import {
   SignUp,
   Test,
 } from './pages';
-import { Avatar } from './components/Avatar';
 
 const defaultTheme = () => {
   if (localStorage.getItem('tw-bp:theme'))
@@ -105,17 +104,7 @@ function App() {
               <Test updatePageTitle={updatePageTitle} />
             </Route>
             <Route path='/' exact>
-              <>
-                <Nav />
-                <Card
-                  title='Placeholder'
-                  children={
-                    <div className='text-primary-text'>
-                      <Avatar />
-                    </div>
-                  }
-                />
-              </>
+              <Home updatePageTitle={updatePageTitle} />
             </Route>
             <Route path='/*'>
               <E404 updatePageTitle={updatePageTitle} />

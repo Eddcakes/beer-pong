@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Nav } from '../components';
+import { Nav, Container } from '../components';
 import AuthContext from '../AuthContext';
 
 //should i use fetchPlayerOverview here too?
@@ -35,14 +35,14 @@ export function Player({ updatePageTitle }) {
       {({ user }) => (
         <>
           <Nav />
-          <div>
+          <Container>
             <div>
               {user === null || user === undefined
                 ? 'You can log in here or search for a user!'
                 : `hi ${user.username}`}
             </div>
             {playerData && <div>{playerData.name}</div>}
-          </div>
+          </Container>
         </>
       )}
     </AuthContext.Consumer>

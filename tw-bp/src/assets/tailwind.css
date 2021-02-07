@@ -1,3 +1,37 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* put the colour on element that has this class with tw */
+.table-like-border {
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+}
+
+.table-like-border:first-child {
+  border-top-width: 1px;
+}
+
+.table-like-border:last-child {
+  border-bottom-width: 1px;
+}
+
+.table-start .table-like-border:first-child {
+  border-top-left-radius: 5px;
+}
+
+.table-start .table-like-border:last-child {
+  border-bottom-left-radius: 5px;
+}
+
+.table-end .table-like-border:first-child {
+  border-top-right-radius: 5px;
+}
+
+.table-end .table-like-border:last-child {
+  border-bottom-right-radius: 5px;
+}
+
+.table-end .table-like-border {
+  border-right-width: 1px;
+}

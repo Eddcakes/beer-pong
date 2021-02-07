@@ -45,8 +45,8 @@ export function PlayerPicker({
               />
             </form>
           </div>
-          <div className='h-48 overflow-y-scroll'>
-            <ul role='listbox'>
+          <div className='max-h-75vh flex'>
+            <ul role='listbox' className='overflow-y-auto w-full'>
               {search(playerNames).map((player) => (
                 <li
                   key={player.player_ID}

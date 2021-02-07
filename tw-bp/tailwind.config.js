@@ -23,6 +23,12 @@ module.exports = {
       red: colors.rose,
       yellow: colors.amber,
     },
+    maxHeight: (theme) => ({
+      ...theme('spacing'),
+      full: '100%',
+      screen: '100vh',
+      '75vh': '75vh',
+    }),
     extend: {},
   },
   variants: {

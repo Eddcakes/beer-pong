@@ -1,7 +1,7 @@
 import React from 'react';
 import ThemeContext from '../ThemeContext';
 
-const themeNames = ['base', 'dark', 'casual'];
+const themeNames = ['base', 'dark', 'casual', 'vb', 'mixedFruit'];
 
 export function ThemeSwitcher() {
   return (

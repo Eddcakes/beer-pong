@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+
 import { Nav, Container, Card, Avatar } from '../components';
 import AuthContext from '../AuthContext';
 
@@ -30,6 +32,9 @@ export function Home({ updatePageTitle }) {
               <div className='text-primary-text'>
                 <Avatar />
               </div>
+              <Link to='/test' className='text-link-text hover:underline'>
+                Test page
+              </Link>
             </Card>
           </Container>
         </>

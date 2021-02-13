@@ -6,6 +6,7 @@ import {
   Card,
   Match,
   Container,
+  Swatch,
 } from '../components';
 import AuthContext from '../AuthContext';
 
@@ -64,6 +65,7 @@ export function Test({ updatePageTitle }) {
               </Card>
             </div>
             <div></div>
+            <Swatch />
           </Container>
         </>
       )}

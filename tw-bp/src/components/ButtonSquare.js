@@ -11,18 +11,17 @@ export function ButtonSquare({
       className={`g-transparent
       h-28
       w-28
-      hover:bg-blue-300
-      hover:border-blue-500
-      active:bg-blue-400
-      text-blue-700
+      hover:bg-primary-light
+      hover:border-primary
+      active:bg-primary-active
+      text-primary-text
       font-semibold
       hover:text-white
       active:text-white
       py-2
       px-4 
       border
-      border-blue-500
-      hover:border-transparent
+      border-primary
       rounded
       border-b-4
       active:border-b

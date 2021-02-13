@@ -25,7 +25,8 @@ export function Input({
         className={`
         w-full block
         appearance-none
-        bg-gray-200 border
+        bg-input-background
+        border
         border-gray-200
         text-gray-700
         py-3

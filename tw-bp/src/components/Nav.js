@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { NavLink, useHistory, useLocation } from 'react-router-dom';
-import AuthContext from '../AuthContext';
+import { useAuth } from '../AuthProvider';
 
 /* uld like to break nav down for mobile view 
   have bottom nav similar to Youtube mobile
@@ -9,7 +9,7 @@ import AuthContext from '../AuthContext';
 export function Nav() {
   const location = useLocation();
   const history = useHistory();
-  const auth = useContext(AuthContext);
+  const auth = useAuth();
 
   const handleSignOut = () => {
     auth.signOut();

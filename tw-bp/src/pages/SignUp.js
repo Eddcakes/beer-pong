@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import Joi from 'joi';
 import { Card, Button } from '../components';
+import { useAuth } from '../AuthProvider';
 
 const schema = Joi.object().keys({
   username: Joi.string()
@@ -16,6 +17,7 @@ const schema = Joi.object().keys({
 
 export function SignUp({ updatePageTitle }) {
   let history = useHistory();
+  const auth = useAuth();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -36,7 +38,7 @@ export function SignUp({ updatePageTitle }) {
       };
       try {
         //post to server
-        const signupResp = await postSignUp(newUserCreds);
+        const signupResp = await auth.signUp(newUserCreds);
         if (signupResp.error !== undefined) {
           return setErrorMsg(signupResp.error);
         }
@@ -138,16 +140,4 @@ export function SignUp({ updatePageTitle }) {
       </Card>
     </div>
   );
-}
-
-async function postSignUp(data) {
-  const signup = await fetch(`http://localhost:1337/api/v1/auth/signup`, {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: {
-      'content-type': 'application/json',
-    },
-  });
-  const dataJson = await signup.json();
-  return dataJson;
 }

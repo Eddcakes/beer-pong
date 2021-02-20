@@ -5,6 +5,7 @@ export { ButtonSquare } from './ButtonSquare';
 export { Card } from './Card';
 export { Container } from './Container';
 export { Input } from './Input';
+export { LoggedOutRoute } from './LoggedOutRoute';
 export { Match } from './Match';
 export { Modal } from './Modal';
 export { Nav } from './Nav';

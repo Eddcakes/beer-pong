@@ -6,7 +6,7 @@ const router = express.Router();
 // need to fix up forfeit calculation, currently counts both yours and oponents, should only count yours
 const collate = `
 SELECT COUNT(game_ID) AS 'games',
-	SUM(forfeit = 1) AS 'forfeits',
+  SUM(IF(forfeit = 1 AND home_id = ? AND homeCupsLeft = 0, 1, IF(forfeit=1 AND away_id= ? AND awayCupsLeft = 0, 1, 0))) AS 'forfeits',
 	SUM(if(home_ID = ? AND homeCupsLeft != 0,1,0)) AS 'homeWins',
 	SUM(if(away_ID = ? AND awayCupsLeft != 0,1,0)) AS 'awayWins',
 	SUM(stage LIKE 'group%') AS 'groupGames',
@@ -25,6 +25,8 @@ router.get('/:id', async (req, res) => {
   try {
     pool = await poolPromise;
     const data = await pool.query(`${collate}`, [
+      req.params.id,
+      req.params.id,
       req.params.id,
       req.params.id,
       req.params.id,

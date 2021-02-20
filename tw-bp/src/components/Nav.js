@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { NavLink, useHistory, useLocation } from 'react-router-dom';
-import AuthContext from '../AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 /* uld like to break nav down for mobile view 
   have bottom nav similar to Youtube mobile
@@ -9,11 +9,12 @@ import AuthContext from '../AuthContext';
 export function Nav() {
   const location = useLocation();
   const history = useHistory();
-  const auth = useContext(AuthContext);
+  const auth = useAuth();
 
   const handleSignOut = () => {
     auth.signOut();
     history.push(location.pathname);
+    // if its a protected route redirect should activate anyway
     //send toast?
   };
   return (
@@ -56,7 +57,16 @@ export function Nav() {
             Settings
           </NavLink>
         </li>
-        {auth.user === null || auth.user === undefined ? (
+        {auth.user != null ? (
+          <li className='w-full'>
+            <button
+              className='p-2 hover:bg-secondary inline-block w-full'
+              onClick={handleSignOut}
+            >
+              Sign out
+            </button>
+          </li>
+        ) : (
           <li className='w-full'>
             <NavLink
               to={'/signin'}
@@ -65,15 +75,6 @@ export function Nav() {
             >
               Sign in
             </NavLink>
-          </li>
-        ) : (
-          <li className='w-full'>
-            <button
-              className='p-2 hover:bg-secondary inline-block w-full'
-              onClick={handleSignOut}
-            >
-              Sign out
-            </button>
           </li>
         )}
       </ul>

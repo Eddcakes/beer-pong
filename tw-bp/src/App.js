@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { ThemeProvider } from './ThemeProvider';
 import { AuthProvider } from './AuthProvider';
 import { applyTheme, DEFAULT_THEME } from './theme';
@@ -19,6 +14,7 @@ import {
   SignUp,
   Test,
 } from './pages';
+import { LoggedOutRoute } from './components/LoggedOutRoute';
 
 const defaultTheme = () => {
   if (localStorage.getItem('tw-bp:theme'))
@@ -32,10 +28,7 @@ const defaultTheme = () => {
 
 function App() {
   //probably want a authentication provider so in <Route render can redirect depending if logged in or not
-  const userToken = localStorage.getItem('tw-bp:jwt');
-  const [loggedIn, setLoggedIn] = useState(validToken(userToken));
   //if its null, its not loaded yet. if undefined user not logge in
-  const [user, setUser] = useState(null);
   const [theme, setTheme] = useState(defaultTheme);
   const [pageTitle, setPageTitle] = useState('');
   const updatePageTitle = (newTitle) => setPageTitle(newTitle);
@@ -43,10 +36,7 @@ function App() {
     localStorage.setItem('tw-bp:theme', evt.target.value);
     setTheme(evt.target.value);
   };
-  const signOut = (evt) => {
-    localStorage.removeItem('tw-bp:jwt');
-    setLoggedIn(false);
-  };
+
   useEffect(() => {
     applyTheme(theme);
   }, [theme]);
@@ -55,17 +45,9 @@ function App() {
     document.title = pageTitle;
   }, [pageTitle]);
 
-  useEffect(() => {
-    async function fetchData() {
-      const check = await fetchCurrentUser(userToken);
-      //am i happy setting it to undefined if user not logged in?
-      setUser(check.user);
-    }
-    fetchData();
-  }, [userToken]);
   return (
     <ThemeProvider theme={theme} changeTheme={changeTheme}>
-      <AuthProvider user={user} signOut={signOut}>
+      <AuthProvider>
         <Router>
           <Switch>
             <Route path='/versus/:player1Id(\d+)?/:player2Id(\d+)?'>
@@ -80,26 +62,12 @@ function App() {
             <Route path='/settings'>
               <Settings updatePageTitle={updatePageTitle} />
             </Route>
-            <Route
-              path='/signin'
-              render={() => {
-                if (!loggedIn) {
-                  return <SignIn updatePageTitle={updatePageTitle} />;
-                } else {
-                  return <Redirect to='/' />;
-                }
-              }}
-            />
-            <Route
-              path='/signup'
-              render={() => {
-                if (!loggedIn) {
-                  return <SignUp updatePageTitle={updatePageTitle} />;
-                } else {
-                  return <Redirect to='/' />;
-                }
-              }}
-            />
+            <LoggedOutRoute path='/signin'>
+              <SignIn updatePageTitle={updatePageTitle} />;
+            </LoggedOutRoute>
+            <LoggedOutRoute path='/signup'>
+              <SignUp updatePageTitle={updatePageTitle} />;
+            </LoggedOutRoute>
             <Route path='/test'>
               <Test updatePageTitle={updatePageTitle} />
             </Route>
@@ -117,22 +85,3 @@ function App() {
 }
 
 export default App;
-
-// todo migrate from localstorage to httponly cookies, then to auth service or pasport.js
-function validToken(userToken) {
-  //do something with token
-  if (userToken === null) {
-    return false;
-  }
-  return true;
-}
-
-async function fetchCurrentUser(token) {
-  const user = await fetch('http://localhost:1337/api/v1/', {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  const resp = await user.json();
-  return resp;
-}

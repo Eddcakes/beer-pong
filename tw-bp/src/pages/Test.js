@@ -8,7 +8,7 @@ import {
   Container,
   Swatch,
 } from '../components';
-import AuthContext from '../AuthContext';
+import { AuthContext } from '../AuthContext';
 
 export function Test({ updatePageTitle }) {
   const [players, setPlayers] = useState([]);

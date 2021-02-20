@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Joi from 'joi';
 import { Link, useHistory } from 'react-router-dom';
+
 import { Card, Button, Container, Input } from '../components';
+import { useAuth } from '../hooks/useAuth';
 
 const schema = Joi.object().keys({
   username: Joi.string()
@@ -15,6 +17,7 @@ const schema = Joi.object().keys({
 
 export function SignIn({ updatePageTitle }) {
   let history = useHistory();
+  const auth = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
@@ -30,17 +33,16 @@ export function SignIn({ updatePageTitle }) {
         password: password,
       };
       try {
-        const signInResp = await postSignIn(signInCreds);
-        if (signInResp.error !== undefined) {
+        const signInResp = await auth.signIn(signInCreds);
+        // auth.user is set in the AuthProvider
+        if (signInResp.error) {
           return setErrorMsg(
             'Unable to login, please double check your credentials.'
           );
         }
-        localStorage.setItem('tw-bp:jwt', signInResp.token);
         history.push('/');
       } catch (err) {
         setErrorMsg('Something went wrong!');
-        console.log('error', err);
       }
     }
   };
@@ -96,16 +98,4 @@ export function SignIn({ updatePageTitle }) {
       </Card>
     </Container>
   );
-}
-
-async function postSignIn(data) {
-  const signIn = await fetch(`http://localhost:1337/api/v1/auth/signin`, {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: {
-      'content-type': 'application/json',
-    },
-  });
-  const dataJson = await signIn.json();
-  return dataJson;
 }

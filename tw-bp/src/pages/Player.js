@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Nav } from '../components';
-import AuthContext from '../AuthContext';
+// import AuthContext from '../AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 //should i use fetchPlayerOverview here too?
 export function Player({ updatePageTitle }) {
+  const auth = useAuth();
   const { playerId } = useParams();
   const [playerData, setPlayerData] = useState({});
   //const [loading, setLoading] = useState(true);
@@ -31,27 +33,23 @@ export function Player({ updatePageTitle }) {
   }, [playerId]);
 
   return (
-    <AuthContext.Consumer>
-      {({ user }) => (
-        <>
-          <Nav />
-          <div>
-            <div>
-              {user === null || user === undefined
-                ? 'You can log in here or search for a user!'
-                : `hi ${user.username}`}
-            </div>
-            {playerData && <div>{playerData.name}</div>}
-          </div>
-        </>
-      )}
-    </AuthContext.Consumer>
+    <>
+      <Nav />
+      <div>
+        <div>
+          {auth.user
+            ? `hi ${auth.user.username}`
+            : 'You can log in here or search for a user!'}
+        </div>
+        {playerData && <div>{playerData.name}</div>}
+      </div>
+    </>
   );
 }
 
 async function fetchPlayer(playerId) {
   const player = await fetch(
-    `http://localhost:1337/api/v1/players/${playerId}`
+    `${process.env.REACT_APP_BACKEND_URL}/api/v1/players/${playerId}`
   );
   const resp = await player.json();
   return resp;

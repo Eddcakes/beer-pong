@@ -18,7 +18,10 @@ router.get('/', async (req, res) => {
   let pool;
   try {
     pool = await poolPromise;
-    const data = await pool.query(selectUserPreferences, req.user.id);
+    const data = await pool.query(
+      selectUserPreferences,
+      req.session.user.user_ID
+    );
     return res.json(data);
   } catch (err) {
     res.status(500);
@@ -37,12 +40,16 @@ router.post('/', async (req, res, next) => {
       //check that the user has any preferences
       const userPreferences = await pool.query(
         `${selectUserPreferences}`,
-        req.user.id
+        req.session.user.user_ID
       );
       if (userPreferences.length > 0) {
         //if they do, update
       } else {
-        const values = [req.user.id, req.body.avatar_link, new Date()]; //'NOW()' sets to 0000-00-00 00:00:00:00 ?
+        const values = [
+          req.session.user.user_ID,
+          req.body.avatar_link,
+          new Date(),
+        ]; //'NOW()' sets to 0000-00-00 00:00:00:00 ?
         const createUserPreferences = await pool.query(
           insertUserPreferences,
           values

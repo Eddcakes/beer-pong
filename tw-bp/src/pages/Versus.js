@@ -34,7 +34,9 @@ export function Versus({ updatePageTitle }) {
 
   const goCompare = (player1, player2) => {
     if (player1.length > 0 && player2.length > 0) {
-      fetch(`http://localhost:1337/api/v1/versus/${player1}/${player2}`)
+      fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/v1/versus/${player1}/${player2}`
+      )
         .then((response) => response.json())
         .then((data) => {
           setGameData(data);
@@ -48,7 +50,9 @@ export function Versus({ updatePageTitle }) {
 
   useEffect(() => {
     //load player name options
-    fetch('http://localhost:1337/api/v1/players')
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/v1/players`, {
+      credentials: 'include',
+    })
       .then((response) => response.json())
       .then((data) => {
         setPlayerNames(data);
@@ -105,7 +109,7 @@ export function Versus({ updatePageTitle }) {
 
 async function fetchPlayerOverview(playerId) {
   const overviewResp = await fetch(
-    `http://localhost:1337/api/v1/overview/${playerId}`
+    `${process.env.REACT_APP_BACKEND_URL}/api/v1/overview/${playerId}`
   );
   const overview = await overviewResp.json();
   return overview;

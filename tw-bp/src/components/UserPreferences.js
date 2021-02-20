@@ -6,13 +6,6 @@ const schema = Joi.object().keys({
   avatar_link: Joi.string().trim().uri(),
 });
 
-/* 
-TODO
-need to have some way to refresh JWT
-do not show preferences to not logged in users
-compare original and new preferences on save to decide if to post
-*/
-
 export function UserPreferences() {
   //do i need to use authcontext to decide to only show preferences to logged in users
   // const { user } = useContext(AuthContext);import AuthContext from '../AuthContext';
@@ -94,25 +87,26 @@ export function UserPreferences() {
 }
 
 async function fetchPreferences() {
-  const player = await fetch(`http://localhost:1337/api/v1/preferences/`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('tw-bp:jwt')}`,
-    },
-  });
+  const player = await fetch(
+    `${process.env.REACT_APP_BACKEND_URL}/api/v1/preferences/`,
+    {
+      credentials: 'include',
+    }
+  );
   const resp = await player.json();
   return resp;
 }
 
 async function postPreferences(newPreferences) {
   console.log(JSON.stringify(newPreferences));
-  const preferences = await fetch(`http://localhost:1337/api/v1/preferences/`, {
-    method: 'POST',
-    body: JSON.stringify(newPreferences),
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('tw-bp:jwt')}`,
-      'content-type': 'application/json',
-    },
-  });
+  const preferences = await fetch(
+    `${process.env.REACT_APP_BACKEND_URL}/api/v1/preferences/`,
+    {
+      method: 'POST',
+      body: JSON.stringify(newPreferences),
+      credentials: 'include',
+    }
+  );
   const resp = await preferences.json();
   return resp;
 }

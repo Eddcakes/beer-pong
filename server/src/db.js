@@ -2,6 +2,7 @@ import mariadb from 'mariadb';
 import dotenv from 'dotenv';
 
 dotenv.config();
+
 const env_settings = {
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -11,7 +12,7 @@ const env_settings = {
   connectionLimit: 5,
 };
 
-const poolPromise = new mariadb.createPool(env_settings);
+export const poolPromise = new mariadb.createPool(env_settings);
 poolPromise
   .getConnection()
   .then((pool) => {
@@ -19,5 +20,3 @@ poolPromise
     return pool;
   })
   .catch((err) => console.log('db connection failed', err));
-
-export { mariadb, poolPromise };

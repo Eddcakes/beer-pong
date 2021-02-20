@@ -14,8 +14,12 @@ import { isAdmin, isLoggedIn } from './auth/auth.middlewares.js';
 
 const router = express.Router();
 
+/* give client user details from session */
 router.get('/', (req, res) => {
-  res.json({ message: message, user: req.user });
+  res.json({
+    message: message,
+    user: req.session.user,
+  });
 });
 
 router.use('/auth', auth);

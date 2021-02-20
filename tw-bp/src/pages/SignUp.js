@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import Joi from 'joi';
 import { Card, Button } from '../components';
-import { useAuth } from '../AuthProvider';
+import { useAuth } from '../hooks/useAuth';
 
 const schema = Joi.object().keys({
   username: Joi.string()
@@ -43,8 +43,6 @@ export function SignUp({ updatePageTitle }) {
           return setErrorMsg(signupResp.error);
         }
         //redirect to login page on successful account creation
-        // change to http secure cookies store login token
-        localStorage.setItem('tw-bp:jwt', signupResp.token);
         history.push('/');
       } catch (err) {
         setErrorMsg('Something went wrong!');

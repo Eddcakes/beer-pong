@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useAuth } from '../AuthProvider';
+import { useAuth } from '../hooks/useAuth';
 
 import { Nav, Card, Avatar } from '../components';
 

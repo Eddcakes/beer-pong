@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Joi from 'joi';
 import { Link, useHistory } from 'react-router-dom';
 import { Card, Button } from '../components';
-import { useAuth } from '../AuthProvider';
+import { useAuth } from '../hooks/useAuth';
 
 const schema = Joi.object().keys({
   username: Joi.string()
@@ -33,12 +33,12 @@ export function SignIn({ updatePageTitle }) {
       };
       try {
         const signInResp = await auth.signIn(signInCreds);
-        if (signInResp.error !== undefined) {
+        // auth.user is set in the AuthProvider
+        if (signInResp.error) {
           return setErrorMsg(
             'Unable to login, please double check your credentials.'
           );
         }
-        localStorage.setItem('tw-bp:jwt', signInResp.token);
         history.push('/');
       } catch (err) {
         setErrorMsg('Something went wrong!');

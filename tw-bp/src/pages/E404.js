@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Nav } from '../components';
+import { Header } from '../components';
 
 export function E404({ updatePageTitle }) {
   useEffect(() => {
@@ -7,7 +7,7 @@ export function E404({ updatePageTitle }) {
   });
   return (
     <>
-      <Nav />
+      <Header />
       <div className='h-full'>E404 page not found</div>
     </>
   );

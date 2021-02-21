@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Nav, Container } from '../components';
+import { Header, Container } from '../components';
 import { useAuth } from '../hooks/useAuth';
 
 //should i use fetchPlayerOverview here too?
@@ -33,7 +33,7 @@ export function Player({ updatePageTitle }) {
 
   return (
     <>
-      <Nav />
+      <Header />
       <Container>
         <div>
           {auth.user

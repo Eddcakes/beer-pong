@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Container, Nav } from '../components';
+import { Container, Header } from '../components';
 
 export function Tournament({ updatePageTitle }) {
   const { tournamentId } = useParams();
@@ -9,7 +9,7 @@ export function Tournament({ updatePageTitle }) {
   }, [updatePageTitle, tournamentId]);
   return (
     <>
-      <Nav />
+      <Header />
       <Container>tournament page {tournamentId}</Container>
     </>
   );

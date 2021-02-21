@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Card,
   Container,
-  Nav,
+  Header,
   ThemeSwitcher,
   UserPreferences,
 } from '../components';
@@ -10,7 +10,7 @@ import {
 export function Settings() {
   return (
     <>
-      <Nav />
+      <Header />
       <Container>
         <Card title='Local browser preferences'>
           <ThemeSwitcher />

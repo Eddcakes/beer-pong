@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-import { Nav, Container, Card, Avatar } from '../components';
+import { Header, Container, Card, Avatar } from '../components';
 import { useAuth } from '../hooks/useAuth';
 
 //should i use fetchPlayerOverview here too?
@@ -20,7 +20,7 @@ export function Home({ updatePageTitle }) {
 
   return (
     <>
-      <Nav />
+      <Header />
       <Container>
         <Card title='Placeholder'>
           <div className='text-primary-text'>

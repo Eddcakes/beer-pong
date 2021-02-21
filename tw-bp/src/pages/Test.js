@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Button,
-  ButtonSquare,
-  Nav,
-  Card,
-  Match,
-  Container,
-  Swatch,
-} from '../components';
+import { Button, Header, Card, Match, Container, Swatch } from '../components';
 import { AuthContext } from '../AuthContext';
 
 export function Test({ updatePageTitle }) {
@@ -37,7 +29,7 @@ export function Test({ updatePageTitle }) {
     <AuthContext.Consumer>
       {({ user }) => (
         <>
-          <Nav />
+          <Header />
           <Container>
             <div>
               Auth check:
@@ -47,10 +39,17 @@ export function Test({ updatePageTitle }) {
             </div>
             <div className='text-center space-y-2'>
               <div>
-                <ButtonSquare text='square button' />
+                <Button variant='square' text='square button' />
               </div>
               <div>
-                <Button text='regular button' />
+                <Button
+                  variant='square'
+                  color='outlined'
+                  text='square button outlined'
+                />
+              </div>
+              <div>
+                <Button text='regular button' color='outlined' />
               </div>
             </div>
             <div>

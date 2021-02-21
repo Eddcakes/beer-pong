@@ -4,7 +4,7 @@ import { Card } from '../components/Card';
 import { Match } from '../components/Match';
 import { PlayerPicker } from '../components/PlayerPicker';
 import { PlayerOverview } from '../components/PlayerOverview';
-import { Nav, Container } from '../components';
+import { Header, Container } from '../components';
 
 /* could have some defaults like *current player -> player 1 by default
   if only one player filled in - fetch player stats not the comparison stats?
@@ -68,10 +68,10 @@ export function Versus({ updatePageTitle }) {
 
   return (
     <>
-      <Nav />
+      <Header />
       <Container>
         <Card title='Player search'>
-          <div className='flex justify-between p-2'>
+          <div className='flex justify-around p-2'>
             <PlayerPicker
               players={players}
               playerNames={playerNames}

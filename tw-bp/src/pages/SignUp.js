@@ -119,7 +119,11 @@ export function SignUp({ updatePageTitle }) {
           />
           {errorMsg.length > 0 && <p className='text-red-700'>{errorMsg}</p>}
           <div className='pt-2'>
-            <Button text='Sign up' handleClick={handleSubmit} />
+            <Button
+              text='Sign up'
+              handleClick={handleSubmit}
+              color='outlined'
+            />
           </div>
           <Link to='/signin' className='text-link-text hover:underline'>
             Or sign in here

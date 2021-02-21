@@ -14,6 +14,7 @@ module.exports = {
       'primary-background': 'var(--primary-background)',
       'sec-background': 'var(--sec-background)',
       'primary-text': 'var(--color-primary-text)',
+      'secondary-text': 'var(--color-secondary-text)',
       'input-background': 'var(--color-input-background)',
       'link-text': 'var(--color-link-text)',
       transparent: 'transparent',

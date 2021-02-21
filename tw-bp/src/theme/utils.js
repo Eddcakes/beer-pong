@@ -9,6 +9,7 @@ export const mapTheme = (themeVar) => {
     '--color-positive': themeVar.positive || '',
     '--color-negative': themeVar.negative || '',
     '--color-primary-text': themeVar.primaryText || '',
+    '--color-secondary-text': themeVar.secondaryText || '',
     '--color-input-background': themeVar.inputBackground || '',
     '--color-link-text': themeVar.linkText || '',
     '--primary-background': themeVar.primaryBackground || '',

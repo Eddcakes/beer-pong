@@ -1,53 +1,48 @@
 import React from 'react';
-import { NavLink, useHistory, useLocation } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { NavLink } from 'react-router-dom';
+
+import { useWindowSize } from '../hooks/useWindowSize';
 
 /* uld like to break nav down for mobile view 
   have bottom nav similar to Youtube mobile
   keep logo/search/profile icon in the header
 */
 export function Nav() {
-  const location = useLocation();
-  const history = useHistory();
-  const auth = useAuth();
+  let size = useWindowSize();
 
-  const handleSignOut = () => {
-    auth.signOut();
-    history.push(location.pathname);
-    // if its a protected route redirect should activate anyway
-    //send toast?
-  };
+  if (size.width > 640) {
+    return (
+      <nav className='text-center border-b-2 py-6 font-mono'>
+        <ul className='flex flex-row justify-between'>
+          <li className='w-full'>
+            <StyledNavLink to={'/'} exact text='Home' />
+          </li>
+          <li className='w-full'>
+            <StyledNavLink to={'/player'} text='Players' />
+          </li>
+          <li className='w-full'>
+            <StyledNavLink to={'/versus'} text='Versus' />
+          </li>
+        </ul>
+      </nav>
+    );
+  }
   return (
-    <nav className='text-center border-b-2 py-6 font-mono'>
-      <ul className='flex flex-row justify-between'>
-        <li className='w-full'>
-          <StyledNavLink to={'/'} exact text='Home' />
-        </li>
-        <li className='w-full'>
-          <StyledNavLink to={'/player'} text='Players' />
-        </li>
-        <li className='w-full'>
-          <StyledNavLink to={'/versus'} text='Versus' />
-        </li>
-        <li className='w-full'>
-          <StyledNavLink to={'/settings'} text='Settings' />
-        </li>
-        {auth.user != null ? (
+    <div className='fixed bottom-0 w-full'>
+      <nav className='text-center border-b-2 py-6 font-mono flex justify-center items-center'>
+        <ul className='flex flex-row justify-between w-full'>
           <li className='w-full'>
-            <button
-              className='p-2 hover:text-primary inline-block w-full'
-              onClick={handleSignOut}
-            >
-              Sign out
-            </button>
+            <StyledNavLink to={'/'} exact text='Home' />
           </li>
-        ) : (
           <li className='w-full'>
-            <StyledNavLink to={'/signin'} text='Sign in' />
+            <StyledNavLink to={'/player'} text='Players' />
           </li>
-        )}
-      </ul>
-    </nav>
+          <li className='w-full'>
+            <StyledNavLink to={'/versus'} text='Versus' />
+          </li>
+        </ul>
+      </nav>
+    </div>
   );
 }
 

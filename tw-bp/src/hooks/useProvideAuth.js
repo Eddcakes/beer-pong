@@ -40,7 +40,6 @@ export function useProvideAuth() {
   useEffect(() => {
     // if user changes then set the object as appropriate
     async function checkSession() {
-      console.log('fetchSession');
       const userSession = await fetchSession();
       setUser(userSession.user);
     }
@@ -77,7 +76,6 @@ async function fetchSession() {
     { credentials: 'include' }
   );
   const userSessionJson = await userSession.json();
-  console.log('fetch session', userSessionJson);
   return userSessionJson;
 }
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Joi from 'joi';
 import { Link, useHistory } from 'react-router-dom';
 
-import { Card, Button, Container, Input } from '../components';
+import { Card, Button, Container, Input, Decoration } from '../components';
 import { useAuth } from '../hooks/useAuth';
 
 const schema = Joi.object().keys({
@@ -67,7 +67,16 @@ export function SignIn({ updatePageTitle }) {
   return (
     <Container>
       <div className='text-center'>Icon</div>
-      <Card title='Sign in'>
+      <Card
+        title={
+          <div className='grid justify-center'>
+            <Decoration />
+            <h2 className='text-3xl font-semibold text-primary-text py-2'>
+              Sign in
+            </h2>
+          </div>
+        }
+      >
         <form>
           <Input
             label='Username'

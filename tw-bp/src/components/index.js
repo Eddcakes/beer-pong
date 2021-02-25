@@ -3,6 +3,7 @@ export { Avatar } from './Avatar';
 export { Button } from './Button';
 export { Card } from './Card';
 export { Container } from './Container';
+export { Decoration } from './Decoration';
 export { Header } from './Header';
 export { Input } from './Input';
 export { LoggedOutRoute } from './LoggedOutRoute';

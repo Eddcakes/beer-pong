@@ -34,7 +34,7 @@ export function Menu() {
       border
       focus:outline-none
       mr-4
-      z-40
+      z-20
       relative`}
         onClick={toggleMenu}
       >
@@ -43,7 +43,7 @@ export function Menu() {
       {isOpen && (
         <>
           <button
-            className='bg-gray-500 opacity-75 cursor-default fixed top-0 left-0 right-0 bottom-0 h-full w-full z-30 outline-none'
+            className='bg-gray-500 opacity-75 cursor-default fixed top-0 left-0 right-0 bottom-0 h-full w-full z-10 outline-none'
             tabIndex='-1'
             onClick={closeMenu}
           />
@@ -53,7 +53,7 @@ export function Menu() {
               right-0
               w-72
               my-1
-              z-40
+              z-20
               border
               bg-primary-background`}
           >

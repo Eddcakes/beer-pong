@@ -4,6 +4,7 @@ export { Button } from './Button';
 export { Card } from './Card';
 export { Container } from './Container';
 export { Decoration } from './Decoration';
+export { Divider } from './Divider';
 export { Header } from './Header';
 export { Input } from './Input';
 export { LoggedOutRoute } from './LoggedOutRoute';

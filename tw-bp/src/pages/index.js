@@ -6,3 +6,4 @@ export { SignIn } from './SignIn';
 export { SignUp } from './SignUp';
 export { Tournament } from './Tournament';
 export { Versus } from './Versus';
+export { Test } from './Test';

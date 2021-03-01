@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Joi from 'joi';
 import { Button } from './Button';
+import { Input } from './Input';
 
 const schema = Joi.object().keys({
   avatar_link: Joi.string().trim().uri(),
@@ -71,16 +72,13 @@ export function UserPreferences() {
   }, []);
   return (
     <form>
-      <div className='flex flex-col mb-2'>
-        <label htmlFor='avatarLink'>Link to avatar</label>
-        <input
-          className='w-full block appearance-none bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500'
-          name='avatarLink'
-          value={preferences.avatarLink}
-          onChange={updatePreferences}
-        />
-        {errorMsg.length > 0 && <p className='text-red-700'>{errorMsg}</p>}
-      </div>
+      <Input
+        name='avatarLink'
+        label='Link to avatar'
+        value={preferences.avatarLink}
+        onChange={updatePreferences}
+        errorMsg={errorMsg}
+      />
       <Button text='Save changes' handleClick={saveChanges}></Button>
     </form>
   );

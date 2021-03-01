@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
-import { useAuth } from '../hooks/useAuth';
+import { Link } from 'react-router-dom';
 
-import { Nav, Card, Avatar } from '../components';
+import { Header, Container, Card, Avatar } from '../components';
+import { useAuth } from '../hooks/useAuth';
 
 //should i use fetchPlayerOverview here too?
 export function Home({ updatePageTitle }) {
@@ -19,22 +20,18 @@ export function Home({ updatePageTitle }) {
 
   return (
     <>
-      <Nav />
-      <div></div>
-      <Card title='Placeholder'>
-        <div className='text-primary-text'>
-          <Avatar />
-        </div>
-        <p>
-          {user === null || user === undefined
-            ? 'default home settings'
-            : `hi ${user.username}`}
-        </p>
-      </Card>
+      <Header />
+      <Container>
+        <Card title='Placeholder'>
+          <div className='text-primary-text'>
+            <Avatar />
+          </div>
+          <p>{user ? `hi ${user.username}` : 'default home settings'}</p>
+          <Link to='/test' className='text-link-text hover:underline'>
+            Test page
+          </Link>
+        </Card>
+      </Container>
     </>
   );
 }
-
-<>
-  <Nav />
-</>;

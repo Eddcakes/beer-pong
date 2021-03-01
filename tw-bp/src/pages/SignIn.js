@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Joi from 'joi';
 import { Link, useHistory } from 'react-router-dom';
-import { Card, Button } from '../components';
+
+import { Card, Button, Container, Input, Decoration } from '../components';
 import { useAuth } from '../hooks/useAuth';
 
 const schema = Joi.object().keys({
@@ -64,42 +65,50 @@ export function SignIn({ updatePageTitle }) {
     updatePageTitle('Sign in');
   }, [updatePageTitle]);
   return (
-    <div>
+    <Container>
       <div className='text-center'>Icon</div>
-      <Card title='Sign in'>
+      <Card
+        title={
+          <div className='grid justify-center'>
+            <Decoration />
+            <h2 className='text-3xl font-semibold text-primary-text py-2'>
+              Sign in
+            </h2>
+          </div>
+        }
+      >
         <form>
-          <div className='flex flex-col'>
-            <label htmlFor='username'>Username</label>
-            <input
-              name='username'
-              required
-              value={username}
-              onChange={handleUsername}
-            />
-          </div>
-          <div className='flex flex-col'>
-            <label htmlFor='password'>Password</label>
-            <input
-              name='password'
-              minLength='6'
-              type='password'
-              required
-              value={password}
-              onChange={handlePassword}
-            />
-          </div>
+          <Input
+            label='Username'
+            name='username'
+            required={true}
+            value={username}
+            onChange={handleUsername}
+          />
+          <Input
+            label='Password'
+            name='password'
+            type='password'
+            required={true}
+            value={password}
+            onChange={handlePassword}
+          />
           <Link to='/' className='text-link-text hover:underline'>
             Forgotten password?
           </Link>
           {errorMsg.length > 0 && <p className='text-red-700'>{errorMsg}</p>}
           <div className='pt-2'>
-            <Button text='Sign in' handleClick={handleSubmit} />
+            <Button
+              text='Sign in'
+              handleClick={handleSubmit}
+              color='outlined'
+            />
           </div>
           <Link to='/signup' className='text-link-text hover:underline'>
             Or sign up here
           </Link>
         </form>
       </Card>
-    </div>
+    </Container>
   );
 }

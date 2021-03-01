@@ -5,13 +5,14 @@ import { AuthProvider } from './AuthProvider';
 import { applyTheme, DEFAULT_THEME } from './theme';
 import {
   E404,
+  Home,
   Player,
   Settings,
   Tournament,
   Versus,
   SignIn,
   SignUp,
-  Home,
+  Test,
 } from './pages';
 import { LoggedOutRoute } from './components/LoggedOutRoute';
 
@@ -67,6 +68,9 @@ function App() {
             <LoggedOutRoute path='/signup'>
               <SignUp updatePageTitle={updatePageTitle} />;
             </LoggedOutRoute>
+            <Route path='/test'>
+              <Test updatePageTitle={updatePageTitle} />
+            </Route>
             <Route path='/' exact>
               <Home updatePageTitle={updatePageTitle} />
             </Route>

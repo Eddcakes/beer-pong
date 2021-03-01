@@ -3,10 +3,14 @@ import { themes } from './index';
 export const mapTheme = (themeVar) => {
   return {
     '--color-primary': themeVar.primary || '',
+    '--color-primary-light': themeVar.primaryLight || '',
+    '--color-primary-active': themeVar.primaryActive || '',
     '--color-secondary': themeVar.secondary || '',
     '--color-positive': themeVar.positive || '',
     '--color-negative': themeVar.negative || '',
     '--color-primary-text': themeVar.primaryText || '',
+    '--color-secondary-text': themeVar.secondaryText || '',
+    '--color-input-background': themeVar.inputBackground || '',
     '--color-link-text': themeVar.linkText || '',
     '--primary-background': themeVar.primaryBackground || '',
     '--sec-background': themeVar.secondaryBackground || '',

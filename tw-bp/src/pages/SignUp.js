@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import Joi from 'joi';
-import { Card, Button } from '../components';
+
+import { Card, Button, Container, Input, Decoration } from '../components';
 import { useAuth } from '../hooks/useAuth';
 
 const schema = Joi.object().keys({
@@ -74,68 +75,70 @@ export function SignUp({ updatePageTitle }) {
   }, [updatePageTitle]);
 
   return (
-    <div>
+    <Container>
       <div className='text-center'>Icon</div>
-      <Card title='Sign up'>
+      <Card
+        title={
+          <div className='grid justify-center'>
+            <Decoration />
+            <h2 className='text-3xl font-semibold text-primary-text py-2'>
+              Sign up
+            </h2>
+          </div>
+        }
+      >
         <form>
-          <div className='flex flex-col'>
-            <label htmlFor='username'>Username</label>
-            <input
-              name='username'
-              required
-              value={username}
-              onChange={handleUsername}
-              aria-describedby='usernameHelp'
-            />
-            <small id='usernameHelp'>
-              Username must be between 2 and 30 characters. Alphanumeric and
-              underscores only.
-            </small>
-          </div>
-          <div className='flex flex-col'>
-            <label htmlFor='email'>Email address</label>
-            <input
-              name='email'
-              type='email'
-              value={email}
-              onChange={handleEmail}
-            />
-          </div>
-          <div className='flex flex-col'>
-            <label htmlFor='password'>Password</label>
-            <input
-              name='password'
-              minLength='6'
-              type='password'
-              required
-              value={password}
-              onChange={handlePassword}
-              aria-describedby='passwordHelp'
-            />
-            <small id='passwordHelp'>
-              Password must be at least 6 characters.
-            </small>
-          </div>
-          <div className='flex flex-col'>
-            <label htmlFor='password'>Confirm Password</label>
-            <input
-              name='confirmPassword'
-              minLength='6'
-              type='password'
-              required
-              value={confirmPassword}
-              onChange={handleConfirmPassword}
-            />
-          </div>
+          <Input
+            label='Username'
+            name='username'
+            required={true}
+            value={username}
+            onChange={handleUsername}
+            aria-describedby='usernameHelp'
+            helpText='Username must be between 2 and 30 characters. Alphanumeric and
+              underscores only.'
+          />
+          <Input
+            label='Email address'
+            name='email'
+            type='email'
+            value={email}
+            onChange={handleEmail}
+          />
+          <Input
+            label='Password'
+            name='password'
+            minLength='6'
+            type='password'
+            required
+            value={password}
+            onChange={handlePassword}
+            aria-describedby='passwordHelp'
+            helpText='Password must be at least 6 characters.'
+          />
+
+          <Input
+            label='Confirm Password'
+            name='confirmPassword'
+            minLength='6'
+            type='password'
+            required
+            value={confirmPassword}
+            onChange={handleConfirmPassword}
+          />
           {errorMsg.length > 0 && <p className='text-red-700'>{errorMsg}</p>}
           <div className='pt-2'>
-            <Button text='Sign up' handleClick={handleSubmit} />
+            <Button
+              text='Sign up'
+              handleClick={handleSubmit}
+              color='outlined'
+            />
           </div>
           <Link to='/signin' className='text-link-text hover:underline'>
             Or sign in here
           </Link>
         </form>
       </Card>
-    </div>
+    </Container>
   );
 }

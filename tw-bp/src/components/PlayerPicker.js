@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ButtonSquare } from './ButtonSquare';
+import { Button } from './Button';
 import { Modal } from './Modal';
 
 export function PlayerPicker({
@@ -24,14 +24,15 @@ export function PlayerPicker({
   //should i look at useCallback instead of the extending selectPlayer on li onclick
   return (
     <>
-      <ButtonSquare
+      <Button
+        variant='square'
         handleClick={toggleModal}
         text={
           players[name] !== ''
             ? playerNames[players[name] - 1].name
             : 'Click to pick player'
         }
-      ></ButtonSquare>
+      />
 
       <Modal isOpen={showModal} dismiss={toggleModal} title='Add Player'>
         <div className='px-2'>
@@ -45,8 +46,8 @@ export function PlayerPicker({
               />
             </form>
           </div>
-          <div className='h-48 overflow-y-scroll'>
-            <ul role='listbox'>
+          <div className='max-h-75vh flex'>
+            <ul role='listbox' className='overflow-y-auto w-full'>
               {search(playerNames).map((player) => (
                 <li
                   key={player.player_ID}

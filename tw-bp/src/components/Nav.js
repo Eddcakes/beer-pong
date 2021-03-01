@@ -1,83 +1,65 @@
 import React from 'react';
-import { NavLink, useHistory, useLocation } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { NavLink } from 'react-router-dom';
+
+import { useWindowSize } from '../hooks/useWindowSize';
+import { Divider } from './Divider';
 
 /* uld like to break nav down for mobile view 
   have bottom nav similar to Youtube mobile
   keep logo/search/profile icon in the header
 */
 export function Nav() {
-  const location = useLocation();
-  const history = useHistory();
-  const auth = useAuth();
+  let size = useWindowSize();
 
-  const handleSignOut = () => {
-    auth.signOut();
-    history.push(location.pathname);
-    // if its a protected route redirect should activate anyway
-    //send toast?
-  };
+  if (size.width > 640) {
+    return (
+      <div className='flex-col'>
+        <nav className='text-center font-mono py-3'>
+          <ul className='flex flex-row justify-between'>
+            <li className='w-full'>
+              <StyledNavLink to={'/'} exact text='Home' />
+            </li>
+            <li className='w-full'>
+              <StyledNavLink to={'/player'} text='Players' />
+            </li>
+            <li className='w-full'>
+              <StyledNavLink to={'/versus'} text='Versus' />
+            </li>
+          </ul>
+        </nav>
+        <Divider />
+      </div>
+    );
+  }
   return (
-    <nav className='text-center border-b-2'>
-      <ul className='flex flex-row justify-between'>
-        <li className='w-full'>
-          <NavLink
-            to={'/'}
-            activeStyle={{ fontWeight: 'bold' }}
-            exact
-            className='p-2 hover:bg-secondary inline-block w-full'
-          >
-            Home
-          </NavLink>
-        </li>
-        <li className='w-full'>
-          <NavLink
-            to={'/player'}
-            activeStyle={{ fontWeight: 'bold' }}
-            className='p-2 hover:bg-secondary inline-block w-full'
-          >
-            Player details
-          </NavLink>
-        </li>
-        <li className='w-full'>
-          <NavLink
-            to={'/versus'}
-            activeStyle={{ fontWeight: 'bold' }}
-            className='p-2 hover:bg-secondary inline-block w-full'
-          >
-            Versus
-          </NavLink>
-        </li>
-        <li className='w-full'>
-          <NavLink
-            to={'/settings'}
-            activeStyle={{ fontWeight: 'bold' }}
-            className='p-2 hover:bg-secondary inline-block w-full'
-          >
-            Settings
-          </NavLink>
-        </li>
-        {auth.user != null ? (
+    <div className='fixed bottom-0 w-full'>
+      <Divider />
+      <nav className='text-center py-6 font-mono flex justify-center items-center'>
+        <ul className='flex flex-row justify-between w-full'>
           <li className='w-full'>
-            <button
-              className='p-2 hover:bg-secondary inline-block w-full'
-              onClick={handleSignOut}
-            >
-              Sign out
-            </button>
+            <StyledNavLink to={'/'} exact text='Home' />
           </li>
-        ) : (
           <li className='w-full'>
-            <NavLink
-              to={'/signin'}
-              activeStyle={{ fontWeight: 'bold' }}
-              className='p-2 hover:bg-secondary inline-block w-full'
-            >
-              Sign in
-            </NavLink>
+            <StyledNavLink to={'/player'} text='Players' />
           </li>
-        )}
-      </ul>
-    </nav>
+          <li className='w-full'>
+            <StyledNavLink to={'/versus'} text='Versus' />
+          </li>
+        </ul>
+      </nav>
+    </div>
   );
 }
+
+const StyledNavLink = ({ to, text, exact = false }) => {
+  return (
+    <NavLink
+      to={to}
+      exact={exact}
+      activeClassName='text-primary border-b-4 border-solid border-primary'
+      className='p-2 font-bold text-xl uppercase inline-block w-full hover:text-primary'
+    >
+      {text}
+    </NavLink>
+  );
+};

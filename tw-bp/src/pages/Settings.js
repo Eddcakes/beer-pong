@@ -1,18 +1,24 @@
 import React from 'react';
-import { Card, Nav, ThemeSwitcher, UserPreferences } from '../components';
+import {
+  Card,
+  Container,
+  Header,
+  ThemeSwitcher,
+  UserPreferences,
+} from '../components';
 
 export function Settings() {
   return (
     <>
-      <Nav />
-      <div>
+      <Header />
+      <Container>
         <Card title='Local browser preferences'>
           <ThemeSwitcher />
         </Card>
         <Card title='My preferences'>
           <UserPreferences />
         </Card>
-      </div>
+      </Container>
     </>
   );
 }

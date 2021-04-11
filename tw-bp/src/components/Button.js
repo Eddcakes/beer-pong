@@ -1,12 +1,12 @@
 import React from 'react';
 
 //assessibility concerns
-const buttonVariant = {
+export const buttonVariant = {
   square: 'square',
   regular: 'regular',
 };
 
-const buttonColor = {
+export const buttonColor = {
   outlined: 'outlined',
   primary: 'primary',
   secondary: 'secondary',

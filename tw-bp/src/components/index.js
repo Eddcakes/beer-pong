@@ -1,6 +1,6 @@
 //barrel components
 export { Avatar } from './Avatar';
-export { Button } from './Button';
+export * from './Button';
 export { Card } from './Card';
 export { Container } from './Container';
 export { Decoration } from './Decoration';

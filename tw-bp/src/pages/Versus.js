@@ -73,14 +73,14 @@ export function Versus({ updatePageTitle }) {
         <Card title='Player search'>
           <div className='flex justify-around p-2'>
             <PlayerPicker
-              players={players}
               playerNames={playerNames}
+              selected={players['player1']}
               name='player1'
               selectPlayer={selectPlayer}
             />
             <PlayerPicker
-              players={players}
               playerNames={playerNames}
+              selected={players['player2']}
               name='player2'
               selectPlayer={selectPlayer}
             />

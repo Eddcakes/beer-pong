@@ -3,10 +3,12 @@ import { Button } from './Button';
 import { Modal } from './Modal';
 
 export function PlayerPicker({
-  playerNames,
-  players,
-  selectPlayer = () => {},
   name,
+  playerNames = [],
+  selected,
+  selectPlayer = () => {},
+  variant = 'square',
+  color = 'primary',
 }) {
   const [showModal, setShowModal] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -25,11 +27,12 @@ export function PlayerPicker({
   return (
     <>
       <Button
-        variant='square'
+        variant={variant}
+        color={color}
         handleClick={toggleModal}
         text={
-          players[name] !== ''
-            ? playerNames[players[name] - 1].name
+          selected !== ''
+            ? playerNames[selected - 1].name
             : 'Click to pick player'
         }
       />

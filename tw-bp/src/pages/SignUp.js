@@ -126,7 +126,7 @@ export function SignUp({ updatePageTitle }) {
             value={confirmPassword}
             onChange={handleConfirmPassword}
           />
-          {errorMsg.length > 0 && <p className='text-red-700'>{errorMsg}</p>}
+          {errorMsg.length > 0 && <p className='text-negative'>{errorMsg}</p>}
           <div className='pt-2'>
             <Button
               text='Sign up'

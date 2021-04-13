@@ -96,7 +96,7 @@ export function SignIn({ updatePageTitle }) {
           <Link to='/' className='text-link-text hover:underline'>
             Forgotten password?
           </Link>
-          {errorMsg.length > 0 && <p className='text-red-700'>{errorMsg}</p>}
+          {errorMsg.length > 0 && <p className='text-negative'>{errorMsg}</p>}
           <div className='pt-2'>
             <Button
               text='Sign in'

@@ -4,7 +4,7 @@ export const carling = {
   primaryActive: '#7D1508',
   secondary: '#000',
   positive: '#2FD158',
-  negative: '#861E14',
+  negative: '#B91C1C',
   primaryText: '#000',
   secondaryText: '#fff',
   linkText: '#337ab7',

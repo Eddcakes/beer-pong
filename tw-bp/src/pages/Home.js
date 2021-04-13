@@ -27,9 +27,14 @@ export function Home({ updatePageTitle }) {
             <Avatar />
           </div>
           <p>{user ? `hi ${user.username}` : 'default home settings'}</p>
-          <Link to='/test' className='text-link-text hover:underline'>
-            Test page
-          </Link>
+          <div className='flex flex-col'>
+            <Link to='/test' className='text-link-text hover:underline'>
+              Test page
+            </Link>
+            <Link to='/game/new' className='text-link-text hover:underline'>
+              new game
+            </Link>
+          </div>
         </Card>
       </Container>
     </>

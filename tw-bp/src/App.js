@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+
 import { ThemeProvider } from './ThemeProvider';
 import { AuthProvider } from './AuthProvider';
 import { applyTheme, DEFAULT_THEME } from './theme';
 import {
   E404,
+  Game,
   Home,
+  NewGame,
   Player,
   Settings,
   Tournament,
@@ -15,6 +18,9 @@ import {
   Test,
 } from './pages';
 import { LoggedOutRoute } from './components/LoggedOutRoute';
+import { AuthorisedRoute } from './components';
+
+/* could try lazy loading protected routes like NewGame? */
 
 const defaultTheme = () => {
   if (localStorage.getItem('tw-bp:theme'))
@@ -56,6 +62,12 @@ function App() {
             <Route path='/player/:playerId(\d+)?'>
               <Player updatePageTitle={updatePageTitle} />
             </Route>
+            <AuthorisedRoute path='/game/new'>
+              <NewGame updatePageTitle={updatePageTitle} />
+            </AuthorisedRoute>
+            <AuthorisedRoute path='/game/:gameId(\d+)'>
+              <Game updatePageTitle={updatePageTitle} />
+            </AuthorisedRoute>
             <Route path='/tournament/:tournamentId(\d+)'>
               <Tournament updatePageTitle={updatePageTitle} />
             </Route>

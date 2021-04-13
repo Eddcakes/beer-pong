@@ -46,7 +46,7 @@ export function Input({
       {helpText.length > 0 ? (
         <small id={name + 'Help'}>{helpText}</small>
       ) : null}
-      {errorMsg.length > 0 && <p className='text-red-700'>{errorMsg}</p>}
+      {errorMsg.length > 0 && <p className='text-negative'>{errorMsg}</p>}
     </div>
   );
 }

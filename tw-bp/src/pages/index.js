@@ -1,5 +1,7 @@
 export { E404 } from './E404';
+export { Game } from './Game';
 export { Home } from './Home';
+export { NewGame } from './NewGame';
 export { Player } from './Player';
 export { Settings } from './Settings';
 export { SignIn } from './SignIn';

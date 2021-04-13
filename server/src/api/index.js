@@ -10,6 +10,7 @@ import { venues } from './routes/venues.js';
 import { versusResults } from './routes/versusResults.js';
 import { overview } from './routes/overview.js';
 import { userPreferences } from './routes/userPreferences.js';
+import { postGames } from './routes/games.post.js';
 import { isAdmin, isLoggedIn } from './auth/auth.middlewares.js';
 
 const router = express.Router();
@@ -33,6 +34,7 @@ router.use('/versus', versusResults);
 
 //protected routes
 router.use('/preferences', isLoggedIn, userPreferences);
+router.use('/games', isLoggedIn, postGames);
 router.use('/users', isLoggedIn, isAdmin, users);
 
 export { router as api };

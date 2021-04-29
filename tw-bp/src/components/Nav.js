@@ -27,7 +27,6 @@ export function Nav() {
             </li>
           </ul>
         </nav>
-        <Divider />
       </div>
     );
   }
@@ -57,7 +56,7 @@ const StyledNavLink = ({ to, text, exact = false }) => {
       to={to}
       exact={exact}
       activeClassName='text-primary border-b-4 border-solid border-primary'
-      className='p-2 font-bold text-xl uppercase inline-block w-full hover:text-primary'
+      className='p-2 font-bold text-xl uppercase inline-block w-full hover:text-primary border-b-4 border-opacity-0'
     >
       {text}
     </NavLink>

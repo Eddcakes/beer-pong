@@ -149,7 +149,7 @@ export function NewGame({ updatePageTitle }) {
   };
 
   useEffect(() => {
-    updatePageTitle('Friendlys');
+    updatePageTitle('Friendlies');
   }, [updatePageTitle]);
 
   useEffect(() => {
@@ -165,9 +165,8 @@ export function NewGame({ updatePageTitle }) {
     <>
       <Header />
       <Container>
-        <div className='text-center'>Friendly</div>
-        <Card title='New game'>
-          <label htmlFor='player1'>Player 1:</label>
+        <Card title='New friendly'>
+          <label htmlFor='player1'>Home:</label>
           <PlayerPicker
             name='player1'
             playerNames={playerList}
@@ -176,7 +175,7 @@ export function NewGame({ updatePageTitle }) {
             variant={buttonVariant.regular}
             color={buttonColor.outlined}
           />
-          <label htmlFor='player2'>Player 2:</label>
+          <label htmlFor='player2'>Away:</label>
           <PlayerPicker
             name='player2'
             playerNames={playerList}
@@ -200,12 +199,18 @@ export function NewGame({ updatePageTitle }) {
                 );
               })}
             </Select>
+            {/* advanced settings, teams (2 each)? would it be possible to do 3v1
+              turn into a wizard form instead?
+              how many players, player + their cups, next player
+              or just have a small + button to add new player to the team
+
+              create *initial* table state here instead of Game
+            */}
             {errorMsg.length > 0 && <p className='text-negative'>{errorMsg}</p>}
             <div className='pt-4'>
               <Button text='Create!' type='submit' />
             </div>
           </form>
-          <pre>{JSON.stringify(formState)}</pre>
         </Card>
       </Container>
     </>

@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 
 import { useAuth } from '../hooks/useAuth';
 import { Container, Header, Card } from '../components';
-import { createInitialCups } from '../tableMachine';
 import { GamePlay } from '../components/GamePlay';
 /*
   only "authorised" users for this game should be able to save changes
@@ -16,7 +15,6 @@ export function Game({ updatePageTitle }) {
   // might be nice to save first throw
   // const [firstThrow, setFirstThrow] = useState(null)
   const [gameDetails, setGameDetails] = useState(null);
-  const [table, setTable] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -24,12 +22,6 @@ export function Game({ updatePageTitle }) {
       //am i happy setting it to undefined if user not logged in?
       if (getGameDetails.length > 0) {
         setGameDetails(getGameDetails[0]);
-        if (getGameDetails[0]?.home_ID && getGameDetails[0]?.away_ID) {
-          setTable({
-            homeCups: createInitialCups(getGameDetails[0].home_ID, 'home'),
-            awayCups: createInitialCups(getGameDetails[0].away_ID, 'away'),
-          });
-        }
       }
     }
     fetchData();
@@ -63,8 +55,8 @@ export function Game({ updatePageTitle }) {
             )}
             <div>{gameDetails.venue}</div>
             <div>{gameDetails.notes}</div>
-            {/* check for if table json in db */}
-            {table && <GamePlay gameDetails={gameDetails} />}
+            {/* check for if table json in db needs a better check than just exists haha */}
+            {gameDetails.game_table && <GamePlay gameDetails={gameDetails} />}
           </Card>
         }
       </Container>

@@ -24,7 +24,8 @@ games.notes,
 games.created,
 games.modified,
 games.created_by,
-games.modified_by
+games.modified_by,
+games.game_table
 FROM ${process.env.DATABASE}.games
 INNER JOIN players AS p1 ON home_ID = p1.player_ID
 INNER JOIN players AS p2 ON away_ID = p2.player_ID

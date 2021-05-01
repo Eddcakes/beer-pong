@@ -12,6 +12,7 @@ import {
   PlayerPicker,
   Select,
 } from '../components';
+import { createInitialCups } from '../tableMachine';
 
 /* clicking on tournament match, would auto fill in game page if not played*/
 /* list of error msgs https://github.com/sideway/joi/blob/master/API.md#list-of-errors */
@@ -82,7 +83,31 @@ export function NewGame({ updatePageTitle }) {
   const handleSubmit = async (evt) => {
     evt.preventDefault();
     if (validForm()) {
-      const values = { ...formState, created: new Date() };
+      const initialTable = {
+        homeCups: createInitialCups(formState.player1, 'home'),
+        preRackHomeCups: null,
+        awayCups: createInitialCups(formState.player2, 'away'),
+        preRackAwayCups: null,
+        firstThrow: null,
+        homeCupsLeft: 6,
+        homeCupRerackComplete: false,
+        homeCupRimCount: 0,
+        awayCupsLeft: 6,
+        awayCupRerackComplete: false,
+        awayCupRimCount: 0,
+        winner: undefined,
+        turns: 0,
+        selectedCup: null,
+        isHovering: false,
+        lastHover: { x: null, y: null },
+        cupNewPos: { x: null, y: null },
+        stack: [],
+      };
+      const values = {
+        ...formState,
+        created: new Date(),
+        table: initialTable,
+      };
       console.log('hit submit', values);
       try {
         const createGame = await postNewGame(values);

@@ -55,6 +55,237 @@ export function createInitialCups(owner, side) {
 }
 // hitcup = null || {timestamp: 'datetime', type: 'sink' || 'catch' || 'spill' || 'other'}
 
+export const createMachineFromState = (state) => {
+  return Machine(
+    {
+      id: 'pong',
+      initial: 'playing',
+      context: {
+        ...state,
+      },
+      states: {
+        playing: {
+          /* always: [{ cond: 'checkWin', target: 'finish' }], */
+          on: {
+            PICKCUP: { actions: 'selectCup', target: 'modal' },
+            FORFEIT_HOME: { actions: 'commitSudoku', target: 'finish' },
+            FORFEIT_AWAY: { actions: 'commitSudoku', target: 'finish' },
+            RERACK: {
+              actions: ['storeHomeCups', 'storeAwayCups'],
+              target: 'rerack',
+            },
+          },
+        },
+        modal: {
+          on: {
+            SINK: {
+              actions: 'updateCups',
+              target: 'playing',
+            },
+            CATCH: {
+              actions: 'updateCups',
+              target: 'playing',
+              cond: 'checkLastCup',
+            },
+            SPILL: {
+              actions: 'updateCups',
+              target: 'playing',
+            },
+            OTHER: {
+              actions: 'updateCups',
+              target: 'playing',
+            },
+            RIM: {
+              actions: 'rimCup',
+              target: 'playing',
+            },
+            CANCEL: { actions: 'clearSelected', target: 'playing' },
+          },
+        },
+        rerack: {
+          on: {
+            CANCEL: {
+              actions: ['restoreCups', 'clearPreRack', 'clearSelected'],
+              target: 'playing',
+            },
+            SAVE: { actions: 'saveCups', target: 'playing' },
+          },
+          initial: 'idle',
+          states: {
+            idle: {
+              on: {
+                PICKCUP: {
+                  target: 'moving',
+                  actions: 'selectCup',
+                },
+              },
+            },
+            moving: {
+              on: {
+                MOUSEMOVE: {
+                  //target: "hovering",
+                  actions: assign({
+                    isHovering: true,
+                    lastHover: (ctx, evt) => {
+                      return { x: evt.position.x, y: evt.position.y };
+                    },
+                  }),
+                },
+                NEWPOS: {
+                  actions: assign({
+                    cupsNewPos: (ctx, evt) => {
+                      /*     console.log(
+                        "newNewPos: ",
+                        evt.position.x,
+                        evt.position.y
+                      ); */
+                      return { x: evt.position.x, y: evt.position.y };
+                    },
+                    // awayCups: //
+                    homeCups: (ctx, evt) => {
+                      /* we are clicking the  svg not the cup, 
+                      
+                      there for get attribte for name is not getting the cup
+                      we should use the context for selected cup
+                      */
+                      if (ctx.selectedCup.side === 'home') {
+                        //get this cup
+                        const cupName = ctx.selectedCup.name;
+
+                        const restOfCups = ctx.homeCups.filter(
+                          (cup) => cup.name !== cupName
+                        );
+                        const newPosition = {
+                          ...ctx.selectedCup,
+                          x: evt.position.x + 2,
+                          y: evt.position.y + 2,
+                        };
+                        // calculate new position using evt.position.x/y
+                        return [...restOfCups, newPosition]; // ctx.homeCups
+                      } else {
+                        return ctx.homeCups;
+                      }
+                    },
+                    awayCups: (ctx, evt) => {
+                      if (ctx.selectedCup.side === 'away') {
+                        const cupName = ctx.selectedCup.name;
+                        const restOfCups = ctx.awayCups.filter(
+                          (cup) => cup.name !== cupName
+                        );
+                        const newPosition = {
+                          ...ctx.selectedCup,
+                          x: evt.position.x + 2,
+                          y: evt.position.y + 2,
+                        };
+                        // calculate new position using evt.position.x/y
+                        return [...restOfCups, newPosition];
+                      } else {
+                        return ctx.awayCups;
+                      }
+                    },
+                    selectedCup: () => null,
+                    lastHover: () => ({ x: null, y: null }),
+                  }),
+                  target: 'idle',
+                },
+                EXIT: {
+                  actions: assign({
+                    isHovering: () => false,
+                    lastHover: () => ({ x: null, y: null }),
+                  }),
+                },
+              },
+            },
+          },
+        },
+        finish: {
+          type: 'final',
+        },
+      },
+    },
+    {
+      actions: {
+        selectCup: assign({
+          selectedCup: (ctx, evt) => {
+            const cupName = evt.details.target.getAttribute('data-name');
+            const selCup = [...ctx.homeCups, ...ctx.awayCups].filter(
+              (cup) => cup.name === cupName
+            );
+            return selCup[0];
+          },
+        }),
+        updateCups: assign({
+          homeCups: handleHomeCups,
+          homeCupsLeft: handleHomeCupsLeft,
+          awayCups: handleAwayCups,
+          awayCupsLeft: handleAwayCupsLeft,
+          selectedCup: null,
+        }),
+        rimCup: assign({
+          homeCups: handleHomeCups,
+          homeCupRimCount: (ctx, evt) =>
+            ctx.selectedCup.side === 'home'
+              ? ctx.homeCupRimCount + 1
+              : ctx.homeCupRimCount,
+          awayCups: handleAwayCups,
+          awayCupRimCount: (ctx, evt) =>
+            ctx.selectedCup.side === 'away'
+              ? ctx.awayCupRimCount + 1
+              : ctx.awayCupRimCount,
+          selectedCup: null,
+        }),
+        clearSelected: assign({ selectedCup: null }),
+        commitSudoku: assign({
+          homeCups: handleHomeCupsForfeit,
+          homeCupsLeft: handleHomeCupsLeftForfeit,
+          awayCups: handleAwayCupsForfeit,
+          awayCupsLeft: handleAwayCupsLeftForfeit,
+          selectedCup: null,
+        }),
+
+        storeHomeCups: assign({
+          preRackHomeCups: (ctx, evt) => {
+            return ctx.homeCups;
+          },
+        }),
+        storeAwayCups: assign({
+          preRackAwayCups: (ctx, evt) => {
+            return ctx.awayCups;
+          },
+        }),
+        restoreCups: assign({
+          homeCups: (ctx) => ctx.preRackHomeCups,
+          awayCups: (ctx) => ctx.preRackAwayCups,
+        }),
+        clearPreRack: assign({
+          preRackHomeCups: () => null,
+          preRackAwayCups: () => null,
+        }),
+        saveCups: assign({
+          // if anything has moved then we want to set rerack to true
+          // how to tell what side we are?
+          preRackHomeCups: () => null,
+          homeCupRerackComplete: (ctx) => {
+            return ctx.homeCups === ctx.preRackHomeCups ? false : true;
+          },
+          preRackAwayCups: () => null,
+          awayCupRerackComplete: (ctx) => {
+            return ctx.awayCups === ctx.preRackAwayCups ? false : true;
+          },
+        }),
+      },
+      guards: {
+        checkWin,
+        checkLastCup,
+        isHovering,
+        hoverMoved,
+        homeReracked,
+        awayReracked,
+      },
+    }
+  );
+};
+
 export const createTableMachine = (homeCups, awayCups, firstThrow) => {
   return Machine(
     {

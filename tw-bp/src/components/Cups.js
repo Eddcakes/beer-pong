@@ -21,7 +21,7 @@ export function Cups({
     return <svg viewBox='0 0 12 12' data-name={`${side}Svg`}></svg>;
   }
   return (
-    <div className='grid justify-center'>
+    <div className='grid justify-center pb-4'>
       <svg
         viewBox='0 0 12 12'
         height='15em'

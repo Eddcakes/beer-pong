@@ -1,15 +1,16 @@
 import { useRef } from 'react';
 import { useMachine } from '@xstate/react';
 
-import { createTableMachine, createInitialCups } from '../tableMachine';
+import { createMachineFromState } from '../tableMachine';
 import { Button, buttonColor, Modal } from './index';
 import { Cups } from './Cups';
 
-export function GamePlay({ gameDetails }) {
-  const initialHome = createInitialCups(gameDetails.home_ID, 'home');
-  const initialAway = createInitialCups(gameDetails.away_ID, 'away');
-  const tableMachine = createTableMachine(initialHome, initialAway, 'home');
+//on start first throw - Math.random() < 0.5;
 
+export function GamePlay({ gameDetails }) {
+  const tableMachine = createMachineFromState(
+    JSON.parse(gameDetails.game_table)
+  );
   const [state, send] = useMachine(tableMachine);
   const centreAdjustment = 1.5;
   const cupsRef = useRef(null);
@@ -51,6 +52,21 @@ export function GamePlay({ gameDetails }) {
     });
   };
 
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+    //check form valid, skipping for prototype
+    let data = {
+      ...gameDetails,
+      homeCupsLeft: state.context.homeCupsLeft,
+      awayCupsLeft: state.context.awayCupsLeft,
+      // forfeit: havent set context for side of forfeit yet
+      table: {
+        ...state.context,
+      },
+    };
+    console.log(data);
+  };
+
   return (
     <>
       <div>
@@ -86,10 +102,13 @@ export function GamePlay({ gameDetails }) {
           selectedCup={state.context.selectedCup}
         />
         {state.matches('playing') && (
-          <Button
-            text='Home forfeit?'
-            onClick={(_, evt) => send('FORFEIT_HOME')}
-          />
+          <div className='pb-4'>
+            {' '}
+            <Button
+              text='Home forfeit?'
+              onClick={(_, evt) => send('FORFEIT_HOME')}
+            />
+          </div>
         )}
       </div>
       <div>
@@ -114,13 +133,18 @@ export function GamePlay({ gameDetails }) {
           selectedCup={state.context.selectedCup}
         />
         {state.matches('playing') && (
-          <Button
-            text='Away forfeit?'
-            onClick={(_, evt) => send('FORFEIT_AWAY')}
-          />
+          <div className='pb-4'>
+            <Button
+              text='Away forfeit?'
+              onClick={(_, evt) => send('FORFEIT_AWAY')}
+            />
+          </div>
         )}
       </div>
-      <Button text='Submit' />
+      <div className='mb-16'>
+        <Button text='Submit' onClick={handleSubmit} />
+      </div>
+
       <Modal
         isOpen={state.matches('modal')}
         dismiss={() => send('CANCEL')}
@@ -171,4 +195,25 @@ function floorBound(num, lower, upper) {
     return lower;
   }
   return Math.floor(num);
+}
+
+async function postSaveGamePlay(data) {
+  const { game_ID: gameId, ...rest } = data;
+  try {
+    const updateGame = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/api/v1/games/${gameId}`,
+      {
+        method: 'POST',
+        body: JSON.stringify(rest),
+        headers: {
+          'content-type': 'application/json',
+        },
+        credentials: 'include',
+      }
+    );
+    const resp = await updateGame.json();
+    return resp;
+  } catch (err) {
+    throw new Error(err);
+  }
 }

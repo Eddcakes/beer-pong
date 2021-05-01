@@ -1,4 +1,4 @@
-import { Machine, assign } from "xstate";
+import { Machine, assign } from 'xstate';
 
 /* owner -> playerId, side -> home/away, how to calculate for 10 cups/team games */
 export function createInitialCups(owner, side) {
@@ -6,48 +6,48 @@ export function createInitialCups(owner, side) {
     {
       side: side,
       name: `${side}x6-y2`,
-      x: "6",
-      y: "2",
+      x: '6',
+      y: '2',
       owner: `${owner}`,
       hit: null,
     },
     {
       side: side,
       name: `${side}x4-y6`,
-      x: "4",
-      y: "6",
+      x: '4',
+      y: '6',
       owner: `${owner}`,
       hit: null,
     },
     {
       side: side,
       name: `${side}x8-y6`,
-      x: "8",
-      y: "6",
+      x: '8',
+      y: '6',
       owner: `${owner}`,
       hit: null,
     },
     {
       side: side,
       name: `${side}x2-y10`,
-      x: "2",
-      y: "10",
+      x: '2',
+      y: '10',
       owner: `${owner}`,
       hit: null,
     },
     {
       side: side,
       name: `${side}x6-y10`,
-      x: "6",
-      y: "10",
+      x: '6',
+      y: '10',
       owner: `${owner}`,
       hit: null,
     },
     {
       side: side,
       name: `${side}x10-y10`,
-      x: "10",
-      y: "10",
+      x: '10',
+      y: '10',
       owner: `${owner}`,
       hit: null,
     },
@@ -58,8 +58,8 @@ export function createInitialCups(owner, side) {
 export const createTableMachine = (homeCups, awayCups, firstThrow) => {
   return Machine(
     {
-      id: "pong",
-      initial: "playing",
+      id: 'pong',
+      initial: 'playing',
       context: {
         homeCups,
         preRackHomeCups: null, //store prerack incase we click cancel
@@ -85,56 +85,56 @@ export const createTableMachine = (homeCups, awayCups, firstThrow) => {
         playing: {
           /* always: [{ cond: 'checkWin', target: 'finish' }], */
           on: {
-            PICKCUP: { actions: "selectCup", target: "modal" },
-            FORFEIT_HOME: { actions: "commitSudoku", target: "finish" },
-            FORFEIT_AWAY: { actions: "commitSudoku", target: "finish" },
+            PICKCUP: { actions: 'selectCup', target: 'modal' },
+            FORFEIT_HOME: { actions: 'commitSudoku', target: 'finish' },
+            FORFEIT_AWAY: { actions: 'commitSudoku', target: 'finish' },
             RERACK: {
-              actions: ["storeHomeCups", "storeAwayCups"],
-              target: "rerack",
+              actions: ['storeHomeCups', 'storeAwayCups'],
+              target: 'rerack',
             },
           },
         },
         modal: {
           on: {
             SINK: {
-              actions: "updateCups",
-              target: "playing",
+              actions: 'updateCups',
+              target: 'playing',
             },
             CATCH: {
-              actions: "updateCups",
-              target: "playing",
-              cond: "checkLastCup",
+              actions: 'updateCups',
+              target: 'playing',
+              cond: 'checkLastCup',
             },
             SPILL: {
-              actions: "updateCups",
-              target: "playing",
+              actions: 'updateCups',
+              target: 'playing',
             },
             OTHER: {
-              actions: "updateCups",
-              target: "playing",
+              actions: 'updateCups',
+              target: 'playing',
             },
             RIM: {
-              actions: "rimCup",
-              target: "playing",
+              actions: 'rimCup',
+              target: 'playing',
             },
-            CANCEL: { actions: "clearSelected", target: "playing" },
+            CANCEL: { actions: 'clearSelected', target: 'playing' },
           },
         },
         rerack: {
           on: {
             CANCEL: {
-              actions: ["restoreCups", "clearPreRack", "clearSelected"],
-              target: "playing",
+              actions: ['restoreCups', 'clearPreRack', 'clearSelected'],
+              target: 'playing',
             },
-            SAVE: { actions: "saveCups", target: "playing" },
+            SAVE: { actions: 'saveCups', target: 'playing' },
           },
-          initial: "idle",
+          initial: 'idle',
           states: {
             idle: {
               on: {
                 PICKCUP: {
-                  target: "moving",
-                  actions: "selectCup",
+                  target: 'moving',
+                  actions: 'selectCup',
                 },
               },
             },
@@ -152,11 +152,11 @@ export const createTableMachine = (homeCups, awayCups, firstThrow) => {
                 NEWPOS: {
                   actions: assign({
                     cupsNewPos: (ctx, evt) => {
-                      console.log(
+                      /*     console.log(
                         "newNewPos: ",
                         evt.position.x,
                         evt.position.y
-                      );
+                      ); */
                       return { x: evt.position.x, y: evt.position.y };
                     },
                     // awayCups: //
@@ -166,7 +166,7 @@ export const createTableMachine = (homeCups, awayCups, firstThrow) => {
                       there for get attribte for name is not getting the cup
                       we should use the context for selected cup
                       */
-                      if (ctx.selectedCup.side === "home") {
+                      if (ctx.selectedCup.side === 'home') {
                         //get this cup
                         const cupName = ctx.selectedCup.name;
 
@@ -185,7 +185,7 @@ export const createTableMachine = (homeCups, awayCups, firstThrow) => {
                       }
                     },
                     awayCups: (ctx, evt) => {
-                      if (ctx.selectedCup.side === "away") {
+                      if (ctx.selectedCup.side === 'away') {
                         const cupName = ctx.selectedCup.name;
                         const restOfCups = ctx.awayCups.filter(
                           (cup) => cup.name !== cupName
@@ -204,7 +204,7 @@ export const createTableMachine = (homeCups, awayCups, firstThrow) => {
                     selectedCup: () => null,
                     lastHover: () => ({ x: null, y: null }),
                   }),
-                  target: "idle",
+                  target: 'idle',
                 },
                 EXIT: {
                   actions: assign({
@@ -217,7 +217,7 @@ export const createTableMachine = (homeCups, awayCups, firstThrow) => {
           },
         },
         finish: {
-          type: "final",
+          type: 'final',
         },
       },
     },
@@ -225,7 +225,7 @@ export const createTableMachine = (homeCups, awayCups, firstThrow) => {
       actions: {
         selectCup: assign({
           selectedCup: (ctx, evt) => {
-            const cupName = evt.details.target.getAttribute("data-name");
+            const cupName = evt.details.target.getAttribute('data-name');
             const selCup = [...ctx.homeCups, ...ctx.awayCups].filter(
               (cup) => cup.name === cupName
             );
@@ -242,12 +242,12 @@ export const createTableMachine = (homeCups, awayCups, firstThrow) => {
         rimCup: assign({
           homeCups: handleHomeCups,
           homeCupRimCount: (ctx, evt) =>
-            ctx.selectedCup.side === "home"
+            ctx.selectedCup.side === 'home'
               ? ctx.homeCupRimCount + 1
               : ctx.homeCupRimCount,
           awayCups: handleAwayCups,
           awayCupRimCount: (ctx, evt) =>
-            ctx.selectedCup.side === "away"
+            ctx.selectedCup.side === 'away'
               ? ctx.awayCupRimCount + 1
               : ctx.awayCupRimCount,
           selectedCup: null,
@@ -310,12 +310,12 @@ i should use a cond and only run the right action? */
 // actions
 
 const handleHomeCups = (ctx, evt) => {
-  if (ctx.selectedCup.side === "home") {
+  if (ctx.selectedCup.side === 'home') {
     const time = new Date().toISOString();
     const newHome = ctx.homeCups.filter(
       (cup) => cup.name !== ctx.selectedCup.name
     );
-    if (evt.type === "RIM") {
+    if (evt.type === 'RIM') {
       let rimCup;
       if (ctx.selectedCup?.rim != null) {
         rimCup = {
@@ -342,7 +342,7 @@ const handleHomeCups = (ctx, evt) => {
 };
 
 const handleHomeCupsLeft = (ctx, evt) => {
-  if (ctx.selectedCup.side === "home") {
+  if (ctx.selectedCup.side === 'home') {
     return ctx.homeCupsLeft - 1;
   } else {
     return ctx.homeCupsLeft;
@@ -350,11 +350,11 @@ const handleHomeCupsLeft = (ctx, evt) => {
 };
 
 const handleHomeCupsForfeit = (ctx, evt) => {
-  if (evt.type === "FORFEIT_HOME") {
+  if (evt.type === 'FORFEIT_HOME') {
     const time = new Date().toISOString();
     /* change every cup that isnt hit to hit it now */
     const alreadyHit = ctx.homeCups.filter((cup) => cup.hit !== null);
-    const hit = { hit: { timestamp: time, type: "FORFEIT" } };
+    const hit = { hit: { timestamp: time, type: 'FORFEIT' } };
     const forfeitCups = ctx.homeCups
       .filter((cup) => cup.hit === null)
       .map((cup) => ({ ...cup, ...hit }));
@@ -365,7 +365,7 @@ const handleHomeCupsForfeit = (ctx, evt) => {
 };
 
 const handleHomeCupsLeftForfeit = (ctx, evt) => {
-  if (evt.type === "FORFEIT_HOME") {
+  if (evt.type === 'FORFEIT_HOME') {
     return 0;
   } else {
     return ctx.homeCupsLeft;
@@ -373,12 +373,12 @@ const handleHomeCupsLeftForfeit = (ctx, evt) => {
 };
 
 const handleAwayCups = (ctx, evt) => {
-  if (ctx.selectedCup.side === "away") {
+  if (ctx.selectedCup.side === 'away') {
     const time = new Date().toISOString();
     const newAway = ctx.awayCups.filter(
       (cup) => cup.name !== ctx.selectedCup.name
     );
-    if (evt.type === "RIM") {
+    if (evt.type === 'RIM') {
       let rimCup;
       if (ctx.selectedCup?.rim != null) {
         rimCup = {
@@ -406,7 +406,7 @@ const handleAwayCups = (ctx, evt) => {
 };
 
 const handleAwayCupsLeft = (ctx, evt) => {
-  if (ctx.selectedCup.side === "away") {
+  if (ctx.selectedCup.side === 'away') {
     return ctx.awayCupsLeft - 1;
   } else {
     return ctx.awayCupsLeft;
@@ -414,11 +414,11 @@ const handleAwayCupsLeft = (ctx, evt) => {
 };
 
 const handleAwayCupsForfeit = (ctx, evt) => {
-  if (evt.type === "FORFEIT_AWAY") {
+  if (evt.type === 'FORFEIT_AWAY') {
     const time = new Date().toISOString();
     /* change every cup that isnt hit to hit it now */
     const alreadyHit = ctx.awayCups.filter((cup) => cup.hit !== null);
-    const hit = { hit: { timestamp: time, type: "FORFEIT" } };
+    const hit = { hit: { timestamp: time, type: 'FORFEIT' } };
     const forfeitCups = ctx.awayCups
       .filter((cup) => cup.hit === null)
       .map((cup) => ({ ...cup, ...hit }));
@@ -429,7 +429,7 @@ const handleAwayCupsForfeit = (ctx, evt) => {
 };
 
 const handleAwayCupsLeftForfeit = (ctx, evt) => {
-  if (evt.type === "FORFEIT_AWAY") {
+  if (evt.type === 'FORFEIT_AWAY') {
     return 0;
   } else {
     return ctx.awayCupsLeft;
@@ -440,8 +440,8 @@ const handleAwayCupsLeftForfeit = (ctx, evt) => {
 
 const checkLastCup = (context, event) => {
   // cannot catch to knock last cup noCatchGuard
-  if (context.selectedCup.side === "home") {
-    console.log(context.homeCupsLeft);
+  if (context.selectedCup.side === 'home') {
+    // console.log(context.homeCupsLeft);
     return context.homeCupsLeft > 1;
   } else {
     return context.awayCupsLeft > 1;

@@ -31,7 +31,7 @@ export function Nav() {
     );
   }
   return (
-    <div className='fixed bottom-0 w-full'>
+    <div className='fixed bottom-0 w-full bg-primary-background'>
       <Divider />
       <nav className='text-center py-6 font-mono flex justify-center items-center'>
         <ul className='flex flex-row justify-between w-full'>

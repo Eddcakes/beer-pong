@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useMachine } from '@xstate/react';
 
 import { useAuth } from '../hooks/useAuth';
 import {
@@ -10,59 +11,66 @@ import {
   buttonColor,
   Modal,
 } from '../components';
+import { createTableMachine, createInitialCups } from '../tableMachine';
 /*
   only "authorised" users for this game should be able to save changes
 */
-const table = {
-  firstThrow: 'player', // inbuilt coin to flip?
-  homeCups: createInitialCups(),
-  awayCups: [],
-};
+
 /* owner -> playerId, side -> home/away, how to calculate for 10 cups/team games */
-function createInitialCups(owner, side) {
-  return [
-    { name: `${side}x6-y2`, x: '6', y: '2', owner: `${owner}`, hit: null },
-    { name: `${side}x4-y6`, x: '4', y: '6', owner: `${owner}`, hit: null },
-    { name: `${side}x8-y6`, x: '8', y: '6', owner: `${owner}`, hit: null },
-    { name: `${side}x2-y10`, x: '2', y: '10', owner: `${owner}`, hit: null },
-    { name: `${side}x6-y10`, x: '6', y: '10', owner: `${owner}`, hit: null },
-    { name: `${side}x10-y10`, x: '10', y: '10', owner: `${owner}`, hit: null },
-  ];
-}
+
+const initialHome = createInitialCups(1, 'home');
+const initialAway = createInitialCups(2, 'away');
+
+const tableMachine = createTableMachine(initialHome, initialAway, 'home');
 
 export function Game({ updatePageTitle }) {
   const auth = useAuth();
   const { gameId } = useParams();
+  const [state, send] = useMachine(tableMachine);
+  const centreAdjustment = 1.5;
+  const cupsRef = useRef(null);
+  const svgCoord = (evt) => {
+    if (cupsRef.current === null) {
+      return;
+    }
+    let point = cupsRef.current.createSVGPoint();
+    point.x = evt.clientX;
+    point.y = evt.clientY;
+    const cursorPoint = point.matrixTransform(
+      evt.target.getScreenCTM().inverse()
+    );
+    const clampedX = floorBound(cursorPoint.x - centreAdjustment, 0, 8);
+    const clampedY = floorBound(cursorPoint.y - centreAdjustment, 0, 8);
+    return send({
+      type: 'NEWPOS',
+      position: { x: clampedX, y: clampedY },
+      details: evt,
+    });
+  };
+
+  const newMove = (evt) => {
+    if (cupsRef.current === null) {
+      return;
+    }
+    let point = cupsRef.current.createSVGPoint();
+    point.x = evt.clientX;
+    point.y = evt.clientY;
+    const cursorPoint = point.matrixTransform(
+      evt.target.getScreenCTM().inverse()
+    );
+    const clampedX = floorBound(cursorPoint.x - centreAdjustment, 0, 8);
+    const clampedY = floorBound(cursorPoint.y - centreAdjustment, 0, 8);
+    return send({
+      type: 'MOUSEMOVE',
+      position: { x: clampedX, y: clampedY },
+      details: evt,
+    });
+  };
+  /* original */
   // might be nice to save first throw
   // const [firstThrow, setFirstThrow] = useState(null)
   const [gameDetails, setGameDetails] = useState(null);
   const [table, setTable] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedCup, setSelectedCup] = useState(null);
-  const closeModal = () => {
-    setShowModal(false);
-    //reset selectedCup
-    setSelectedCup(null);
-  };
-  const handleCupClick = (evt, details) => {
-    setSelectedCup(details);
-    setShowModal(true);
-  };
-
-  const updateCups = (evt) => {
-    const type = evt.target.name;
-    const side = selectedCup.name.startsWith('home') ? 'homeCups' : 'awayCups';
-    let originalCups = table[side].filter(
-      (cup) => cup.name !== selectedCup.name
-    );
-    let hitCup = {
-      ...selectedCup,
-      hit: { timestamp: new Date().toISOString(), type: type },
-    };
-    setTable({ ...table, [side]: [...originalCups, hitCup] });
-    setSelectedCup(null);
-    setShowModal(false);
-  };
 
   useEffect(() => {
     async function fetchData() {
@@ -112,51 +120,122 @@ export function Game({ updatePageTitle }) {
             {table && (
               <>
                 <div>
+                  {state.matches('rerack') ? (
+                    <>
+                      <Button
+                        text='Save'
+                        onClick={() => send('SAVE')}
+                        fullWidth
+                      />
+                      <Button
+                        text='Cancel'
+                        onClick={() => send('CANCEL')}
+                        fullWidth
+                      />
+                    </>
+                  ) : (
+                    <Button
+                      text='Rerack'
+                      onClick={() => send('RERACK')}
+                      fullWidth
+                    />
+                  )}
+                </div>
+                <div>
                   <div>{gameDetails.home_name}</div>
-                  <div>{gameDetails.homeCupsLeft}</div>
+                  <div>home cups left: {state.context.homeCupsLeft}</div>
+                  <div>hit rim: {state.context.awayCupRimCount}</div>
+                  <div>
+                    reracked:
+                    {JSON.stringify(state.context.homeCupRerackComplete)}
+                  </div>
                   <Cups
-                    cups={table.homeCups}
+                    side='home'
+                    cups={state.context.homeCups}
                     gameSize={6}
-                    updateCups={handleCupClick}
+                    forwardRef={cupsRef}
+                    mouseExit={() => send('EXIT')}
+                    pickCup={(evt) => send({ type: 'PICKCUP', details: evt })}
+                    newMove={newMove}
+                    svgCoord={svgCoord}
+                    rerack={state.matches('rerack')}
+                    movingState={state.matches('rerack.moving')}
+                    lastHover={state.context.lastHover}
                   />
+                  {state.matches('playing') && (
+                    <Button
+                      text='Home forfeit?'
+                      onClick={(_, evt) => send('FORFEIT_HOME')}
+                    />
+                  )}
                 </div>
                 <div>
                   <div>{gameDetails.away_name}</div>
-                  <div>{gameDetails.awayCupsLeft}</div>
+                  <div>away cups left: {state.context.awayCupsLeft}</div>
+                  <div>hit rim: {state.context.homeCupRimCount}</div>
+                  <div>
+                    reracked:{' '}
+                    {JSON.stringify(state.context.awayCupRerackComplete)}
+                  </div>
                   <Cups
-                    cups={table.awayCups}
+                    side='away'
+                    cups={state.context.awayCups}
                     gameSize={6}
-                    updateCups={handleCupClick}
+                    forwardRef={cupsRef}
+                    mouseExit={() => send('EXIT')}
+                    pickCup={(evt) => send({ type: 'PICKCUP', details: evt })}
+                    newMove={newMove}
+                    svgCoord={svgCoord}
+                    rerack={state.matches('rerack')}
+                    movingState={state.matches('rerack.moving')}
+                    lastHover={state.context.lastHover}
                   />
+                  {state.matches('playing') && (
+                    <Button
+                      text='Away forfeit?'
+                      onClick={(_, evt) => send('FORFEIT_AWAY')}
+                    />
+                  )}
                 </div>
+                <Button text='Submit' />
               </>
             )}
           </Card>
         }
-        <Modal isOpen={showModal} dismiss={closeModal} title='Cup details'>
+        <Modal
+          isOpen={state.matches('modal')}
+          dismiss={() => send('CANCEL')}
+          title='Cup details'
+        >
           <div className='p-2 flex flex-col space-y-8'>
             <Button
               name='sink'
               text='Sink'
-              onClick={updateCups}
+              onClick={() => send('SINK')}
               color={buttonColor.outlined}
             />
             <Button
               name='catch'
               text='Catch'
-              onClick={updateCups}
+              onClick={() => send('CATCH')}
               color={buttonColor.outlined}
             />
             <Button
               name='spill'
               text='Spill'
-              onClick={updateCups}
+              onClick={() => send('SPILL')}
               color={buttonColor.outlined}
             />
             <Button
               name='other'
               text='Other'
-              onClick={updateCups}
+              onClick={() => send('OTHER')}
+              color={buttonColor.outlined}
+            />
+            <Button
+              name='rim'
+              text='Rim'
+              onClick={() => send('RIM')}
               color={buttonColor.outlined}
             />
           </div>
@@ -166,102 +245,104 @@ export function Game({ updatePageTitle }) {
   );
 }
 
-function Cups({ cups, gameSize = 6, updateCups = () => {} }) {
-  /* update cups need to be used for both, click to kill and rearange */
-  // 10 vs 6 cup games, do they need to be rendered differently?
-  const [lastHover, setLastHover] = useState({ x: null, y: null });
-  const [rerackMode, setRerackMode] = useState(false);
-  // const [hoverOverlay, setHoverOverlay] = useState()
-  const cupsRef = useRef(null);
-  //let points = cupsRef.current ? cupsRef.current.createSVGPoint() : null;
-
-  const highlightSize = 4;
-  const centreAdjustment = 1.5;
-  const resetLastHover = () => {
-    setLastHover({ x: null, y: null });
-  };
-  const handleHover = (evt) => {
-    if (cupsRef.current === null) {
-      return;
-    }
-    let point = cupsRef.current.createSVGPoint();
-    point.x = evt.clientX;
-    point.y = evt.clientY;
-    const cursorPoint = point.matrixTransform(
-      evt.target.getScreenCTM().inverse()
-    );
-    // clamped is viewbox - hoverbox size?
-    const clampedX = floorBound(cursorPoint.x - centreAdjustment, 0, 8);
-    const clampedY = floorBound(cursorPoint.y - centreAdjustment, 0, 8);
-    if (clampedX !== lastHover.x || clampedY !== lastHover.y) {
-      setLastHover({ x: clampedX, y: clampedY });
-    }
-  };
-  const handleStartRerack = () => setRerackMode(true);
-  const handleEndRerack = () => setRerackMode(false);
-  /* onClick on the svg might need to be only used when ready to 
-  "place" the rearanged piece */
-  const handleRerack = (evt) => {
-    console.log(`move clicked to x: ${lastHover.x}, y: ${lastHover.y}`);
-    //click on element, this lifts and adds to highlight element? or just places where next click
-  };
-
+export function Cups({
+  side,
+  cups,
+  forwardRef,
+  gameSize = 6,
+  mouseExit,
+  pickCup,
+  newMove,
+  svgCoord,
+  rerack,
+  movingState,
+  lastHover,
+}) {
+  const lines = createGridLines(gameSize);
+  const highlightSize = 4; //
   if (Number(gameSize) === 10) {
-    return (
-      <svg viewBox='0 0 12 12'>
-        <circle />
-      </svg>
-    );
+    return <svg viewBox='0 0 12 12' data-name={`${side}Svg`}></svg>;
   }
   return (
     <div className='grid justify-center'>
       <svg
-        className='border'
         viewBox='0 0 12 12'
         height='15em'
         width='15em'
-        ref={cupsRef}
-        onMouseMove={rerackMode ? handleHover : undefined}
-        onMouseLeave={rerackMode ? resetLastHover : undefined}
-        onClick={rerackMode ? handleRerack : undefined}
+        data-name={`${side}Svg`}
+        ref={forwardRef}
+        onMouseMove={newMove}
+        onMouseLeave={mouseExit}
+        onClick={movingState ? svgCoord : undefined} //pickspot
+        className='border'
       >
-        <line
-          x1={0}
-          y1={1}
-          x2={12}
-          y2={1}
-          className='stroke-current text-gray-500'
-          strokeWidth={0.1}
-        />
-        {lastHover.x != null && lastHover.y != null && (
+        {rerack &&
+          lines.map(({ x1, y1, x2, y2 }) => (
+            <line
+              key={`${x1}${x2}${y1}${y2}`}
+              x1={x1}
+              x2={x2}
+              y1={y1}
+              y2={y2}
+              className='stroke-current text-gray-500'
+              strokeWidth={0.1}
+            />
+          ))}
+        {movingState && (
           <HoverElement x={lastHover.x} y={lastHover.y} size={highlightSize} />
         )}
         {cups
           .filter((cup) => !cup.hit)
           .map((cup) => {
-            return <Cup details={cup} key={cup.name} onClick={updateCups} />;
+            return (
+              <Cup
+                details={cup}
+                key={cup.name}
+                rerack={rerack}
+                pickCup={pickCup}
+              />
+            );
           })}
       </svg>
-      <div className='pt-4'>
-        {rerackMode ? (
-          <Button text='Save' onClick={handleEndRerack} fullWidth />
-        ) : (
-          <Button text='Rerack' onClick={handleStartRerack} fullWidth />
-        )}
-      </div>
     </div>
   );
 }
 
-function Cup({ details, onClick }) {
+export function Cup({ details, pickCup, rerack }) {
+  const rad = 2;
+  if (details?.rim) {
+    return (
+      <g>
+        <circle
+          cx={details.x}
+          cy={details.y}
+          r={rad}
+          name={details.name}
+          className='cursor-pointer'
+          data-name={details.name}
+          onClick={pickCup}
+        />
+        <text
+          x={details.x}
+          y={Number(details.y) + 0.5}
+          textAnchor='middle'
+          className='pointer-events-none fill-current text-red-500'
+          style={{ fontSize: '0.1rem' }}
+        >
+          {details.rim.length}
+        </text>
+      </g>
+    );
+  }
   return (
     <circle
       cx={details.x}
       cy={details.y}
-      r='2'
+      r={rad}
       name={details.name}
       className='cursor-pointer'
-      onClick={(evt) => onClick(evt, details)}
+      data-name={details.name}
+      onClick={pickCup}
     />
   );
 }
@@ -277,15 +358,29 @@ function floorBound(num, lower, upper) {
 }
 
 function HoverElement({ x, y, size = 4 }) {
-  return (
-    <rect
-      x={x}
-      y={y}
-      height={size}
-      width={size}
-      className='fill-current text-blue-500 opacity-25'
-    />
-  );
+  if (x != null || y != null) {
+    return (
+      <rect
+        x={x}
+        y={y}
+        height={size}
+        width={size}
+        className='fill-current text-blue-500 opacity-25'
+      />
+    );
+  } else {
+    return null;
+  }
+}
+
+function createGridLines(size) {
+  const viewSize = size * 2;
+  let lineList = [];
+  for (let ii = 0; ii < viewSize; ii++) {
+    lineList.push({ x1: 0, y1: ii, x2: viewSize, y2: ii });
+    lineList.push({ x1: ii, y1: 0, x2: ii, y2: viewSize });
+  }
+  return lineList;
 }
 
 /*
@@ -300,7 +395,6 @@ Or just one under each other
 SVG with circles as cups
 
 on desktop show side by side
-
 
 change homeCupsLeft/awayCupsLeft
 to home_cups_left

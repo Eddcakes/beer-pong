@@ -15,14 +15,16 @@ const router = express.Router();
 
 const insertNewGame = `
 INSERT INTO ${process.env.DATABASE}.games 
-(home_ID, away_ID, venue_ID, created_by, modified_by, game_table)
-VALUES(?, ?, ?, ?, ?, ?)
+(home_ID, away_ID, homeCupsLeft, awayCupsLeft, venue_ID, created_by, modified_by, game_table)
+VALUES(?, ?, ?, ?, ?, ?, ?, ?)
 RETURNING game_ID, home_ID, away_ID`;
 
 const validateNewGame = (errorMessage) => (req, res, next) => {
   const newGameValid = schema.validate({
     home_ID: req.body.player1,
     away_ID: req.body.player2,
+    homeCupsLeft: req.body.homeCupsLeft,
+    awayCupsLeft: req.body.awayCupsLeft,
     venue_ID: req.body.venue,
     created_by: req.session.user.user_ID,
     modified_by: req.session.user.user_ID,
@@ -44,6 +46,8 @@ router.post(
     const values = [
       req.body.player1,
       req.body.player2,
+      req.body.homeCupsLeft,
+      req.body.awayCupsLeft,
       req.body.venue,
       req.session.user.user_ID,
       req.session.user.user_ID,
@@ -81,13 +85,20 @@ router.post('/:id', async (req, res, next) => {
   ];
   let pool;
   try {
+    const updateSql = `UPDATE ${process.env.DATABASE}.games 
+    SET 
+    homeCupsLeft=${req.body.homeCupsLeft},
+    awayCupsLeft=${req.body.awayCupsLeft},
+    game_table='${req.body.table}'
+    WHERE game_ID = ?`;
+    console.log('update: ', updateSql);
     pool = await poolPromise;
-    const createNewGame = await pool.query(insertNewGame, values);
-    console.log(createNewGame);
-    if (createNewGame) {
+    const updateGame = await pool.query(updateSql, req.params.id);
+
+    if (updateGame) {
       res.json({
-        message: 'New game created!',
-        gameId: createNewGame[0].game_ID,
+        message: 'game updated!',
+        //gameId: updateGame[0].game_ID,
       });
     } else {
       const error = new Error('Could not create game');

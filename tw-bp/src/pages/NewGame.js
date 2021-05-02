@@ -106,6 +106,8 @@ export function NewGame({ updatePageTitle }) {
       const values = {
         ...formState,
         created: new Date(),
+        homeCupsLeft: 6,
+        awayCupsLeft: 6,
         table: initialTable,
       };
       console.log('hit submit', values);

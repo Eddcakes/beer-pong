@@ -52,19 +52,30 @@ export function GamePlay({ gameDetails }) {
     });
   };
 
-  const handleSubmit = (evt) => {
+  const handleSubmit = async (evt) => {
     evt.preventDefault();
     //check form valid, skipping for prototype
+    const toStringify = JSON.stringify(state.context);
     let data = {
-      ...gameDetails,
+      //...gameDetails,
+      game_ID: gameDetails.game_ID,
+      player1: gameDetails.player1,
+      player2: gameDetails.player2,
       homeCupsLeft: state.context.homeCupsLeft,
       awayCupsLeft: state.context.awayCupsLeft,
       // forfeit: havent set context for side of forfeit yet
-      table: {
-        ...state.context,
-      },
+      table: toStringify,
     };
-    console.log(data);
+    try {
+      const updateGame = await postSaveGamePlay(data);
+      if (updateGame.error) {
+        return console.error('no ui error fuk', updateGame.error);
+      }
+      window.location.reload();
+    } catch (err) {
+      console.log('error when trying to post', err);
+    }
+    // console.log(data);
   };
 
   return (

@@ -262,14 +262,19 @@ export const createMachineFromState = (state) => {
           preRackAwayCups: () => null,
         }),
         saveCups: assign({
-          // if anything has moved then we want to set rerack to true
-          // how to tell what side we are?
           preRackHomeCups: () => null,
           homeCupRerackComplete: (ctx) => {
+            if (ctx.homeCupRerackComplete) {
+              // if already true do not change as preRack may be a new location already
+              return true;
+            }
             return ctx.homeCups === ctx.preRackHomeCups ? false : true;
           },
           preRackAwayCups: () => null,
           awayCupRerackComplete: (ctx) => {
+            if (ctx.awayCupRerackComplete) {
+              return true;
+            }
             return ctx.awayCups === ctx.preRackAwayCups ? false : true;
           },
         }),

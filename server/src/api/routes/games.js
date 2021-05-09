@@ -38,7 +38,13 @@ router.get('/', async (req, res) => {
   try {
     pool = await poolPromise;
     const data = await pool.query(selectAllGames);
-    return res.json(data);
+    const transformed = data.map((game) => {
+      if (game.game_table !== null && game.game_table.length > 0) {
+        game.game_table = JSON.parse(game.game_table);
+      }
+      return game;
+    });
+    return res.json(transformed);
   } catch (err) {
     res.status(500);
     res.send(err.message);
@@ -53,7 +59,13 @@ router.get('/:id', async (req, res) => {
       `${selectAndExpandGames} ${whereGameId}`,
       req.params.id
     );
-    return res.json(data);
+    const transformed = data.map((game) => {
+      if (game.game_table !== null && game.game_table.length > 0) {
+        game.game_table = JSON.parse(game.game_table);
+      }
+      return game;
+    });
+    return res.json(transformed);
   } catch (err) {
     res.status(500);
     res.send(err.message);

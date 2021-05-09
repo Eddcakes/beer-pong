@@ -27,14 +27,13 @@ export function Nav() {
             </li>
           </ul>
         </nav>
-        <Divider />
       </div>
     );
   }
   return (
-    <div className='fixed bottom-0 w-full'>
+    <div className='fixed bottom-0 w-full bg-primary-background z-10'>
       <Divider />
-      <nav className='text-center py-6 font-mono flex justify-center items-center'>
+      <nav className='text-center py-4 font-mono flex justify-center items-center'>
         <ul className='flex flex-row justify-between w-full'>
           <li className='w-full'>
             <StyledNavLink to={'/'} exact text='Home' />
@@ -57,7 +56,7 @@ const StyledNavLink = ({ to, text, exact = false }) => {
       to={to}
       exact={exact}
       activeClassName='text-primary border-b-4 border-solid border-primary'
-      className='p-2 font-bold text-xl uppercase inline-block w-full hover:text-primary'
+      className='p-2 font-bold text-xl uppercase inline-block w-full hover:text-primary border-b-4 border-opacity-0'
     >
       {text}
     </NavLink>

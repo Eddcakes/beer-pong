@@ -15,6 +15,7 @@ export const buttonColor = {
 export function Button({
   variant = 'regular',
   color = 'primary',
+  fullWidth = false,
   text,
   handleClick = () => {},
   loading = false,
@@ -111,7 +112,7 @@ export function Button({
       active:border-b
       focus:outline-none
       w-full
-      md:w-auto
+      ${!fullWidth && 'md:w-auto'}
       transform 
       duration-75
       ease-in-out

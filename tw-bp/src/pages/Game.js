@@ -60,6 +60,7 @@ export function Game({ updatePageTitle }) {
           </Card>
         }
       </Container>
+      <div className='spacer py-8'></div>
     </>
   );
 }

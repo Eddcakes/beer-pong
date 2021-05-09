@@ -61,19 +61,18 @@ export function GamePlay({ gameDetails }) {
       player2: gameDetails.player2,
       homeCupsLeft: state.context.homeCupsLeft,
       awayCupsLeft: state.context.awayCupsLeft,
-      // forfeit: havent set context for side of forfeit yet
+      forfeit: state.context.forfeit,
       table: toStringify,
     };
     try {
       const updateGame = await postSaveGamePlay(data);
       if (updateGame.error) {
-        return console.error('no ui error fuk', updateGame.error);
+        return console.error('post error', updateGame.error);
       }
       window.location.reload();
     } catch (err) {
       console.log('error when trying to post', err);
     }
-    // console.log(data);
   };
 
   return (
@@ -150,7 +149,7 @@ export function GamePlay({ gameDetails }) {
           </div>
         )}
       </div>
-      <div className='mb-16'>
+      <div>
         <Button text='Submit' onClick={handleSubmit} />
       </div>
 

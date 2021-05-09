@@ -9,6 +9,7 @@ export function PlayerPicker({
   selectPlayer = () => {},
   variant = 'square',
   color = 'primary',
+  fullWidth = false,
 }) {
   const [showModal, setShowModal] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -35,6 +36,7 @@ export function PlayerPicker({
             ? playerNames[selected - 1].name
             : 'Click to pick player'
         }
+        fullWidth={fullWidth}
       />
 
       <Modal isOpen={showModal} dismiss={toggleModal} title='Add Player'>

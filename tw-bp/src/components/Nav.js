@@ -33,7 +33,7 @@ export function Nav() {
   return (
     <div className='fixed bottom-0 w-full bg-primary-background z-10'>
       <Divider />
-      <nav className='text-center py-6 font-mono flex justify-center items-center'>
+      <nav className='text-center py-4 font-mono flex justify-center items-center'>
         <ul className='flex flex-row justify-between w-full'>
           <li className='w-full'>
             <StyledNavLink to={'/'} exact text='Home' />

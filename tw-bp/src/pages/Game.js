@@ -47,16 +47,40 @@ export function Game({ updatePageTitle }) {
               />
             }
           >
-            {gameDetails.tournament_ID && (
+            <div className='text-center'>
+              {gameDetails.tournament_ID && (
+                <div>
+                  <div>{gameDetails.event}</div>
+                  <div>{gameDetails.stage}</div>
+                </div>
+              )}
               <div>
-                <div>{gameDetails.event}</div>
-                <div>{gameDetails.stage}</div>
+                <div>Venue: {gameDetails.venue}</div>
+                <div>Starting cups: 6</div>
+                {gameDetails.forfeit ? <div>Ended by forfeit</div> : null}
+                {gameDetails.notes && <div>Notes: {gameDetails.notes}</div>}
+              </div>
+            </div>
+            <div className='grid grid-cols-2 gap-4'>
+              <div>
+                <h2 className='font-bold text-center'>Home Results</h2>
+                <div>Name: {gameDetails.home_name}</div>
+                <div>Cups left: {gameDetails.homeCupsLeft}</div>
+              </div>
+              <div>
+                <h2 className='font-bold text-center'>Away Results</h2>
+                <div>Name: {gameDetails.away_name}</div>
+                <div>Cups left: {gameDetails.awayCupsLeft}</div>
+              </div>
+            </div>
+            {/* check for if table json in db needs a better check than just exists haha */}
+            {gameDetails.game_table ? (
+              <GamePlay gameDetails={gameDetails} />
+            ) : (
+              <div className='text-center text-sm font-bold pt-4'>
+                Table state was not entered 😥
               </div>
             )}
-            <div>{gameDetails.venue}</div>
-            <div>{gameDetails.notes}</div>
-            {/* check for if table json in db needs a better check than just exists haha */}
-            {gameDetails.game_table && <GamePlay gameDetails={gameDetails} />}
           </Card>
         }
       </Container>

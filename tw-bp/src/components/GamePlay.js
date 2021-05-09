@@ -8,9 +8,7 @@ import { Cups } from './Cups';
 //on start first throw - Math.random() < 0.5;
 
 export function GamePlay({ gameDetails }) {
-  const tableMachine = createMachineFromState(
-    JSON.parse(gameDetails.game_table)
-  );
+  const tableMachine = createMachineFromState(gameDetails.game_table);
   const [state, send] = useMachine(tableMachine);
   const centreAdjustment = 1.5;
   const cupsRef = useRef(null);

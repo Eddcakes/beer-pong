@@ -1,3 +1,9 @@
+import logo from '../assets/beer-pong.svg';
+
 export function Logo() {
-  return <div>logo to be</div>;
+  return (
+    <div className='px-4'>
+      <img src={logo} alt='logo' className='w-16' />
+    </div>
+  );
 }

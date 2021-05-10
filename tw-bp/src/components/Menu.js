@@ -28,8 +28,8 @@ export function Menu() {
     <div>
       <button
         className={`
-      h-12
-      w-12
+      h-16
+      w-16
       rounded-full
       border
       focus:outline-none

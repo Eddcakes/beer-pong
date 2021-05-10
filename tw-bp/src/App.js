@@ -75,10 +75,10 @@ function App() {
               <Settings updatePageTitle={updatePageTitle} />
             </Route>
             <LoggedOutRoute path='/signin'>
-              <SignIn updatePageTitle={updatePageTitle} />;
+              <SignIn updatePageTitle={updatePageTitle} />
             </LoggedOutRoute>
             <LoggedOutRoute path='/signup'>
-              <SignUp updatePageTitle={updatePageTitle} />;
+              <SignUp updatePageTitle={updatePageTitle} />
             </LoggedOutRoute>
             <Route path='/test'>
               <Test updatePageTitle={updatePageTitle} />

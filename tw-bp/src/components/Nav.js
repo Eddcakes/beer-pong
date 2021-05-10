@@ -13,9 +13,9 @@ export function Nav() {
 
   if (size.width > 640) {
     return (
-      <div className='flex-col'>
-        <nav className='text-center font-mono py-3'>
-          <ul className='flex flex-row justify-between'>
+      <div className='w-96'>
+        <nav className='text-center font-mono'>
+          <ul className='flex flex-row'>
             <li className='w-full'>
               <StyledNavLink to={'/'} exact text='Home' />
             </li>

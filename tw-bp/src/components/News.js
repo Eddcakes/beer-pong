@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
+import gfm from 'remark-gfm';
 /* news & pinned news, events? */
 import { PinnedNews } from './PinnedNews';
 
@@ -28,7 +30,15 @@ export function News() {
   return (
     <>
       <PinnedNews />
-      <section>Grab news {newsData.length}</section>
+      {newsData.map((article) => {
+        return (
+          <section key={article.news_ID} className='prose lg:prose-xl'>
+            <ReactMarkdown remarkPlugins={[gfm]}>
+              {article.content}
+            </ReactMarkdown>
+          </section>
+        );
+      })}
     </>
   );
 }

@@ -45,5 +45,5 @@ module.exports = {
       translate: ['responsive', 'hover', 'focus', 'active'],
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/typography')],
 };

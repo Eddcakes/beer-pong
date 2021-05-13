@@ -13,7 +13,7 @@ export function Card({ title, children }) {
     renderTitle = title;
   }
   return (
-    <div className='bg-sec-background rounded-lg p-6 m-6'>
+    <div className='bg-sec-background rounded-lg p-6'>
       <div>{renderTitle}</div>
       {children}
     </div>

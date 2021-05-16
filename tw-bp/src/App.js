@@ -17,6 +17,7 @@ import {
   SignIn,
   SignUp,
   Test,
+  Records,
 } from './pages';
 import { LoggedOutRoute } from './components/LoggedOutRoute';
 import { AuthorisedRoute } from './components';
@@ -62,6 +63,9 @@ function App() {
             </Route>
             <Route path='/player/:playerId(\d+)?'>
               <Player updatePageTitle={updatePageTitle} />
+            </Route>
+            <Route path='/records/'>
+              <Records updatePageTitle={updatePageTitle} />
             </Route>
             <Route path='/games/' exact>
               <Games updatePageTitle={updatePageTitle} />

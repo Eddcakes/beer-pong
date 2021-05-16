@@ -38,7 +38,7 @@ export function Games({ updatePageTitle }) {
   );
 }
 
-async function fetchGames(gameId) {
+async function fetchGames() {
   try {
     const games = await fetch(
       `${process.env.REACT_APP_BACKEND_URL}/api/v1/games/`,

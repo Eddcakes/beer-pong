@@ -4,6 +4,7 @@ import Joi from 'joi';
 
 import { Card, Button, Container, Input, Decoration } from '../components';
 import { useAuth } from '../hooks/useAuth';
+import { Logo } from '../components/Logo';
 
 const schema = Joi.object().keys({
   username: Joi.string()
@@ -75,70 +76,75 @@ export function SignUp({ updatePageTitle }) {
   }, [updatePageTitle]);
 
   return (
-    <Container>
-      <div className='text-center'>Icon</div>
-      <Card
-        title={
-          <div className='grid justify-center'>
-            <Decoration />
-            <h2 className='text-3xl font-semibold text-primary-text py-2'>
-              Sign up
-            </h2>
-          </div>
-        }
-      >
-        <form>
-          <Input
-            label='Username'
-            name='username'
-            required={true}
-            value={username}
-            onChange={handleUsername}
-            aria-describedby='usernameHelp'
-            helpText='Username must be between 2 and 30 characters. Alphanumeric and
+    <Container maxW='max-w-screen-md'>
+      <div className='p-4'>
+        <div className='flex justify-center pb-4'>
+          <Logo />
+        </div>
+        <Card
+          title={
+            <div className='grid justify-center'>
+              <Decoration />
+              <h2 className='text-3xl font-semibold text-primary-text py-2'>
+                Sign up
+              </h2>
+            </div>
+          }
+        >
+          <form>
+            <Input
+              label='Username'
+              name='username'
+              required={true}
+              value={username}
+              onChange={handleUsername}
+              aria-describedby='usernameHelp'
+              helpText='Username must be between 2 and 30 characters. Alphanumeric and
               underscores only.'
-          />
-          <Input
-            label='Email address'
-            name='email'
-            type='email'
-            value={email}
-            onChange={handleEmail}
-          />
-          <Input
-            label='Password'
-            name='password'
-            minLength='6'
-            type='password'
-            required
-            value={password}
-            onChange={handlePassword}
-            aria-describedby='passwordHelp'
-            helpText='Password must be at least 6 characters.'
-          />
-
-          <Input
-            label='Confirm Password'
-            name='confirmPassword'
-            minLength='6'
-            type='password'
-            required
-            value={confirmPassword}
-            onChange={handleConfirmPassword}
-          />
-          {errorMsg.length > 0 && <p className='text-negative'>{errorMsg}</p>}
-          <div className='pt-2'>
-            <Button
-              text='Sign up'
-              handleClick={handleSubmit}
-              color='outlined'
             />
-          </div>
-          <Link to='/signin' className='text-link-text hover:underline'>
-            Or sign in here
-          </Link>
-        </form>
-      </Card>
+            <Input
+              label='Email address'
+              name='email'
+              type='email'
+              value={email}
+              onChange={handleEmail}
+            />
+            <Input
+              label='Password'
+              name='password'
+              minLength='6'
+              type='password'
+              required
+              value={password}
+              onChange={handlePassword}
+              aria-describedby='passwordHelp'
+              helpText='Password must be at least 6 characters.'
+            />
+
+            <Input
+              label='Confirm Password'
+              name='confirmPassword'
+              minLength='6'
+              type='password'
+              required
+              value={confirmPassword}
+              onChange={handleConfirmPassword}
+            />
+            {errorMsg.length > 0 && <p className='text-negative'>{errorMsg}</p>}
+            <div className='pt-2'>
+              <Button
+                text='Sign up'
+                handleClick={handleSubmit}
+                color='outlined'
+                fullWidth
+              />
+            </div>
+            <Link to='/signin' className='text-link-text hover:underline'>
+              Or sign in here
+            </Link>
+          </form>
+        </Card>
+      </div>
     </Container>
   );
 }

@@ -1,5 +1,6 @@
 export { E404 } from './E404';
 export { Game } from './Game';
+export { Games } from './Games';
 export { Home } from './Home';
 export { NewGame } from './NewGame';
 export { Player } from './Player';

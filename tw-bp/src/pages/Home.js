@@ -41,7 +41,10 @@ export function Home({ updatePageTitle }) {
                 <Link to='/test' className='text-link-text hover:underline'>
                   Test page
                 </Link>
-                <Link to='/game/new' className='text-link-text hover:underline'>
+                <Link
+                  to='/games/new'
+                  className='text-link-text hover:underline'
+                >
                   new game
                 </Link>
               </div>

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Swatch } from '../components/Swatch';
 import { Card } from '../components/Card';
 import { Match } from '../components/Match';
 import { PlayerPicker } from '../components/PlayerPicker';
@@ -70,38 +69,42 @@ export function Versus({ updatePageTitle }) {
     <>
       <Header />
       <Container>
-        <Card title='Player search'>
-          <div className='flex justify-around p-2'>
-            <PlayerPicker
-              playerNames={playerNames}
-              selected={players['player1']}
-              name='player1'
-              selectPlayer={selectPlayer}
-            />
-            <PlayerPicker
-              playerNames={playerNames}
-              selected={players['player2']}
-              name='player2'
-              selectPlayer={selectPlayer}
-            />
-          </div>
-        </Card>
-        {players.player1.length > 0 || players.player2.length > 0 ? (
-          <>
-            <Card title='Overview'>
-              <PlayerOverview details={playerOverview} />
-            </Card>
-            <Card title='Games'>
-              {gameData.length > 0 ? (
-                gameData.map((game) => <Match key={game.game_ID} game={game} />)
-              ) : (
-                <div>No games played ⚠</div>
-              )}
-            </Card>
-          </>
-        ) : null}
-
-        <Swatch />
+        <div className='p-6'>
+          <Card title='Player search'>
+            <div className='flex justify-around p-2'>
+              <PlayerPicker
+                playerNames={playerNames}
+                selected={players['player1']}
+                name='player1'
+                selectPlayer={selectPlayer}
+              />
+              <PlayerPicker
+                playerNames={playerNames}
+                selected={players['player2']}
+                name='player2'
+                selectPlayer={selectPlayer}
+              />
+            </div>
+          </Card>
+          {players.player1.length > 0 || players.player2.length > 0 ? (
+            <>
+              <Card title='Overview'>
+                <PlayerOverview details={playerOverview} />
+              </Card>
+              <Card title='Games'>
+                <div className='grid md:grid-cols-3 gap-4'>
+                  {gameData.length > 0 ? (
+                    gameData.map((game) => (
+                      <Match key={game.game_ID} details={game} />
+                    ))
+                  ) : (
+                    <div>No games played ⚠</div>
+                  )}
+                </div>
+              </Card>
+            </>
+          ) : null}
+        </div>
       </Container>
     </>
   );

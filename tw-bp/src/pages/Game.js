@@ -11,6 +11,7 @@ import { GamePlay } from '../components/GamePlay';
 /* owner -> playerId, side -> home/away, how to calculate for 10 cups/team games */
 export function Game({ updatePageTitle }) {
   const auth = useAuth();
+  //{JSON.stringify(auth.user)}
   const { gameId } = useParams();
   // might be nice to save first throw
   // const [firstThrow, setFirstThrow] = useState(null)
@@ -37,7 +38,7 @@ export function Game({ updatePageTitle }) {
     <>
       <Header />
       <Container>
-        {
+        <div className='p-6'>
           <Card
             title={
               <CardTitle
@@ -75,14 +76,14 @@ export function Game({ updatePageTitle }) {
             </div>
             {/* check for if table json in db needs a better check than just exists haha */}
             {gameDetails.game_table ? (
-              <GamePlay gameDetails={gameDetails} />
+              <GamePlay gameDetails={gameDetails} access='' />
             ) : (
               <div className='text-center text-sm font-bold pt-4'>
                 Table state was not entered 😥
               </div>
             )}
           </Card>
-        }
+        </div>
       </Container>
       <div className='spacer py-8'></div>
     </>

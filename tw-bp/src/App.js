@@ -7,6 +7,7 @@ import { applyTheme, DEFAULT_THEME } from './theme';
 import {
   E404,
   Game,
+  Games,
   Home,
   NewGame,
   Player,
@@ -62,10 +63,13 @@ function App() {
             <Route path='/player/:playerId(\d+)?'>
               <Player updatePageTitle={updatePageTitle} />
             </Route>
-            <AuthorisedRoute path='/game/new'>
+            <Route path='/games/' exact>
+              <Games updatePageTitle={updatePageTitle} />
+            </Route>
+            <AuthorisedRoute path='/games/new'>
               <NewGame updatePageTitle={updatePageTitle} />
             </AuthorisedRoute>
-            <AuthorisedRoute path='/game/:gameId(\d+)'>
+            <AuthorisedRoute path='/games/:gameId(\d+)'>
               <Game updatePageTitle={updatePageTitle} />
             </AuthorisedRoute>
             <Route path='/tournament/:tournamentId(\d+)'>

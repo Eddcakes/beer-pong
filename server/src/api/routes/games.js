@@ -33,12 +33,13 @@ INNER JOIN players AS p2 ON away_ID = p2.player_ID
 LEFT JOIN tournaments ON games.tournament_ID = tournaments.tournament_ID
 LEFT JOIN venues ON games.venue_ID = venues.venue_ID`;
 const whereGameId = `WHERE games.game_ID = ?`;
+const orderByIdDesc = `ORDER BY games.game_ID DESC`;
 
 router.get('/', async (req, res) => {
   let pool;
   try {
     pool = await poolPromise;
-    const data = await pool.query(selectAllGames);
+    const data = await pool.query(`${selectAndExpandGames} ${orderByIdDesc}`);
     const transformed = data.map((game) => {
       if (game.game_table !== null && game.game_table.length > 0) {
         game.game_table = JSON.parse(game.game_table);

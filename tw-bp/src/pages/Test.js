@@ -6,9 +6,11 @@ export function Test({ updatePageTitle }) {
   const [players, setPlayers] = useState([]);
 
   const testGame = {
-    home: 'home player',
+    home_name: 'home player',
+    home_ID: 1,
     homeCupsLeft: 0,
-    away: 'away player',
+    away_name: 'away player',
+    away_ID: 2,
     awayCupsLeft: 3,
     event: 'some event',
     date: 'new Date()',
@@ -51,16 +53,27 @@ export function Test({ updatePageTitle }) {
               <div>
                 <Button text='regular button' color='outlined' />
               </div>
+              <div>
+                <Button text='link as button' to='/test' color='outlined' />
+              </div>
+              <div>
+                <Button
+                  text='square link as button'
+                  to='/test'
+                  variant='square'
+                  color='outlined'
+                />
+              </div>
             </div>
             <div>
               <Card title='title of cart'>can take children</Card>
             </div>
             <div>
-              <Match game={testGame} />
+              <Match details={testGame} />
             </div>
             <div>
               <Card title='Match'>
-                <Match game={testGame} />
+                <Match details={testGame} />
               </Card>
             </div>
             <div></div>

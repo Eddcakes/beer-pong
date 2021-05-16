@@ -20,7 +20,7 @@ export function Nav() {
               <StyledNavLink to={'/'} exact text='Home' />
             </li>
             <li className='w-full'>
-              <StyledNavLink to={'/player'} text='Players' />
+              <StyledNavLink to={'/games'} text='Games' />
             </li>
             <li className='w-full'>
               <StyledNavLink to={'/versus'} text='Versus' />
@@ -39,7 +39,7 @@ export function Nav() {
             <StyledNavLink to={'/'} exact text='Home' />
           </li>
           <li className='w-full'>
-            <StyledNavLink to={'/player'} text='Players' />
+            <StyledNavLink to={'/games'} text='Games' />
           </li>
           <li className='w-full'>
             <StyledNavLink to={'/versus'} text='Versus' />

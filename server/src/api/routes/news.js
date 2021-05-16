@@ -3,6 +3,8 @@ import { poolPromise } from '../../db.js';
 
 const router = express.Router();
 
+/* group by priority? */
+
 const selectNewsAndUsers = `
 SELECT news.news_ID,
 news.content,
@@ -21,6 +23,7 @@ LEFT JOIN players AS p2 ON news.modified_by = p2.player_ID
 `;
 const whereApproved = `WHERE news.approved = 1`;
 const whereId = `WHERE news.news_ID = ?`;
+const orderByDesc = `ORDER BY news.news_ID DESC`;
 // create admin page for approving news
 const whereNotApproved = `WHERE news.approved = 0`;
 
@@ -28,7 +31,9 @@ router.get('/', async (req, res) => {
   let pool;
   try {
     pool = await poolPromise;
-    const data = await pool.query(`${selectNewsAndUsers} ${whereApproved}`);
+    const data = await pool.query(
+      `${selectNewsAndUsers} ${whereApproved} ${orderByDesc}`
+    );
     return res.json(data);
   } catch (err) {
     res.status(500);

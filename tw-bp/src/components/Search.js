@@ -47,11 +47,9 @@ export function Search() {
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
         />
-        {
-          /* inputFocus &&  */ searchText.length > 0 && (
-            <Suggestions items={search(searchPages)} />
-          )
-        }
+        {inputFocus && searchText.length > 0 && (
+          <Suggestions items={search(searchPages)} />
+        )}
       </div>
     </>
   );

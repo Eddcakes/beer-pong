@@ -1,18 +1,29 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Container, Header } from '../components';
+import { Container, Header, TournamentList } from '../components';
 
 export function Tournament({ updatePageTitle }) {
   const { tournamentId } = useParams();
+
   useEffect(() => {
     updatePageTitle(`Tournament: ${tournamentId}`);
   }, [updatePageTitle, tournamentId]);
   return (
     <>
       <Header />
-      <Container>tournament page {tournamentId}</Container>
+      <Container>
+        {tournamentId ? (
+          <SpecificTournament id={tournamentId} />
+        ) : (
+          <TournamentList />
+        )}
+      </Container>
     </>
   );
+}
+
+function SpecificTournament({ id }) {
+  return <div>This is Tournament: {id}</div>;
 }
 
 /* 

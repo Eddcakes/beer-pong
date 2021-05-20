@@ -7,7 +7,6 @@ export { Card } from './Card';
 export { Container } from './Container';
 export { Decoration } from './Decoration';
 export { Divider } from './Divider';
-export { EventsQuickLook } from './EventsQuickLook';
 export { Header } from './Header';
 export { Input } from './Input';
 export { InputNumber } from './InputNumber';
@@ -23,5 +22,6 @@ export { Select } from './Select';
 export { Swatch } from './Swatch';
 export { ThemeSwitcher } from './ThemeSwitcher';
 export { Toggle } from './Toggle';
+export { TournamentList } from './TournamentList';
 export { UserPreferences } from './UserPreferences';
 // tailwind dropdown for account/profile

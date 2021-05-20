@@ -76,6 +76,9 @@ function App() {
             <AuthorisedRoute path='/games/:gameId(\d+)'>
               <Game updatePageTitle={updatePageTitle} />
             </AuthorisedRoute>
+            <Route path='/tournament' exact>
+              <Tournament updatePageTitle={updatePageTitle} />
+            </Route>
             <Route path='/tournament/:tournamentId(\d+)'>
               <Tournament updatePageTitle={updatePageTitle} />
             </Route>

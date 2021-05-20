@@ -68,7 +68,6 @@ function ClipNews({ size = maxHeight.large, content }) {
     const refHeight = clipRef.current.getBoundingClientRect().height;
     if (refHeight >= size.value) {
       setShowExpand(true);
-      console.log('show expanded');
     }
   }, [size.value]);
   return (
@@ -82,6 +81,7 @@ function ClipNews({ size = maxHeight.large, content }) {
         ${size.class}
         ${expand && 'max-h-full'}
         ${showExpand && !expand && 'mask-bottom-transparent'}
+        ${!showExpand && 'border-b'}
         `}
       >
         <ReactMarkdown remarkPlugins={[gfm]}>{content}</ReactMarkdown>

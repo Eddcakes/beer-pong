@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Header, Container, PlayerOverview } from '../components';
-import { useAuth } from '../hooks/useAuth';
 
 /* add last 5 games */
 export function Player({ updatePageTitle }) {
-  const auth = useAuth();
   const { playerId } = useParams();
   const [loading, setLoading] = useState(true);
   const [playerData, setPlayerData] = useState({});
@@ -59,10 +57,12 @@ export function Player({ updatePageTitle }) {
           {loading ? 'loading...' : null}
           {!loading && playerData ? (
             <>
-              <div className='flex flex-row'>
-                <div>{playerData.name}</div>
-
-                <ul>
+              <div className='grid grid-cols-6 grid-rows-2 gap-2'>
+                <h2 className='text-xl font-bold bg-primary text-secondary-text px-4 py-2 col-span-2'>
+                  {playerData.name}
+                </h2>
+                <span className='row-start-2 col-start-2 px-4'>nicks</span>
+                <ul className='row-start-2 col-start-3'>
                   {playerNicks
                     .filter((name) => name.nick !== playerData.name)
                     .map((nick) => {
@@ -73,9 +73,7 @@ export function Player({ updatePageTitle }) {
                 </ul>
               </div>
 
-              <PlayerOverview
-                details={{ player1: playerOverview, player2: '' }}
-              />
+              <PlayerOverview details={[playerOverview]} />
               {playerRecords.map((record) => {
                 return <div key={record.record_ID}>{record.label}🥇</div>;
               })}

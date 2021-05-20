@@ -16,18 +16,20 @@ export function Versus({ updatePageTitle }) {
   });
   const [playerNames, setPlayerNames] = useState([]);
   const [gameData, setGameData] = useState([]);
-  //can ichange player1 to be details object rather than array
-  const [playerOverview, setPlayerOverview] = useState({
-    player1: {},
-    player2: {},
-  });
+  const [playerOverview, setPlayerOverview] = useState([]);
 
   const selectPlayer = (name, value) => {
     //how to prevent picking the same player?
     setPlayers({ ...players, [name]: value });
     // fetch player overview
     fetchPlayerOverview(value).then((overview) => {
-      setPlayerOverview({ ...playerOverview, [name]: overview[0] });
+      if (name === 'player1' && playerOverview.length <= 1) {
+        setPlayerOverview([overview[0]]);
+      } else if (name === 'player1') {
+        setPlayerOverview([overview[0], playerOverview[1]]);
+      } else {
+        setPlayerOverview([playerOverview[0], overview[0]]);
+      }
     });
   };
 
@@ -83,6 +85,7 @@ export function Versus({ updatePageTitle }) {
                 selected={players['player2']}
                 name='player2'
                 selectPlayer={selectPlayer}
+                disabled={players.player1.length < 1}
               />
             </div>
           </Card>

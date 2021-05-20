@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Button, Header, Card, Match, Container, Swatch } from '../components';
 import { AuthContext } from '../AuthContext';
 
 export function Test({ updatePageTitle }) {
-  const [players, setPlayers] = useState([]);
-
   const testGame = {
     home_name: 'home player',
     home_ID: 1,
@@ -21,11 +19,6 @@ export function Test({ updatePageTitle }) {
   useEffect(() => {
     //probably fill this in with name / or doesnt exist after loaded player details
     updatePageTitle(`Test components page`);
-    fetch('http://localhost:1337/api/v1/players')
-      .then((response) => response.json())
-      .then((data) => {
-        setPlayers(data);
-      });
   }, [updatePageTitle]);
   return (
     <AuthContext.Consumer>
@@ -52,6 +45,9 @@ export function Test({ updatePageTitle }) {
               </div>
               <div>
                 <Button text='regular button' color='outlined' />
+              </div>
+              <div>
+                <Button text='disabled button' color='outlined' disabled />
               </div>
               <div>
                 <Button text='link as button' to='/test' color='outlined' />

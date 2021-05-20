@@ -20,6 +20,7 @@ export function Button({
   handleClick = () => {},
   loading = false,
   to,
+  disabled = false,
   ...props
 }) {
   let customisations = {
@@ -87,6 +88,11 @@ export function Button({
   ${customisations.activeText}
   active:border-b
   focus:outline-none
+  disabled:cursor-not-allowed
+  disabled:bg-primary-active
+  disabled:border-primary-active
+  disabled:text-white
+  disabled:scale-y-95
   `;
   const regularClasses = `
   h-12
@@ -115,6 +121,11 @@ export function Button({
   ${customisations.hoverText}
   ${customisations.activeBg}
   ${customisations.activeText}
+  disabled:cursor-not-allowed
+  disabled:bg-primary-active
+  disabled:border-primary-active
+  disabled:text-white
+  disabled:scale-y-95
   `;
   if (to) {
     return (
@@ -130,13 +141,25 @@ export function Button({
   }
   if (variant === buttonVariant.square) {
     return (
-      <button className={squareClasses} onClick={handleClick} {...props}>
-        <span className='items-center text-center'>{text}</span>
+      <button
+        className={squareClasses}
+        onClick={handleClick}
+        disabled={disabled}
+        {...props}
+      >
+        <span className='items-center text-center pointer-events-none'>
+          {text}
+        </span>
       </button>
     );
   }
   return (
-    <button className={regularClasses} onClick={handleClick} {...props}>
+    <button
+      className={regularClasses}
+      onClick={handleClick}
+      disabled={disabled}
+      {...props}
+    >
       {text}
     </button>
   );
@@ -162,6 +185,7 @@ tailwind config
 added active for scale, border, margin
 added press for spacing (3px)
 as border width is in px but spacing all defined in rem we couldnt get exact
+added disabled
 */
 
 /*

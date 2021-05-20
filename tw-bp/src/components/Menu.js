@@ -3,6 +3,8 @@ import { NavLink, useHistory, useLocation } from 'react-router-dom';
 
 import { useAuth } from '../hooks/useAuth';
 
+/* i think i prefer github version of opening up a drawer to cover the entire right side. currently bit janky when removes scroll bar */
+
 export function Menu() {
   const [isOpen, setIsOpen] = useState(false);
   const toggleMenu = () => setIsOpen(!isOpen);
@@ -35,7 +37,8 @@ export function Menu() {
       focus:outline-none
       mr-4
       z-20
-      relative`}
+      relative
+      bg-primary-background`}
         onClick={toggleMenu}
       >
         {auth.user ? <span>T</span> : <span>F</span>}

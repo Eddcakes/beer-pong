@@ -41,6 +41,7 @@ export function Input({
         onChange={onChange}
         required={required}
         type={type}
+        placeholder={placeholder}
         {...inputProps}
       />
       {helpText.length > 0 ? (

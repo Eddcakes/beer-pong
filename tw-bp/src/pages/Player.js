@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Header, Container, PlayerOverview } from '../components';
 
 /* add last 5 games */
@@ -61,6 +61,12 @@ export function Player({ updatePageTitle }) {
                 <h2 className='text-xl font-bold bg-primary text-secondary-text px-4 py-2 col-span-2'>
                   {playerData.name}
                 </h2>
+                <Link
+                  to={`/versus/${playerId}`}
+                  className='px-4 py-2 text-link-text underline'
+                >
+                  Compare!
+                </Link>
                 <span className='row-start-2 col-start-2 px-4'>nicks</span>
                 <ul className='row-start-2 col-start-3'>
                   {playerNicks
@@ -72,8 +78,8 @@ export function Player({ updatePageTitle }) {
                     })}
                 </ul>
               </div>
-
               <PlayerOverview details={[playerOverview]} />
+              <h2 className='text-lg font-bold'>Accolades</h2>
               {playerRecords.map((record) => {
                 return <div key={record.record_ID}>{record.label}🥇</div>;
               })}

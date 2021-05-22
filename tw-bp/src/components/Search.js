@@ -6,7 +6,6 @@ import { searchPages } from '../searchPages';
 /* bbc search bar spans full screen in a new area */
 export function Search() {
   const [inputFocus, setInputFocus] = useState(false);
-  // const [isOpen, setIsOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
   const handleInputFocus = (evt) => {
     if (!inputFocus) {
@@ -29,13 +28,6 @@ export function Search() {
       return joined.indexOf(cleanText) > -1;
     });
   };
-
-  /*useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    }
-    return () => (document.body.style.overflow = '');
-  }, [isOpen]); */
   return (
     <>
       <div className='flex flex-col relative max-w-md flex-grow mx-4'>

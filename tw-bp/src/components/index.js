@@ -12,6 +12,7 @@ export { Input } from './Input';
 export { InputNumber } from './InputNumber';
 export { LoggedOutRoute } from './LoggedOutRoute';
 export { Match } from './Match';
+export { MatchGrid } from './MatchGrid';
 export { Modal } from './Modal';
 export { Nav } from './Nav';
 export { News } from './News';

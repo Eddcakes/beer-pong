@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Header, Container, PlayerOverview } from '../components';
+import { Header, Container, PlayerOverview, MatchGrid } from '../components';
 
 /* add last 5 games */
 export function Player({ updatePageTitle }) {
@@ -10,6 +10,7 @@ export function Player({ updatePageTitle }) {
   const [playerOverview, setPlayerOverview] = useState([]);
   const [playerRecords, setPlayerRecords] = useState([]);
   const [playerNicks, setPlayerNicks] = useState([]);
+  const [recentGames, setRecentGames] = useState([]);
 
   //set page title
   useEffect(() => {
@@ -38,13 +39,22 @@ export function Player({ updatePageTitle }) {
         setPlayerNicks(nicks);
       });
     };
+    const getRecentGames = async () => {
+      fetchRecentGames(playerId).then((recent) => {
+        setRecentGames(recent);
+      });
+    };
     //if no parameter is passed to the route then its undefined
     if (playerId !== undefined) {
-      Promise.all([getPlayer(), getOverview(), getRecords(), getNicks()]).then(
-        (values) => {
-          setLoading(false);
-        }
-      );
+      Promise.all([
+        getPlayer(),
+        getOverview(),
+        getRecords(),
+        getNicks(),
+        getRecentGames(),
+      ]).then((values) => {
+        setLoading(false);
+      });
     } else {
       setLoading(false);
     }
@@ -78,11 +88,22 @@ export function Player({ updatePageTitle }) {
                     })}
                 </ul>
               </div>
+              <h2 className='text-lg font-bold'>Overview</h2>
               <PlayerOverview details={[playerOverview]} />
-              <h2 className='text-lg font-bold'>Accolades</h2>
-              {playerRecords.map((record) => {
-                return <div key={record.record_ID}>{record.label}🥇</div>;
-              })}
+              {recentGames.length > 0 ? (
+                <>
+                  <h2 className='text-lg font-bold'>Recent games</h2>
+                  <MatchGrid games={recentGames} />
+                </>
+              ) : null}
+              {playerRecords.length > 0 ? (
+                <>
+                  <h2 className='text-lg font-bold'>Accolades</h2>
+                  {playerRecords.map((record) => {
+                    return <div key={record.record_ID}>{record.label}🥇</div>;
+                  })}
+                </>
+              ) : null}
             </>
           ) : (
             `Cannot find player data for playerId: ${playerId}`
@@ -122,5 +143,13 @@ async function fetchNicks(playerId) {
     `${process.env.REACT_APP_BACKEND_URL}/api/v1/nicknames/player/${playerId}`
   );
   const resp = await nicks.json();
+  return resp;
+}
+
+async function fetchRecentGames(playerId) {
+  const recentGames = await fetch(
+    `${process.env.REACT_APP_BACKEND_URL}/api/v1/games/recent/${playerId}`
+  );
+  const resp = await recentGames.json();
   return resp;
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Button, Container, Header, Match } from '../components';
+import { Button, Container, Header, MatchGrid } from '../components';
 
 export function Games({ updatePageTitle }) {
   const [games, setGames] = useState([]);
@@ -25,12 +25,7 @@ export function Games({ updatePageTitle }) {
           <div className='text-center'>
             <Button text='New Game' to='/games/new' />
           </div>
-
-          <div className='grid md:grid-cols-3 gap-4'>
-            {games.map((game) => {
-              return <Match key={game.game_ID} details={game} />;
-            })}
-          </div>
+          <MatchGrid games={games} />
         </div>
       </Container>
       <div className='spacer py-8'></div>

@@ -6,10 +6,6 @@ import { PlayerOverview } from '../components/PlayerOverview';
 import { Header, Container } from '../components';
 import { useHistory } from 'react-router';
 
-/* could have some defaults like *current player -> player 1 by default
-  if only one player filled in - fetch player stats not the comparison stats?
-*/
-
 export function Versus({ updatePageTitle }) {
   let history = useHistory();
   const [players, setPlayers] = useState({
@@ -19,29 +15,35 @@ export function Versus({ updatePageTitle }) {
   const [playerNames, setPlayerNames] = useState([]);
   const [gameData, setGameData] = useState([]);
   const [playerOverview, setPlayerOverview] = useState([]);
-  const [playerError, setPlayerError] = useState('');
 
-  const selectPlayer = (name, value) => {
-    //how to prevent picking the same player?
-    setPlayers({ ...players, [name]: value });
-    // split path
-    const sp = history.location.pathname.split('/');
-    // fetch player overview
-    // where to set error message
-    // setPlayerError(`Cannot find player 1: ${player1Id}`);
-    fetchPlayerOverview(value).then((overview) => {
-      if (name === 'player1' && playerOverview.length <= 1) {
-        setPlayerOverview([overview[0]]);
-        history.push(`/versus/${value}`);
-      } else if (name === 'player1') {
-        setPlayerOverview([overview[0], playerOverview[1]]);
-        history.push(`${[sp[0], sp[1], value, sp[3]].join('/')}`);
-      } else {
-        setPlayerOverview([playerOverview[0], overview[0]]);
-        history.push(`${[sp[0], sp[1], sp[2], value].join('/')}`);
-      }
-    });
-  };
+  const selectPlayer = useCallback(
+    (name, value) => {
+      //how to prevent picking the same player?
+      setPlayers((previous) => ({ ...previous, [name]: value }));
+      // split path
+      const sp = history.location.pathname.split('/');
+      fetchPlayerOverview(value).then((overview) => {
+        if (name === 'player1') {
+          if (isIntOrStringInt(value)) {
+            setPlayerOverview((previous) => {
+              return previous.length > 1
+                ? [overview[0], previous[1]]
+                : [overview[0]];
+            });
+            history.push(`${[sp[0], sp[1], value, sp[3]].join('/')}`);
+          } else {
+            history.push(`${[sp[0], sp[1]].join('/')}`);
+          }
+        } else {
+          if (isIntOrStringInt(value)) {
+            setPlayerOverview((previous) => [previous[0], overview[0]]);
+            history.push(`${[sp[0], sp[1], sp[2], value].join('/')}`);
+          }
+        }
+      });
+    },
+    [history]
+  );
 
   const goCompare = (player1, player2) => {
     if (player1.length > 0 && player2.length > 0) {
@@ -68,7 +70,6 @@ export function Versus({ updatePageTitle }) {
       .then((data) => {
         setPlayerNames(data);
       });
-    /* split on / then if [2] has length try select player with this value */
   }, []);
 
   useEffect(() => {
@@ -76,24 +77,25 @@ export function Versus({ updatePageTitle }) {
     const splitPath = window.location.pathname.split('/');
     const player1Id = splitPath[2];
     const player2Id = splitPath[3];
-    if (isIntOrStringInt(player1Id)) {
+    // maybe move check for exist into selectPlayer
+    if (playerNames.length > 0) {
       let player1Exists = playerNames.some(
         (player) => player.player_ID === Number(player1Id)
       );
       if (player1Exists) {
         selectPlayer('player1', player1Id);
         // if player exists then check player 2
-        /*         if (isIntOrStringInt(player2Id)) {
+        if (isIntOrStringInt(player2Id)) {
           let player2Exists = playerNames.some(
             (player) => player.player_ID === Number(player2Id)
           );
           if (player2Exists) {
             selectPlayer('player2', player2Id);
           }
-        } */
+        }
       }
     }
-  }, [playerNames]);
+  }, [playerNames, selectPlayer]);
 
   //when player changes goCompare
   useEffect(() => {
@@ -123,11 +125,6 @@ export function Versus({ updatePageTitle }) {
                 disabled={players.player1.length < 1}
               />
             </div>
-            {playerError.trim().length > 0 && (
-              <span className='bg-negative text-secondary-text'>
-                {playerError}
-              </span>
-            )}
           </Card>
           {players.player1.length > 0 || players.player2.length > 0 ? (
             <>
@@ -154,7 +151,7 @@ export function Versus({ updatePageTitle }) {
 }
 
 function isIntOrStringInt(param) {
-  return Number.isInteger(Number(param));
+  return param === '' ? false : Number.isInteger(Number(param));
 }
 
 async function fetchPlayerOverview(playerId) {

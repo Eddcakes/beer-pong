@@ -30,6 +30,7 @@ INNER JOIN players AS p2 ON away_ID = p2.player_ID
 LEFT JOIN tournaments ON games.tournament_ID = tournaments.tournament_ID
 LEFT JOIN venues ON games.venue_ID = venues.venue_ID`;
 const whereGameId = `WHERE games.game_ID = ?`;
+const whereTournamentId = `WHERE games.tournament_ID = ?`;
 const wherePlayerId = `WHERE games.home_ID = ? OR games.away_ID = ?`;
 const orderByIdDesc = `ORDER BY games.game_ID DESC`;
 const orderByDateDesc = `ORDER BY games.date DESC`;
@@ -59,6 +60,27 @@ router.get('/:id', async (req, res) => {
     pool = await poolPromise;
     const data = await pool.query(
       `${selectAndExpandGames} ${whereGameId}`,
+      req.params.id
+    );
+    const transformed = data.map((game) => {
+      if (game.game_table !== null && game.game_table.length > 0) {
+        game.game_table = JSON.parse(game.game_table);
+      }
+      return game;
+    });
+    return res.json(transformed);
+  } catch (err) {
+    res.status(500);
+    res.send(err.message);
+  }
+});
+
+router.get('/tournament/:id', async (req, res) => {
+  let pool;
+  try {
+    pool = await poolPromise;
+    const data = await pool.query(
+      `${selectAndExpandGames} ${whereTournamentId}`,
       req.params.id
     );
     const transformed = data.map((game) => {

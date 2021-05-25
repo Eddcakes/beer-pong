@@ -23,6 +23,7 @@ export { Select } from './Select';
 export { Swatch } from './Swatch';
 export { ThemeSwitcher } from './ThemeSwitcher';
 export { Toggle } from './Toggle';
+export { TournamentDetail } from './TournamentDetail';
 export { TournamentList } from './TournamentList';
 export { UserPreferences } from './UserPreferences';
 // tailwind dropdown for account/profile

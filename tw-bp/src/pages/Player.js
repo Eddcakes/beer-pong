@@ -45,7 +45,7 @@ export function Player({ updatePageTitle }) {
       });
     };
     //if no parameter is passed to the route then its undefined
-    if (playerId !== undefined) {
+    if (playerId != null) {
       Promise.all([
         getPlayer(),
         getOverview(),

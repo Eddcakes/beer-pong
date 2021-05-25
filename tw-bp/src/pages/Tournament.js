@@ -1,6 +1,11 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Container, Header, TournamentList } from '../components';
+import {
+  Container,
+  Header,
+  TournamentList,
+  TournamentDetail,
+} from '../components';
 
 export function Tournament({ updatePageTitle }) {
   const { tournamentId } = useParams();
@@ -12,18 +17,16 @@ export function Tournament({ updatePageTitle }) {
     <>
       <Header />
       <Container>
-        {tournamentId ? (
-          <SpecificTournament id={tournamentId} />
-        ) : (
-          <TournamentList />
-        )}
+        <div className='p-6'>
+          {tournamentId ? (
+            <TournamentDetail id={tournamentId} />
+          ) : (
+            <TournamentList />
+          )}
+        </div>
       </Container>
     </>
   );
-}
-
-function SpecificTournament({ id }) {
-  return <div>This is Tournament: {id}</div>;
 }
 
 /* 

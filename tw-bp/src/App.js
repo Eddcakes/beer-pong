@@ -76,10 +76,10 @@ function App() {
             <AuthorisedRoute path='/games/:gameId(\d+)'>
               <Game updatePageTitle={updatePageTitle} />
             </AuthorisedRoute>
-            <Route path='/tournament' exact>
+            <Route path='/tournaments' exact>
               <Tournament updatePageTitle={updatePageTitle} />
             </Route>
-            <Route path='/tournament/:tournamentId(\d+)'>
+            <Route path='/tournaments/:tournamentId(\d+)'>
               <Tournament updatePageTitle={updatePageTitle} />
             </Route>
             <Route path='/settings'>

@@ -19,7 +19,7 @@ export function Home({ updatePageTitle }) {
           <aside className='col-span-6 md:col-span-2 md:border-l-2 p-4'>
             <h2>
               <Link
-                to='/tournament'
+                to='/tournaments'
                 className='text-link-text hover:underline text-3xl font-semibold'
               >
                 Events

@@ -1,19 +1,9 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-import { Header, Container, Card, Avatar } from '../components';
-import { useAuth } from '../hooks/useAuth';
+import { Header, Container, TournamentList, News } from '../components';
 
-//should i use fetchPlayerOverview here too?
 export function Home({ updatePageTitle }) {
-  const { user } = useAuth();
-  /* 
-    would we want the home page to be customiseable by a logged in user?
-    news
-    events
-    Friendly
-    Competition
-  */
   useEffect(() => {
     updatePageTitle(`Home`);
   }, [updatePageTitle]);
@@ -22,20 +12,22 @@ export function Home({ updatePageTitle }) {
     <>
       <Header />
       <Container>
-        <Card title='Placeholder'>
-          <div className='text-primary-text'>
-            <Avatar />
-          </div>
-          <p>{user ? `hi ${user.username}` : 'default home settings'}</p>
-          <div className='flex flex-col'>
-            <Link to='/test' className='text-link-text hover:underline'>
-              Test page
-            </Link>
-            <Link to='/game/new' className='text-link-text hover:underline'>
-              new game
-            </Link>
-          </div>
-        </Card>
+        <div className='grid grid-cols-6 gap-4 p-6'>
+          <section className='col-span-6 md:col-span-4 space-y-6'>
+            <News />
+          </section>
+          <aside className='col-span-6 md:col-span-2 md:border-l-2 p-4'>
+            <h2>
+              <Link
+                to='/tournaments'
+                className='text-link-text hover:underline text-3xl font-semibold'
+              >
+                Events
+              </Link>
+            </h2>
+            <TournamentList />
+          </aside>
+        </div>
       </Container>
     </>
   );

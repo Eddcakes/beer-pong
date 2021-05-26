@@ -12,6 +12,9 @@ import { overview } from './routes/overview.js';
 import { userPreferences } from './routes/userPreferences.js';
 import { postGames } from './routes/games.post.js';
 import { isAdmin, isLoggedIn } from './auth/auth.middlewares.js';
+import { news } from './routes/news.js';
+import { records } from './routes/records.js';
+import { nicknames } from './routes/nicknames.js';
 
 const router = express.Router();
 
@@ -25,9 +28,12 @@ router.get('/', (req, res) => {
 
 router.use('/auth', auth);
 router.use('/games', games);
+router.use('/news', news);
 router.use('/overview', overview);
 router.use('/players', players);
 router.use('/tournaments', tournaments);
+router.use('/records', records);
+router.use('/nicknames', nicknames);
 
 router.use('/venues', venues);
 router.use('/versus', versusResults);

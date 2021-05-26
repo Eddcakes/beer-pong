@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Button, Header, Card, Match, Container, Swatch } from '../components';
 import { AuthContext } from '../AuthContext';
 
 export function Test({ updatePageTitle }) {
-  const [players, setPlayers] = useState([]);
-
   const testGame = {
-    home: 'home player',
+    home_name: 'home player',
+    home_ID: 1,
     homeCupsLeft: 0,
-    away: 'away player',
+    away_name: 'away player',
+    away_ID: 2,
     awayCupsLeft: 3,
     event: 'some event',
     date: 'new Date()',
@@ -19,11 +19,6 @@ export function Test({ updatePageTitle }) {
   useEffect(() => {
     //probably fill this in with name / or doesnt exist after loaded player details
     updatePageTitle(`Test components page`);
-    fetch('http://localhost:1337/api/v1/players')
-      .then((response) => response.json())
-      .then((data) => {
-        setPlayers(data);
-      });
   }, [updatePageTitle]);
   return (
     <AuthContext.Consumer>
@@ -51,16 +46,30 @@ export function Test({ updatePageTitle }) {
               <div>
                 <Button text='regular button' color='outlined' />
               </div>
+              <div>
+                <Button text='disabled button' color='outlined' disabled />
+              </div>
+              <div>
+                <Button text='link as button' to='/test' color='outlined' />
+              </div>
+              <div>
+                <Button
+                  text='square link as button'
+                  to='/test'
+                  variant='square'
+                  color='outlined'
+                />
+              </div>
             </div>
             <div>
               <Card title='title of cart'>can take children</Card>
             </div>
             <div>
-              <Match game={testGame} />
+              <Match details={testGame} />
             </div>
             <div>
               <Card title='Match'>
-                <Match game={testGame} />
+                <Match details={testGame} />
               </Card>
             </div>
             <div></div>

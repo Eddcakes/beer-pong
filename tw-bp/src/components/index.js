@@ -12,13 +12,18 @@ export { Input } from './Input';
 export { InputNumber } from './InputNumber';
 export { LoggedOutRoute } from './LoggedOutRoute';
 export { Match } from './Match';
+export { MatchGrid } from './MatchGrid';
 export { Modal } from './Modal';
 export { Nav } from './Nav';
+export { News } from './News';
+export { PinnedNews } from './PinnedNews';
 export { PlayerOverview } from './PlayerOverview';
 export { PlayerPicker } from './PlayerPicker';
 export { Select } from './Select';
 export { Swatch } from './Swatch';
 export { ThemeSwitcher } from './ThemeSwitcher';
 export { Toggle } from './Toggle';
+export { TournamentDetail } from './TournamentDetail';
+export { TournamentList } from './TournamentList';
 export { UserPreferences } from './UserPreferences';
 // tailwind dropdown for account/profile

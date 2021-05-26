@@ -308,102 +308,106 @@ export function NewGame({ updatePageTitle }) {
     <>
       <Header />
       <Container maxW='max-w-xl'>
-        <Card title='New friendly'>
-          <label htmlFor='player1'>Home:</label>
-          <PlayerPicker
-            name='player1'
-            playerNames={playerList}
-            selected={formState['player1']}
-            selectPlayer={selectPlayer}
-            variant={buttonVariant.regular}
-            color={buttonColor.outlined}
-            fullWidth
-          />
-          <label htmlFor='player2'>Away:</label>
-          <PlayerPicker
-            name='player2'
-            playerNames={playerList}
-            selected={formState['player2']}
-            selectPlayer={selectPlayer}
-            variant={buttonVariant.regular}
-            color={buttonColor.outlined}
-            fullWidth
-          />
-          <form onSubmit={handleSubmit} className='space-y-2'>
-            <input type='hidden' value={formState['player1']} />
-            <input type='hidden' value={formState['player2']} />
-            <label htmlFor='venue'>
-              Pick venue, or leave blank to fill later
-            </label>
-            <Select name='venue' onChange={handleSelect}>
-              {venueList.map((item) => {
-                return (
-                  <option key={item.venue_ID} value={item.venue_ID}>
-                    {item.title}
-                  </option>
-                );
-              })}
-            </Select>
-            <InputNumber
-              label='Number of starting cups'
-              name='gameSize'
-              value={formState['gameSize']}
-              min={minGameSize}
-              max={maxGameSize}
-              onChange={handleChangeNumber}
+        <div className='p-6'>
+          <Card title='New friendly'>
+            <label htmlFor='player1'>Home:</label>
+            <PlayerPicker
+              name='player1'
+              playerNames={playerList}
+              selected={formState['player1']}
+              selectPlayer={selectPlayer}
+              variant={buttonVariant.regular}
+              color={buttonColor.outlined}
+              fullWidth
             />
-            <div>
-              <p>Has the game already been completed?</p>
-              <div className='grid justify-center'>
-                <Toggle toggle={handleToggle} active={pastGame} />
-              </div>
-            </div>
-            {pastGame && (
-              <div className='grid grid-cols-2 gap-4'>
-                <div>
-                  <h2 className='font-bold text-center'>Home Results</h2>
-                  <div>Name: {playerList[formState.player1 - 1]?.name}</div>
-                  <InputNumber
-                    label='Home cups left'
-                    name='homeCupsLeft'
-                    value={formState['homeCupsLeft']}
-                    min={0}
-                    max={maxGameSize}
-                    onChange={handleChangeNumber}
-                  />
-                  <Checkbox
-                    label='forfeited?'
-                    name='homeForfeit'
-                    checked={formState['homeForfeit']}
-                    handleChange={handleForfeitCheck}
-                  />
-                </div>
-                <div>
-                  <h2 className='font-bold text-center'>Away Results</h2>
-                  <div>Name: {playerList[formState.player2 - 1]?.name}</div>
-                  <InputNumber
-                    label='Away cups left'
-                    name='awayCupsLeft'
-                    value={formState['awayCupsLeft']}
-                    min={0}
-                    max={maxGameSize}
-                    onChange={handleChangeNumber}
-                  />
-                  <Checkbox
-                    label='forfeited?'
-                    name='awayForfeit'
-                    checked={formState['awayForfeit']}
-                    handleChange={handleForfeitCheck}
-                  />
+            <label htmlFor='player2'>Away:</label>
+            <PlayerPicker
+              name='player2'
+              playerNames={playerList}
+              selected={formState['player2']}
+              selectPlayer={selectPlayer}
+              variant={buttonVariant.regular}
+              color={buttonColor.outlined}
+              fullWidth
+            />
+            <form onSubmit={handleSubmit} className='space-y-2'>
+              <input type='hidden' value={formState['player1']} />
+              <input type='hidden' value={formState['player2']} />
+              <label htmlFor='venue'>
+                Pick venue, or leave blank to fill later
+              </label>
+              <Select name='venue' onChange={handleSelect}>
+                {venueList.map((item) => {
+                  return (
+                    <option key={item.venue_ID} value={item.venue_ID}>
+                      {item.title}
+                    </option>
+                  );
+                })}
+              </Select>
+              <InputNumber
+                label='Number of starting cups'
+                name='gameSize'
+                value={formState['gameSize']}
+                min={minGameSize}
+                max={maxGameSize}
+                onChange={handleChangeNumber}
+              />
+              <div>
+                <p>Has the game already been completed?</p>
+                <div className='grid justify-center'>
+                  <Toggle toggle={handleToggle} active={pastGame} />
                 </div>
               </div>
-            )}
-            {errorMsg.length > 0 && <p className='text-negative'>{errorMsg}</p>}
-            <div className='pt-4'>
-              <Button text='Create!' type='submit' fullWidth />
-            </div>
-          </form>
-        </Card>
+              {pastGame && (
+                <div className='grid grid-cols-2 gap-4'>
+                  <div>
+                    <h2 className='font-bold text-center'>Home Results</h2>
+                    <div>Name: {playerList[formState.player1 - 1]?.name}</div>
+                    <InputNumber
+                      label='Home cups left'
+                      name='homeCupsLeft'
+                      value={formState['homeCupsLeft']}
+                      min={0}
+                      max={maxGameSize}
+                      onChange={handleChangeNumber}
+                    />
+                    <Checkbox
+                      label='forfeited?'
+                      name='homeForfeit'
+                      checked={formState['homeForfeit']}
+                      handleChange={handleForfeitCheck}
+                    />
+                  </div>
+                  <div>
+                    <h2 className='font-bold text-center'>Away Results</h2>
+                    <div>Name: {playerList[formState.player2 - 1]?.name}</div>
+                    <InputNumber
+                      label='Away cups left'
+                      name='awayCupsLeft'
+                      value={formState['awayCupsLeft']}
+                      min={0}
+                      max={maxGameSize}
+                      onChange={handleChangeNumber}
+                    />
+                    <Checkbox
+                      label='forfeited?'
+                      name='awayForfeit'
+                      checked={formState['awayForfeit']}
+                      handleChange={handleForfeitCheck}
+                    />
+                  </div>
+                </div>
+              )}
+              {errorMsg.length > 0 && (
+                <p className='text-negative'>{errorMsg}</p>
+              )}
+              <div className='pt-4'>
+                <Button text='Create!' type='submit' fullWidth />
+              </div>
+            </form>
+          </Card>
+        </div>
       </Container>
       <div className='spacer py-8'></div>
     </>

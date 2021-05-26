@@ -17,9 +17,13 @@ export function Swatch() {
             <div className='bg-primary-light p-2 truncate'>primaryLight</div>
             <div className='bg-primary-active p-2 truncate'>primaryActive</div>
             <div className='bg-secondary p-2 truncate'>secondary</div>
-            <div className='bg-negative p-2 truncate'>negative</div>
             <div className='bg-positive p-2 truncate'>positive</div>
+            <div className='bg-negative p-2 truncate'>negative</div>
             <div className='bg-primary-text p-2 truncate'>primaryText</div>
+            <div className='bg-secondary-text-text p-2 truncate'>
+              secondaryText
+            </div>
+            <div className='bg-link-text p-2 truncate'>linkText</div>
             <div className='bg-primary-background p-2 truncate'>
               primaryBackground
             </div>

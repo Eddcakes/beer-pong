@@ -37,13 +37,15 @@ module.exports = {
   },
   variants: {
     extend: {
-      backgroundColor: ['responsive', 'hover', 'focus', 'active'],
-      textColor: ['responsive', 'hover', 'focus', 'active'],
+      backgroundColor: ['responsive', 'hover', 'focus', 'active', 'disabled'],
+      textColor: ['responsive', 'hover', 'focus', 'active', 'disabled'],
       margin: ['responsive', 'active'],
       borderWidth: ['responsive', 'active'],
-      scale: ['responsive', 'hover', 'focus', 'active'],
-      translate: ['responsive', 'hover', 'focus', 'active'],
+      borderColor: ['disabled'],
+      scale: ['responsive', 'hover', 'focus', 'active', 'disabled'],
+      translate: ['responsive', 'hover', 'focus', 'active', 'disabled'],
+      cursor: ['disabled'],
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/typography')],
 };

@@ -10,6 +10,7 @@ export function PlayerPicker({
   variant = 'square',
   color = 'primary',
   fullWidth = false,
+  disabled = false,
 }) {
   const [showModal, setShowModal] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -37,6 +38,7 @@ export function PlayerPicker({
             : 'Click to pick player'
         }
         fullWidth={fullWidth}
+        disabled={disabled}
       />
 
       <Modal isOpen={showModal} dismiss={toggleModal} title='Add Player'>

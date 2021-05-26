@@ -7,6 +7,7 @@ import { applyTheme, DEFAULT_THEME } from './theme';
 import {
   E404,
   Game,
+  Games,
   Home,
   NewGame,
   Player,
@@ -16,6 +17,7 @@ import {
   SignIn,
   SignUp,
   Test,
+  Records,
 } from './pages';
 import { LoggedOutRoute } from './components/LoggedOutRoute';
 import { AuthorisedRoute } from './components';
@@ -62,13 +64,22 @@ function App() {
             <Route path='/player/:playerId(\d+)?'>
               <Player updatePageTitle={updatePageTitle} />
             </Route>
-            <AuthorisedRoute path='/game/new'>
+            <Route path='/records/'>
+              <Records updatePageTitle={updatePageTitle} />
+            </Route>
+            <Route path='/games/' exact>
+              <Games updatePageTitle={updatePageTitle} />
+            </Route>
+            <AuthorisedRoute path='/games/new'>
               <NewGame updatePageTitle={updatePageTitle} />
             </AuthorisedRoute>
-            <AuthorisedRoute path='/game/:gameId(\d+)'>
+            <AuthorisedRoute path='/games/:gameId(\d+)'>
               <Game updatePageTitle={updatePageTitle} />
             </AuthorisedRoute>
-            <Route path='/tournament/:tournamentId(\d+)'>
+            <Route path='/tournaments' exact>
+              <Tournament updatePageTitle={updatePageTitle} />
+            </Route>
+            <Route path='/tournaments/:tournamentId(\d+)'>
               <Tournament updatePageTitle={updatePageTitle} />
             </Route>
             <Route path='/settings'>

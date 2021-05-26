@@ -5,7 +5,7 @@ const router = express.Router();
 
 const query = `SELECT
 games.game_ID, games.venue_ID, games.date, games.home_ID, games.homeCupsLeft, games.away_ID, games.awayCupsLeft, games.tournament_ID, games.stage, games.notes,
-p1.name as home, p2.name as away, tournaments.title as event, venues.title as venue
+p1.name as home_name, p2.name as away_name, tournaments.title as event, venues.title as venue
 FROM games
 INNER JOIN players AS p1 ON home_ID = p1.player_ID
 INNER JOIN players AS p2 ON away_ID = p2.player_ID

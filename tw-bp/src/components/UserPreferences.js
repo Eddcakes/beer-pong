@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Joi from 'joi';
 import { Button } from './Button';
 import { Input } from './Input';
+import { useMutation, useQuery } from 'react-query';
+import { fetchPreferences, postPreferences } from '../queries';
 
 const schema = Joi.object().keys({
   avatar_link: Joi.string().trim().uri(),
@@ -11,6 +13,18 @@ export function UserPreferences() {
   //do i need to use authcontext to decide to only show preferences to logged in users
   // const { user } = useContext(AuthContext);import AuthContext from '../AuthContext';
   const [preferences, setPreferences] = useState({ avatarLink: '' });
+  const { isLoading, data, error } = useQuery(
+    ['preferences'],
+    fetchPreferences
+  );
+  const mutation = useMutation((data) => postPreferences(data), {
+    onError: (error, variables, context) => {
+      setErrorMsg(error);
+    },
+    onSuccess: (data, variables, context) => {
+      console.log('saved changes!');
+    },
+  });
   // create a variable for initial changes, to compare with current preferences to decide if to post update
   // const [startingPreferences, setStartingPreferences] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
@@ -28,19 +42,7 @@ export function UserPreferences() {
       const data = {
         avatar_link: preferences.avatarLink,
       };
-      const post = await postPreferences(data);
-      try {
-        if (post.error !== undefined) {
-          // returning post.error here returns server side error
-          // don't always want to show that to use'Error with posting data to server'
-          return setErrorMsg(post.error);
-        }
-        //successfully posted
-        window.alert('Saved changes!'); //create a msg toast component?
-      } catch (err) {
-        setErrorMsg('Something went wrong!');
-        console.log('error', err);
-      }
+      mutation.mutate(data);
     }
   };
 
@@ -82,29 +84,4 @@ export function UserPreferences() {
       <Button text='Save changes' handleClick={saveChanges}></Button>
     </form>
   );
-}
-
-async function fetchPreferences() {
-  const player = await fetch(
-    `${process.env.REACT_APP_BACKEND_URL}/api/v1/preferences/`,
-    {
-      credentials: 'include',
-    }
-  );
-  const resp = await player.json();
-  return resp;
-}
-
-async function postPreferences(newPreferences) {
-  console.log(JSON.stringify(newPreferences));
-  const preferences = await fetch(
-    `${process.env.REACT_APP_BACKEND_URL}/api/v1/preferences/`,
-    {
-      method: 'POST',
-      body: JSON.stringify(newPreferences),
-      credentials: 'include',
-    }
-  );
-  const resp = await preferences.json();
-  return resp;
 }

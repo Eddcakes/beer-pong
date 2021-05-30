@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
+import { useQuery } from 'react-query';
 import gfm from 'remark-gfm';
+
 /* news & pinned news, events? */
 import { PinnedNews } from './PinnedNews';
+import { fetchNews } from '../queries';
 
 const maxHeight = {
   small: { size: '10rem', class: 'max-h-40', value: 160 },
@@ -12,21 +15,15 @@ const maxHeight = {
 };
 
 export function News() {
-  const [newsData, setNewsData] = useState();
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const news = await fetchNews();
-        setNewsData(news);
-        setLoading(false);
-      } catch (err) {
-        console.error('cannot get news', err);
-      }
-    }
-    fetchData();
-  }, []);
-  if (loading) {
+  const { isLoading, error, data } = useQuery('news', fetchNews);
+  if (error) {
+    return (
+      <>
+        <span>Error loading news...</span>
+      </>
+    );
+  }
+  if (isLoading) {
     return (
       <>
         <span>Loading news...</span>
@@ -36,7 +33,7 @@ export function News() {
   return (
     <>
       <PinnedNews />
-      {newsData.map((article) => {
+      {data.map((article) => {
         return (
           <ClipNews
             key={article.news_ID}
@@ -48,13 +45,6 @@ export function News() {
     </>
   );
 }
-
-async function fetchNews() {
-  const news = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/v1/news/`);
-  const resp = await news.json();
-  return resp;
-}
-
 /* create an extension panel? or link to news page */
 
 function ClipNews({ size = maxHeight.large, content }) {

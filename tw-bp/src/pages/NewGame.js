@@ -16,6 +16,8 @@ import {
   Toggle,
 } from '../components';
 import { createInitialCups } from '../tableMachine';
+import { fetchPlayers, fetchVenues, postNewGame } from '../queries';
+import { useQuery } from 'react-query';
 
 /* clicking on tournament match, would auto fill in game page if not played*/
 /* list of error msgs https://github.com/sideway/joi/blob/master/API.md#list-of-errors */
@@ -61,11 +63,10 @@ export function NewGame({ updatePageTitle }) {
   const minGameSize = 6;
   const maxGameSize = 6;
   const [formState, dispatch] = useReducer(reducer, initialForm);
-  const [playerList, setPlayerList] = useState(null);
-  const [venueList, setVenueList] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [pastGame, setPastGame] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const players = useQuery('players', fetchPlayers);
+  const venues = useQuery('venues', fetchVenues);
 
   const selectPlayer = (name, value) => {
     //how to prevent picking the same player?
@@ -214,38 +215,6 @@ export function NewGame({ updatePageTitle }) {
     }
   }
 
-  const getPlayers = async () => {
-    try {
-      const fetchPlayers = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/api/v1/players`,
-        {
-          credentials: 'include',
-        }
-      );
-      const playersJson = await fetchPlayers.json();
-      setPlayerList(playersJson);
-      return playersJson;
-    } catch (err) {
-      console.error('fetching players error:', err);
-    }
-  };
-
-  const getVenues = async () => {
-    try {
-      const fetchVenues = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/api/v1/venues`,
-        {
-          credentials: 'include',
-        }
-      );
-      const venuesJson = await fetchVenues.json();
-      setVenueList(venuesJson);
-      return venuesJson;
-    } catch (err) {
-      console.error('fetching venues error:', err);
-    }
-  };
-
   /* schema */
   const schema = Joi.object().keys({
     player1: Joi.number()
@@ -294,138 +263,122 @@ export function NewGame({ updatePageTitle }) {
   useEffect(() => {
     updatePageTitle('Friendlies');
   }, [updatePageTitle]);
-
-  useEffect(() => {
-    //load player name options
-    Promise.all([getPlayers(), getVenues()]).then((values) => {
-      setLoading(false);
-    });
-  }, []);
-  if (loading) {
-    return <div>loading</div>;
-  }
   return (
     <>
       <Header />
       <Container maxW='max-w-xl'>
         <div className='p-6'>
-          <Card title='New friendly'>
-            <label htmlFor='player1'>Home:</label>
-            <PlayerPicker
-              name='player1'
-              playerNames={playerList}
-              selected={formState['player1']}
-              selectPlayer={selectPlayer}
-              variant={buttonVariant.regular}
-              color={buttonColor.outlined}
-              fullWidth
-            />
-            <label htmlFor='player2'>Away:</label>
-            <PlayerPicker
-              name='player2'
-              playerNames={playerList}
-              selected={formState['player2']}
-              selectPlayer={selectPlayer}
-              variant={buttonVariant.regular}
-              color={buttonColor.outlined}
-              fullWidth
-            />
-            <form onSubmit={handleSubmit} className='space-y-2'>
-              <input type='hidden' value={formState['player1']} />
-              <input type='hidden' value={formState['player2']} />
-              <label htmlFor='venue'>
-                Pick venue, or leave blank to fill later
-              </label>
-              <Select name='venue' onChange={handleSelect}>
-                {venueList.map((item) => {
-                  return (
-                    <option key={item.venue_ID} value={item.venue_ID}>
-                      {item.title}
-                    </option>
-                  );
-                })}
-              </Select>
-              <InputNumber
-                label='Number of starting cups'
-                name='gameSize'
-                value={formState['gameSize']}
-                min={minGameSize}
-                max={maxGameSize}
-                onChange={handleChangeNumber}
+          {players.isLoading && <div>Loading players...</div>}
+          {!players.isLoading && (
+            <Card title='New friendly'>
+              <label htmlFor='player1'>Home:</label>
+              <PlayerPicker
+                name='player1'
+                playerNames={players.data}
+                selected={formState['player1']}
+                selectPlayer={selectPlayer}
+                variant={buttonVariant.regular}
+                color={buttonColor.outlined}
+                fullWidth
               />
-              <div>
-                <p>Has the game already been completed?</p>
-                <div className='grid justify-center'>
-                  <Toggle toggle={handleToggle} active={pastGame} />
-                </div>
-              </div>
-              {pastGame && (
-                <div className='grid grid-cols-2 gap-4'>
-                  <div>
-                    <h2 className='font-bold text-center'>Home Results</h2>
-                    <div>Name: {playerList[formState.player1 - 1]?.name}</div>
-                    <InputNumber
-                      label='Home cups left'
-                      name='homeCupsLeft'
-                      value={formState['homeCupsLeft']}
-                      min={0}
-                      max={maxGameSize}
-                      onChange={handleChangeNumber}
-                    />
-                    <Checkbox
-                      label='forfeited?'
-                      name='homeForfeit'
-                      checked={formState['homeForfeit']}
-                      handleChange={handleForfeitCheck}
-                    />
-                  </div>
-                  <div>
-                    <h2 className='font-bold text-center'>Away Results</h2>
-                    <div>Name: {playerList[formState.player2 - 1]?.name}</div>
-                    <InputNumber
-                      label='Away cups left'
-                      name='awayCupsLeft'
-                      value={formState['awayCupsLeft']}
-                      min={0}
-                      max={maxGameSize}
-                      onChange={handleChangeNumber}
-                    />
-                    <Checkbox
-                      label='forfeited?'
-                      name='awayForfeit'
-                      checked={formState['awayForfeit']}
-                      handleChange={handleForfeitCheck}
-                    />
+              <label htmlFor='player2'>Away:</label>
+              <PlayerPicker
+                name='player2'
+                playerNames={players.data}
+                selected={formState['player2']}
+                selectPlayer={selectPlayer}
+                variant={buttonVariant.regular}
+                color={buttonColor.outlined}
+                fullWidth
+              />
+              <form onSubmit={handleSubmit} className='space-y-2'>
+                <input type='hidden' value={formState['player1']} />
+                <input type='hidden' value={formState['player2']} />
+                <label htmlFor='venue'>
+                  Pick venue, or leave blank to fill later
+                </label>
+                {venues.isLoading && <div>Loading players...</div>}
+                {!venues.isLoading && (
+                  <Select name='venue' onChange={handleSelect}>
+                    {venues.data.map((item) => {
+                      return (
+                        <option key={item.venue_ID} value={item.venue_ID}>
+                          {item.title}
+                        </option>
+                      );
+                    })}
+                  </Select>
+                )}
+                <InputNumber
+                  label='Number of starting cups'
+                  name='gameSize'
+                  value={formState['gameSize']}
+                  min={minGameSize}
+                  max={maxGameSize}
+                  onChange={handleChangeNumber}
+                />
+                <div>
+                  <p>Has the game already been completed?</p>
+                  <div className='grid justify-center'>
+                    <Toggle toggle={handleToggle} active={pastGame} />
                   </div>
                 </div>
-              )}
-              {errorMsg.length > 0 && (
-                <p className='text-negative'>{errorMsg}</p>
-              )}
-              <div className='pt-4'>
-                <Button text='Create!' type='submit' fullWidth />
-              </div>
-            </form>
-          </Card>
+                {pastGame && (
+                  <div className='grid grid-cols-2 gap-4'>
+                    <div>
+                      <h2 className='font-bold text-center'>Home Results</h2>
+                      <div>
+                        Name: {players.data[formState.player1 - 1]?.name}
+                      </div>
+                      <InputNumber
+                        label='Home cups left'
+                        name='homeCupsLeft'
+                        value={formState['homeCupsLeft']}
+                        min={0}
+                        max={maxGameSize}
+                        onChange={handleChangeNumber}
+                      />
+                      <Checkbox
+                        label='forfeited?'
+                        name='homeForfeit'
+                        checked={formState['homeForfeit']}
+                        handleChange={handleForfeitCheck}
+                      />
+                    </div>
+                    <div>
+                      <h2 className='font-bold text-center'>Away Results</h2>
+                      <div>
+                        Name: {players.data[formState.player2 - 1]?.name}
+                      </div>
+                      <InputNumber
+                        label='Away cups left'
+                        name='awayCupsLeft'
+                        value={formState['awayCupsLeft']}
+                        min={0}
+                        max={maxGameSize}
+                        onChange={handleChangeNumber}
+                      />
+                      <Checkbox
+                        label='forfeited?'
+                        name='awayForfeit'
+                        checked={formState['awayForfeit']}
+                        handleChange={handleForfeitCheck}
+                      />
+                    </div>
+                  </div>
+                )}
+                {errorMsg.length > 0 && (
+                  <p className='text-negative'>{errorMsg}</p>
+                )}
+                <div className='pt-4'>
+                  <Button text='Create!' type='submit' fullWidth />
+                </div>
+              </form>
+            </Card>
+          )}
         </div>
       </Container>
       <div className='spacer py-8'></div>
     </>
   );
-}
-
-async function postNewGame(data) {
-  const newGame = await fetch(
-    `${process.env.REACT_APP_BACKEND_URL}/api/v1/games/new`,
-    {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'content-type': 'application/json',
-      },
-      credentials: 'include',
-    }
-  );
-  const newGameJson = await newGame.json();
-  return newGameJson;
 }

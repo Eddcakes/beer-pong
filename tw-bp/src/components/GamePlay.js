@@ -4,10 +4,12 @@ import { useMachine } from '@xstate/react';
 import { createMachineFromState } from '../tableMachine';
 import { Button, buttonColor, Modal } from './index';
 import { Cups } from './Cups';
+import { useMutation } from 'react-query';
 
 //on start first throw - Math.random() < 0.5;
-
+// https://react-query.tanstack.com/guides/mutations
 export function GamePlay({ gameDetails }) {
+  const gameMutate = useMutation((data) => postSaveGamePlay(data));
   const tableMachine = createMachineFromState(gameDetails.game_table);
   const [state, send] = useMachine(tableMachine);
   const centreAdjustment = 1.5;

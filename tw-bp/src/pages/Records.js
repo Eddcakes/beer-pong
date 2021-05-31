@@ -31,19 +31,15 @@ export function Records({ updatePageTitle }) {
     <>
       <Header />
       <Container maxW='max-w-screen-md'>
-        <div className='p-6 space-y-4'>
-          {error && <div>Error loading records</div>}
-          {isLoading && <div>loading...</div>}
-          {!isLoading && (
-            <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
-              {Object.entries(groupedRecords).map(([key, value]) => {
-                return (
-                  <RecordList key={key} recordType={key} records={value} />
-                );
-              })}
-            </div>
-          )}
-        </div>
+        {error && <div>Error loading records</div>}
+        {isLoading && <div>loading...</div>}
+        {!isLoading && (
+          <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
+            {Object.entries(groupedRecords).map(([key, value]) => {
+              return <RecordList key={key} recordType={key} records={value} />;
+            })}
+          </div>
+        )}
       </Container>
       <div className='spacer py-8'></div>
     </>

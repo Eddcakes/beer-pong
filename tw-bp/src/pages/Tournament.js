@@ -17,13 +17,11 @@ export function Tournament({ updatePageTitle }) {
     <>
       <Header />
       <Container>
-        <div className='p-6'>
-          {tournamentId ? (
-            <TournamentDetail id={tournamentId} />
-          ) : (
-            <TournamentList />
-          )}
-        </div>
+        {tournamentId ? (
+          <TournamentDetail id={tournamentId} />
+        ) : (
+          <TournamentList />
+        )}
       </Container>
     </>
   );

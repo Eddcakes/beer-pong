@@ -4,6 +4,9 @@ export async function postPreferences(newPreferences) {
     {
       method: 'POST',
       body: JSON.stringify(newPreferences),
+      headers: {
+        'content-type': 'application/json',
+      },
       credentials: 'include',
     }
   );

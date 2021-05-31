@@ -2,37 +2,37 @@ import React, { useState, useEffect } from 'react';
 import Joi from 'joi';
 import { Button } from './Button';
 import { Input } from './Input';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { fetchPreferences, postPreferences } from '../queries';
+import { useAuth } from '../hooks/useAuth';
 
 const schema = Joi.object().keys({
   avatar_link: Joi.string().trim().uri(),
 });
 
 export function UserPreferences() {
-  //do i need to use authcontext to decide to only show preferences to logged in users
-  // const { user } = useContext(AuthContext);import AuthContext from '../AuthContext';
+  const { user } = useAuth();
   const [preferences, setPreferences] = useState({ avatarLink: '' });
+  const queryClient = useQueryClient();
   const { isLoading, data, error } = useQuery(
     ['preferences'],
-    fetchPreferences
+    fetchPreferences,
+    { enabled: !!user }
   );
-  const mutation = useMutation((data) => postPreferences(data), {
-    onError: (error, variables, context) => {
+  const mutation = useMutation(postPreferences, {
+    onError: (error) => {
       setErrorMsg(error);
     },
-    onSuccess: (data, variables, context) => {
-      console.log('saved changes!');
+    onSuccess: () => {
+      queryClient.invalidateQueries('preferences');
     },
   });
-  // create a variable for initial changes, to compare with current preferences to decide if to post update
-  // const [startingPreferences, setStartingPreferences] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
 
   //name of property and value
   const updatePreferences = (evt) => {
     const { name, value } = evt.target;
-    setPreferences({ ...preferences, [name]: value });
+    setPreferences((old) => ({ ...old, [name]: value }));
   };
 
   const saveChanges = async (evt) => {
@@ -50,38 +50,44 @@ export function UserPreferences() {
     const valid = schema.validate({
       avatar_link: preferences.avatarLink,
     });
-    //if (startingPreferences !== preferences) {
     if (valid.error === undefined) {
       return true;
     } else {
-      //or create custom error msg for user
       setErrorMsg(valid.error.message);
       return false;
     }
   }
-  //else {
-  //}
 
   useEffect(() => {
-    async function fetchData() {
-      const myPreferences = await fetchPreferences();
-      //am i happy setting it to undefined if user not logged in?
-      if (myPreferences.length > 0) {
-        setPreferences(myPreferences[0]);
-      }
+    //sync form state with react-query, or use uncontrolled components with a default?
+    if (data) {
+      setPreferences(data[0]);
     }
-    fetchData();
-  }, []);
+  }, [data]);
+
+  if (!user) {
+    return <div>Please log in to save personal preferences</div>;
+  }
   return (
     <form>
-      <Input
-        name='avatarLink'
-        label='Link to avatar'
-        value={preferences.avatarLink}
-        onChange={updatePreferences}
-        errorMsg={errorMsg}
-      />
-      <Button text='Save changes' handleClick={saveChanges}></Button>
+      {isLoading && <span>Loading...</span>}
+      {error && <span>Error {JSON.stringify(error, null, 2)}</span>}
+      {!isLoading && (
+        <>
+          <Input
+            name='avatarLink'
+            label='Link to avatar'
+            value={preferences?.avatarLink}
+            onChange={updatePreferences}
+            errorMsg={errorMsg}
+          />
+          <Button
+            text='Save changes'
+            handleClick={saveChanges}
+            disabled={mutation.isLoading}
+          />
+        </>
+      )}
     </form>
   );
 }

@@ -12,7 +12,7 @@ export function Home({ updatePageTitle }) {
     <>
       <Header />
       <Container>
-        <div className='grid grid-cols-6 gap-4 p-6'>
+        <div className='grid grid-cols-6 gap-4'>
           <section className='col-span-6 md:col-span-4 space-y-6'>
             <News />
           </section>

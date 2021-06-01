@@ -12,3 +12,4 @@ export * from './fetchVenues';
 export * from './fetchVersus';
 export * from './postNewGame';
 export * from './postPreferences';
+export * from './postSaveGamePlay';

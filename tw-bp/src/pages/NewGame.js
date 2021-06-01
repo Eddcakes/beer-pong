@@ -17,7 +17,7 @@ import {
 } from '../components';
 import { createInitialCups } from '../tableMachine';
 import { fetchPlayers, fetchVenues, postNewGame } from '../queries';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 
 /* clicking on tournament match, would auto fill in game page if not played*/
 /* list of error msgs https://github.com/sideway/joi/blob/master/API.md#list-of-errors */
@@ -60,6 +60,16 @@ function reducer(state, action) {
 
 export function NewGame({ updatePageTitle }) {
   let history = useHistory();
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation(postNewGame, {
+    onError: (error) => {
+      setErrorMsg('Could not create game, please try again later.');
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries('games');
+      history.push(`/games/${data.game_ID}`);
+    },
+  });
   const minGameSize = 6;
   const maxGameSize = 6;
   const [formState, dispatch] = useReducer(reducer, initialForm);
@@ -180,15 +190,7 @@ export function NewGame({ updatePageTitle }) {
         created: new Date(),
         table: pastGame ? null : initialTable,
       };
-      try {
-        const createGame = await postNewGame(values);
-        if (createGame.error) {
-          return setErrorMsg(createGame.error);
-        }
-        history.push(`/game/${createGame.gameId}`);
-      } catch (err) {
-        setErrorMsg('Could not create game, please try again later.');
-      }
+      mutate(values);
     }
   };
 

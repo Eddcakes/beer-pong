@@ -20,8 +20,9 @@ export function TournamentDetail({ id }) {
     <div>
       <div>This is Tournament: {id}</div>
       <>
-        <div className='overflow-auto'>
-          details: {JSON.stringify(tournament)}
+        <div>
+          details:
+          <pre>{JSON.stringify(tournament, null, 2)}</pre>
         </div>
         <>
           <h2 className='text-lg'>Games</h2>

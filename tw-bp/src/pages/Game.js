@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { useAuth } from '../hooks/useAuth';
@@ -34,41 +34,41 @@ export function Game({ updatePageTitle }) {
           <Card
             title={
               <CardTitle
-                home={data.home_name}
-                away={data.away_name}
-                number={data.game_ID}
+                home={data[0].home_name}
+                away={data[0].away_name}
+                number={data[0].game_ID}
               />
             }
           >
             <div className='text-center'>
-              {data.tournament_ID && (
+              {data[0].tournament_ID && (
                 <div>
-                  <div>{data.event}</div>
-                  <div>{data.stage}</div>
+                  <div>{data[0].event}</div>
+                  <div>{data[0].stage}</div>
                 </div>
               )}
               <div>
-                <div>Venue: {data.venue}</div>
+                <div>Venue: {data[0].venue}</div>
                 <div>Starting cups: 6</div>
-                {data.forfeit ? <div>Ended by forfeit</div> : null}
-                {data.notes && <div>Notes: {data.notes}</div>}
+                {data[0].forfeit ? <div>Ended by forfeit</div> : null}
+                {data[0].notes && <div>Notes: {data[0].notes}</div>}
               </div>
             </div>
             <div className='grid grid-cols-2 gap-4'>
               <div>
                 <h2 className='font-bold text-center'>Home Results</h2>
-                <div>Name: {data.home_name}</div>
-                <div>Cups left: {data.homeCupsLeft}</div>
+                <div>Name: {data[0].home_name}</div>
+                <div>Cups left: {data[0].homeCupsLeft}</div>
               </div>
               <div>
                 <h2 className='font-bold text-center'>Away Results</h2>
-                <div>Name: {data.away_name}</div>
-                <div>Cups left: {data.awayCupsLeft}</div>
+                <div>Name: {data[0].away_name}</div>
+                <div>Cups left: {data[0].awayCupsLeft}</div>
               </div>
             </div>
             {/* check for if table json in db needs a better check than just exists haha */}
-            {data.game_table ? (
-              <GamePlay data={data} access='' />
+            {data[0]?.game_table ? (
+              <GamePlay gameDetails={data[0]} access='' />
             ) : (
               <div className='text-center text-sm font-bold pt-4'>
                 Table state was not entered 😥

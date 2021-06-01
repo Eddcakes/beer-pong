@@ -22,7 +22,7 @@ import {
   Records,
 } from './pages';
 import { LoggedOutRoute } from './components/LoggedOutRoute';
-import { AuthorisedRoute } from './components';
+import { AuthorisedRoute, Refreshing } from './components';
 
 /* could try lazy loading protected routes like NewGame? */
 
@@ -61,6 +61,7 @@ function App() {
     <ThemeProvider theme={theme} changeTheme={changeTheme}>
       <AuthProvider>
         <QueryClientProvider client={queryClient}>
+          <Refreshing />
           <Router>
             <Switch>
               <Route path='/versus/:player1Id(\d+)?/:player2Id(\d+)?'>

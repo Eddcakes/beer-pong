@@ -111,6 +111,7 @@ export function Versus({ updatePageTitle }) {
       <Header />
       <Container>
         <Card title='Player search'>
+          {errorPlayerList && <span>Error grabbing player list</span>}
           <div className='flex justify-around p-2'>
             <PlayerPicker
               playerNames={playerList}

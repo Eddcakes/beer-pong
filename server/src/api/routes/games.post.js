@@ -104,7 +104,7 @@ router.post(
       if (createNewGame) {
         res.json({
           message: 'New game created!',
-          gameId: createNewGame[0].game_ID,
+          game_ID: createNewGame[0].game_ID,
         });
       } else {
         const error = new Error('Could not create game');

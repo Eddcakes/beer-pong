@@ -1,53 +1,51 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 
 import placeholderImg from '../assets/evt-placeholder.jpg';
+import { fetchTournaments } from '../queries';
 /* sidebar on homepage */
 export function TournamentList() {
-  const [tournaments, setTournaments] = useState([]);
-
-  useEffect(() => {
-    async function fetchData() {
-      const getGameDetails = await fetchTournaments();
-      if (getGameDetails.length > 0) {
-        setTournaments(getGameDetails);
-      }
-    }
-    fetchData();
-  }, []);
+  const { isLoading, error, data } = useQuery('tournaments', fetchTournaments);
+  if (error) {
+    <div>Error with tournaments</div>;
+  }
   return (
     <>
       <div>
         <h3 className='text-right italic bg-sec-background pr-4'>Upcoming</h3>
-        {tournaments
-          .filter((event) => {
-            const date = new Date(event.date);
-            return date > new Date();
-          })
-          .map((t) => (
-            <Short
-              key={`${t.tournament_ID}`}
-              id={t.tournament_ID}
-              title={t.title}
-              date={t.date}
-            />
-          ))}
+        {isLoading && <div>loading...</div>}
+        {!isLoading &&
+          data
+            .filter((event) => {
+              const date = new Date(event.date);
+              return date > new Date();
+            })
+            .map((t) => (
+              <Short
+                key={`${t.tournament_ID}`}
+                id={t.tournament_ID}
+                title={t.title}
+                date={t.date}
+              />
+            ))}
       </div>
       <div>
         <h3 className='text-right italic bg-sec-background pr-4'>Previous</h3>
-        {tournaments
-          .filter((event) => {
-            const date = new Date(event.date);
-            return date < new Date();
-          })
-          .map((t) => (
-            <Short
-              key={`${t.tournament_ID}`}
-              id={t.tournament_ID}
-              title={t.title}
-              date={t.date}
-            />
-          ))}
+        {isLoading && <div>loading...</div>}
+        {!isLoading &&
+          data
+            .filter((event) => {
+              const date = new Date(event.date);
+              return date < new Date();
+            })
+            .map((t) => (
+              <Short
+                key={`${t.tournament_ID}`}
+                id={t.tournament_ID}
+                title={t.title}
+                date={t.date}
+              />
+            ))}
       </div>
     </>
   );
@@ -86,18 +84,3 @@ function Short({ image = '', id, title, date }) {
           {date}
         </figcaption>
 */
-
-async function fetchTournaments() {
-  try {
-    const tournaments = await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/api/v1/tournaments/`,
-      {
-        credentials: 'include',
-      }
-    );
-    const resp = await tournaments.json();
-    return resp;
-  } catch (err) {
-    throw new Error(err);
-  }
-}

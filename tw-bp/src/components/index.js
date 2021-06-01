@@ -19,6 +19,7 @@ export { News } from './News';
 export { PinnedNews } from './PinnedNews';
 export { PlayerOverview } from './PlayerOverview';
 export { PlayerPicker } from './PlayerPicker';
+export { Refreshing } from './Refreshing';
 export { Select } from './Select';
 export { Swatch } from './Swatch';
 export { ThemeSwitcher } from './ThemeSwitcher';

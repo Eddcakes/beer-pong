@@ -16,6 +16,8 @@ import {
   Toggle,
 } from '../components';
 import { createInitialCups } from '../tableMachine';
+import { fetchPlayers, fetchVenues, postNewGame } from '../queries';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 
 /* clicking on tournament match, would auto fill in game page if not played*/
 /* list of error msgs https://github.com/sideway/joi/blob/master/API.md#list-of-errors */
@@ -58,14 +60,23 @@ function reducer(state, action) {
 
 export function NewGame({ updatePageTitle }) {
   let history = useHistory();
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation(postNewGame, {
+    onError: (error) => {
+      setErrorMsg('Could not create game, please try again later.');
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries('games');
+      history.push(`/games/${data.game_ID}`);
+    },
+  });
   const minGameSize = 6;
   const maxGameSize = 6;
   const [formState, dispatch] = useReducer(reducer, initialForm);
-  const [playerList, setPlayerList] = useState(null);
-  const [venueList, setVenueList] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [pastGame, setPastGame] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const players = useQuery('players', fetchPlayers);
+  const venues = useQuery('venues', fetchVenues);
 
   const selectPlayer = (name, value) => {
     //how to prevent picking the same player?
@@ -179,15 +190,7 @@ export function NewGame({ updatePageTitle }) {
         created: new Date(),
         table: pastGame ? null : initialTable,
       };
-      try {
-        const createGame = await postNewGame(values);
-        if (createGame.error) {
-          return setErrorMsg(createGame.error);
-        }
-        history.push(`/game/${createGame.gameId}`);
-      } catch (err) {
-        setErrorMsg('Could not create game, please try again later.');
-      }
+      mutate(values);
     }
   };
 
@@ -213,38 +216,6 @@ export function NewGame({ updatePageTitle }) {
       setErrorMsg('Player 1 and Player 2 must be different!');
     }
   }
-
-  const getPlayers = async () => {
-    try {
-      const fetchPlayers = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/api/v1/players`,
-        {
-          credentials: 'include',
-        }
-      );
-      const playersJson = await fetchPlayers.json();
-      setPlayerList(playersJson);
-      return playersJson;
-    } catch (err) {
-      console.error('fetching players error:', err);
-    }
-  };
-
-  const getVenues = async () => {
-    try {
-      const fetchVenues = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/api/v1/venues`,
-        {
-          credentials: 'include',
-        }
-      );
-      const venuesJson = await fetchVenues.json();
-      setVenueList(venuesJson);
-      return venuesJson;
-    } catch (err) {
-      console.error('fetching venues error:', err);
-    }
-  };
 
   /* schema */
   const schema = Joi.object().keys({
@@ -294,26 +265,17 @@ export function NewGame({ updatePageTitle }) {
   useEffect(() => {
     updatePageTitle('Friendlies');
   }, [updatePageTitle]);
-
-  useEffect(() => {
-    //load player name options
-    Promise.all([getPlayers(), getVenues()]).then((values) => {
-      setLoading(false);
-    });
-  }, []);
-  if (loading) {
-    return <div>loading</div>;
-  }
   return (
     <>
       <Header />
       <Container maxW='max-w-xl'>
-        <div className='p-6'>
+        {players.isLoading && <div>Loading players...</div>}
+        {!players.isLoading && (
           <Card title='New friendly'>
             <label htmlFor='player1'>Home:</label>
             <PlayerPicker
               name='player1'
-              playerNames={playerList}
+              playerNames={players.data}
               selected={formState['player1']}
               selectPlayer={selectPlayer}
               variant={buttonVariant.regular}
@@ -323,7 +285,7 @@ export function NewGame({ updatePageTitle }) {
             <label htmlFor='player2'>Away:</label>
             <PlayerPicker
               name='player2'
-              playerNames={playerList}
+              playerNames={players.data}
               selected={formState['player2']}
               selectPlayer={selectPlayer}
               variant={buttonVariant.regular}
@@ -336,15 +298,18 @@ export function NewGame({ updatePageTitle }) {
               <label htmlFor='venue'>
                 Pick venue, or leave blank to fill later
               </label>
-              <Select name='venue' onChange={handleSelect}>
-                {venueList.map((item) => {
-                  return (
-                    <option key={item.venue_ID} value={item.venue_ID}>
-                      {item.title}
-                    </option>
-                  );
-                })}
-              </Select>
+              {venues.isLoading && <div>Loading players...</div>}
+              {!venues.isLoading && (
+                <Select name='venue' onChange={handleSelect}>
+                  {venues.data.map((item) => {
+                    return (
+                      <option key={item.venue_ID} value={item.venue_ID}>
+                        {item.title}
+                      </option>
+                    );
+                  })}
+                </Select>
+              )}
               <InputNumber
                 label='Number of starting cups'
                 name='gameSize'
@@ -363,7 +328,7 @@ export function NewGame({ updatePageTitle }) {
                 <div className='grid grid-cols-2 gap-4'>
                   <div>
                     <h2 className='font-bold text-center'>Home Results</h2>
-                    <div>Name: {playerList[formState.player1 - 1]?.name}</div>
+                    <div>Name: {players.data[formState.player1 - 1]?.name}</div>
                     <InputNumber
                       label='Home cups left'
                       name='homeCupsLeft'
@@ -381,7 +346,7 @@ export function NewGame({ updatePageTitle }) {
                   </div>
                   <div>
                     <h2 className='font-bold text-center'>Away Results</h2>
-                    <div>Name: {playerList[formState.player2 - 1]?.name}</div>
+                    <div>Name: {players.data[formState.player2 - 1]?.name}</div>
                     <InputNumber
                       label='Away cups left'
                       name='awayCupsLeft'
@@ -407,25 +372,9 @@ export function NewGame({ updatePageTitle }) {
               </div>
             </form>
           </Card>
-        </div>
+        )}
       </Container>
       <div className='spacer py-8'></div>
     </>
   );
-}
-
-async function postNewGame(data) {
-  const newGame = await fetch(
-    `${process.env.REACT_APP_BACKEND_URL}/api/v1/games/new`,
-    {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'content-type': 'application/json',
-      },
-      credentials: 'include',
-    }
-  );
-  const newGameJson = await newGame.json();
-  return newGameJson;
 }

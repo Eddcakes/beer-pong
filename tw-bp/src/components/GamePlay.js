@@ -1,13 +1,25 @@
 import { useRef } from 'react';
 import { useMachine } from '@xstate/react';
+import { useMutation, useQueryClient } from 'react-query';
 
 import { createMachineFromState } from '../tableMachine';
 import { Button, buttonColor, Modal } from './index';
 import { Cups } from './Cups';
+import { postSaveGamePlay } from '../queries';
 
 //on start first throw - Math.random() < 0.5;
-
+// https://react-query.tanstack.com/guides/mutations
 export function GamePlay({ gameDetails }) {
+  const queryClient = useQueryClient();
+  const gameMutate = useMutation(postSaveGamePlay, {
+    onError: (error) => {
+      // error toast
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['game', gameDetails.game_ID]);
+      //save toast
+    },
+  });
   const tableMachine = createMachineFromState(gameDetails.game_table);
   const [state, send] = useMachine(tableMachine);
   const centreAdjustment = 1.5;
@@ -64,15 +76,7 @@ export function GamePlay({ gameDetails }) {
       forfeit: state.context.forfeit,
       table: toStringify,
     };
-    try {
-      const updateGame = await postSaveGamePlay(data);
-      if (updateGame.error) {
-        return console.error('post error', updateGame.error);
-      }
-      window.location.reload();
-    } catch (err) {
-      console.log('error when trying to post', err);
-    }
+    gameMutate.mutate(data);
   };
 
   return (
@@ -203,25 +207,4 @@ function floorBound(num, lower, upper) {
     return lower;
   }
   return Math.floor(num);
-}
-
-async function postSaveGamePlay(data) {
-  const { game_ID: gameId, ...rest } = data;
-  try {
-    const updateGame = await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/api/v1/games/${gameId}`,
-      {
-        method: 'POST',
-        body: JSON.stringify(rest),
-        headers: {
-          'content-type': 'application/json',
-        },
-        credentials: 'include',
-      }
-    );
-    const resp = await updateGame.json();
-    return resp;
-  } catch (err) {
-    throw new Error(err);
-  }
 }

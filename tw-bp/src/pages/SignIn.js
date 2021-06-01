@@ -70,54 +70,52 @@ export function SignIn({ updatePageTitle }) {
   }, [updatePageTitle]);
   return (
     <Container maxW='max-w-screen-md'>
-      <div className='p-4'>
-        <div className='flex justify-center pb-4'>
-          <Logo />
-        </div>
-        <Card
-          title={
-            <div className='grid justify-center'>
-              <Decoration />
-              <h2 className='text-3xl font-semibold text-primary-text py-2'>
-                Sign in
-              </h2>
-            </div>
-          }
-        >
-          <form>
-            <Input
-              label='Username'
-              name='username'
-              required={true}
-              value={username}
-              onChange={handleUsername}
-            />
-            <Input
-              label='Password'
-              name='password'
-              type='password'
-              required={true}
-              value={password}
-              onChange={handlePassword}
-            />
-            <Link to='/' className='text-link-text hover:underline'>
-              Forgotten password?
-            </Link>
-            {errorMsg.length > 0 && <p className='text-negative'>{errorMsg}</p>}
-            <div className='pt-2'>
-              <Button
-                text='Sign in'
-                handleClick={handleSubmit}
-                color='outlined'
-                fullWidth
-              />
-            </div>
-            <Link to='/signup' className='text-link-text hover:underline'>
-              Or sign up here
-            </Link>
-          </form>
-        </Card>
+      <div className='flex justify-center pb-4'>
+        <Logo />
       </div>
+      <Card
+        title={
+          <div className='grid justify-center'>
+            <Decoration />
+            <h2 className='text-3xl font-semibold text-primary-text py-2'>
+              Sign in
+            </h2>
+          </div>
+        }
+      >
+        <form>
+          <Input
+            label='Username'
+            name='username'
+            required={true}
+            value={username}
+            onChange={handleUsername}
+          />
+          <Input
+            label='Password'
+            name='password'
+            type='password'
+            required={true}
+            value={password}
+            onChange={handlePassword}
+          />
+          <Link to='/' className='text-link-text hover:underline'>
+            Forgotten password?
+          </Link>
+          {errorMsg.length > 0 && <p className='text-negative'>{errorMsg}</p>}
+          <div className='pt-2'>
+            <Button
+              text='Sign in'
+              handleClick={handleSubmit}
+              color='outlined'
+              fullWidth
+            />
+          </div>
+          <Link to='/signup' className='text-link-text hover:underline'>
+            Or sign up here
+          </Link>
+        </form>
+      </Card>
     </Container>
   );
 }

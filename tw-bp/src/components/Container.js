@@ -4,7 +4,7 @@ import React from 'react';
 
 export function Container({ maxW = '', maxH = '', children }) {
   return (
-    <div className={`container mx-auto space-y-2 ${maxW} ${maxH}`}>
+    <div className={`container mx-auto p-6 space-y-4 ${maxW} ${maxH}`}>
       {children}
     </div>
   );

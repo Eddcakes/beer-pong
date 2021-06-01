@@ -12,7 +12,7 @@ const selectUserPreferences = `
 SELECT avatar_link as avatarLink, modified, user_ID FROM ${process.env.DATABASE}.preferences WHERE user_ID = ?`;
 
 const insertUserPreferences = `
-INSERT INTO ${process.env.DATABASE}.preferences (user_ID, avatar_link, modified) VALUES(?, ?, ?)`;
+INSERT INTO ${process.env.DATABASE}.preferences (user_ID, avatar_link) VALUES(?, ?)`;
 
 router.get('/', async (req, res) => {
   let pool;
@@ -43,25 +43,28 @@ router.post('/', async (req, res, next) => {
         req.session.user.user_ID
       );
       if (userPreferences.length > 0) {
-        //if they do, update
+        const update = `UPDATE ${process.env.DATABASE}.preferences
+        SET avatar_link="${req.body.avatar_link}"
+        WHERE user_ID=${req.session.user.user_ID}`;
+        const updateUserPreferences = await pool.query(update);
+        if (updateUserPreferences) {
+          res.json({ message: 'Preferences updated' });
+        } else {
+          const error = new Error('Could not update user preferences');
+          next(error);
+        }
       } else {
-        const values = [
-          req.session.user.user_ID,
-          req.body.avatar_link,
-          new Date(),
-        ]; //'NOW()' sets to 0000-00-00 00:00:00:00 ?
+        const values = [req.session.user.user_ID, req.body.avatar_link];
         const createUserPreferences = await pool.query(
           insertUserPreferences,
           values
         );
-        //what do we want to do with the response?
         if (createUserPreferences) {
           res.json({ message: 'Preferences created' });
         } else {
           const error = new Error('Could not create user preferences');
           next(error);
         }
-        //if they dont, post
       }
     } catch (err) {
       next(err);

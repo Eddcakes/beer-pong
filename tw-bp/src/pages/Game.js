@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { useAuth } from '../hooks/useAuth';
 import { Container, Header, Card } from '../components';
 import { GamePlay } from '../components/GamePlay';
+import { fetchGameById } from '../queries';
+import { useQuery } from 'react-query';
 /*
   only "authorised" users for this game should be able to save changes
 */
@@ -15,75 +17,65 @@ export function Game({ updatePageTitle }) {
   const { gameId } = useParams();
   // might be nice to save first throw
   // const [firstThrow, setFirstThrow] = useState(null)
-  const [gameDetails, setGameDetails] = useState(null);
-
-  useEffect(() => {
-    async function fetchData() {
-      const getGameDetails = await fetchGameById(gameId);
-      //am i happy setting it to undefined if user not logged in?
-      if (getGameDetails.length > 0) {
-        setGameDetails(getGameDetails[0]);
-      }
-    }
-    fetchData();
-  }, [gameId]);
+  const { isLoading, error, data } = useQuery(['game', gameId], () =>
+    fetchGameById(gameId)
+  );
 
   useEffect(() => {
     updatePageTitle(`Game: ${gameId}`);
   }, [updatePageTitle, gameId]);
-  if (gameDetails === null) {
-    return <div>Loading</div>;
-  }
   return (
     <>
       <Header />
       <Container>
-        <div className='p-6'>
+        {error && <div>Error {gameId}</div>}
+        {isLoading && <div>Loading {gameId}</div>}
+        {!isLoading && (
           <Card
             title={
               <CardTitle
-                home={gameDetails.home_name}
-                away={gameDetails.away_name}
-                number={gameDetails.game_ID}
+                home={data[0].home_name}
+                away={data[0].away_name}
+                number={data[0].game_ID}
               />
             }
           >
             <div className='text-center'>
-              {gameDetails.tournament_ID && (
+              {data[0].tournament_ID && (
                 <div>
-                  <div>{gameDetails.event}</div>
-                  <div>{gameDetails.stage}</div>
+                  <div>{data[0].event}</div>
+                  <div>{data[0].stage}</div>
                 </div>
               )}
               <div>
-                <div>Venue: {gameDetails.venue}</div>
+                <div>Venue: {data[0].venue}</div>
                 <div>Starting cups: 6</div>
-                {gameDetails.forfeit ? <div>Ended by forfeit</div> : null}
-                {gameDetails.notes && <div>Notes: {gameDetails.notes}</div>}
+                {data[0].forfeit ? <div>Ended by forfeit</div> : null}
+                {data[0].notes && <div>Notes: {data[0].notes}</div>}
               </div>
             </div>
             <div className='grid grid-cols-2 gap-4'>
               <div>
                 <h2 className='font-bold text-center'>Home Results</h2>
-                <div>Name: {gameDetails.home_name}</div>
-                <div>Cups left: {gameDetails.homeCupsLeft}</div>
+                <div>Name: {data[0].home_name}</div>
+                <div>Cups left: {data[0].homeCupsLeft}</div>
               </div>
               <div>
                 <h2 className='font-bold text-center'>Away Results</h2>
-                <div>Name: {gameDetails.away_name}</div>
-                <div>Cups left: {gameDetails.awayCupsLeft}</div>
+                <div>Name: {data[0].away_name}</div>
+                <div>Cups left: {data[0].awayCupsLeft}</div>
               </div>
             </div>
             {/* check for if table json in db needs a better check than just exists haha */}
-            {gameDetails.game_table ? (
-              <GamePlay gameDetails={gameDetails} access='' />
+            {data[0]?.game_table ? (
+              <GamePlay gameDetails={data[0]} access='' />
             ) : (
               <div className='text-center text-sm font-bold pt-4'>
                 Table state was not entered 😥
               </div>
             )}
           </Card>
-        </div>
+        )}
       </Container>
       <div className='spacer py-8'></div>
     </>
@@ -122,19 +114,4 @@ function CardTitle({ home, away, number }) {
       <div>#{number}</div>
     </div>
   );
-}
-
-async function fetchGameById(gameId) {
-  try {
-    const game = await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/api/v1/games/${gameId}`,
-      {
-        credentials: 'include',
-      }
-    );
-    const resp = await game.json();
-    return resp;
-  } catch (err) {
-    throw new Error(err);
-  }
 }

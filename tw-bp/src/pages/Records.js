@@ -1,30 +1,28 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo } from 'react';
+import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 
 import { Container, Header } from '../components';
+import { fetchRecords } from '../queries';
 
 /* like premier league stats centre */
 
 export function Records({ updatePageTitle }) {
-  const [records, setRecords] = useState([]);
-  useEffect(() => {
-    async function fetchData() {
-      const getRecords = await fetchRecords();
-      if (getRecords.length > 0) {
-        let groupedRecords = {};
-        getRecords.forEach((record) => {
-          if (groupedRecords[record.label]) {
-            groupedRecords[record.label].push(record);
-          } else {
-            groupedRecords[record.label] = record.label;
-            groupedRecords[record.label] = [record];
-          }
-        });
-        setRecords(groupedRecords);
-      }
+  const { isLoading, error, data } = useQuery('tournaments', fetchRecords);
+  const groupedRecords = useMemo(() => {
+    let grouped = {};
+    if (data) {
+      data.forEach((record) => {
+        if (grouped[record.label]) {
+          grouped[record.label].push(record);
+        } else {
+          grouped[record.label] = record.label;
+          grouped[record.label] = [record];
+        }
+      });
     }
-    fetchData();
-  }, []);
+    return grouped;
+  }, [data]);
 
   useEffect(() => {
     updatePageTitle(`Records`);
@@ -33,13 +31,15 @@ export function Records({ updatePageTitle }) {
     <>
       <Header />
       <Container maxW='max-w-screen-md'>
-        <div className='p-6 space-y-4'>
+        {error && <div>Error loading records</div>}
+        {isLoading && <div>loading...</div>}
+        {!isLoading && (
           <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
-            {Object.entries(records).map(([key, value]) => {
+            {Object.entries(groupedRecords).map(([key, value]) => {
               return <RecordList key={key} recordType={key} records={value} />;
             })}
           </div>
-        </div>
+        )}
       </Container>
       <div className='spacer py-8'></div>
     </>
@@ -72,19 +72,4 @@ function DisplayRecords({ record }) {
       <div>{record.value}</div>
     </div>
   );
-}
-
-async function fetchRecords() {
-  try {
-    const records = await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/api/v1/records/`,
-      {
-        credentials: 'include',
-      }
-    );
-    const resp = await records.json();
-    return resp;
-  } catch (err) {
-    throw new Error(err);
-  }
 }

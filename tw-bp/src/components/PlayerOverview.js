@@ -25,6 +25,7 @@ export function PlayerOverview({ details }) {
       {details.map((player, idx) => {
         // check if idx is last in details
         const last = details.length - 1;
+        if (player == null) return null;
         return (
           <ColumnPlayer
             playerData={player}

@@ -10,7 +10,7 @@ import {
   Header,
   Container,
 } from '../components';
-import { fetchPlayers } from '../queries';
+import { fetchPlayerOverview, fetchPlayers } from '../queries';
 
 export function Versus({ updatePageTitle }) {
   let history = useHistory();
@@ -153,12 +153,4 @@ export function Versus({ updatePageTitle }) {
 
 function isIntOrStringInt(param) {
   return param === '' ? false : Number.isInteger(Number(param));
-}
-
-async function fetchPlayerOverview(playerId) {
-  const overviewResp = await fetch(
-    `${process.env.REACT_APP_BACKEND_URL}/api/v1/overview/${playerId}`
-  );
-  const overview = await overviewResp.json();
-  return overview;
 }

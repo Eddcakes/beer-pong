@@ -6,12 +6,12 @@ const router = express.Router();
 const query = `SELECT
 games.game_ID, games.venue_ID, games.date, games.home_ID, games.homeCupsLeft, games.away_ID, games.awayCupsLeft, games.tournament_ID, games.stage, games.notes,
 p1.name as home_name, p2.name as away_name, tournaments.title as event, venues.title as venue
-FROM games
-INNER JOIN players AS p1 ON home_ID = p1.player_ID
-INNER JOIN players AS p2 ON away_ID = p2.player_ID
-INNER JOIN tournaments ON games.tournament_ID = tournaments.tournament_ID
-INNER JOIN venues ON games.venue_ID = venues.venue_ID`;
-const pvp = `WHERE home_ID = ? AND away_ID = ? OR away_ID = ? AND home_ID = ?`;
+FROM ${process.env.DATABASE}.games
+LEFT JOIN players AS p1 ON home_ID = p1.player_ID
+LEFT JOIN players AS p2 ON away_ID = p2.player_ID
+LEFT JOIN tournaments ON games.tournament_ID = tournaments.tournament_ID
+LEFT JOIN venues ON games.venue_ID = venues.venue_ID`;
+const pvp = `WHERE games.archived = 0 AND (home_ID = ? AND away_ID = ? OR away_ID = ? AND home_ID = ?)`;
 
 router.get('/', async (req, res) => {
   return res.json({ message: 'Versus requires 2 IDs to compare' });

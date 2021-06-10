@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 export function Match({ details }) {
   const isWinner = (cupsLeft) => {
-    return cupsLeft > 0 ? true : false;
+    return cupsLeft === 0 ? true : false;
   };
   return (
     <div className='shadow px-4 pb-4 space-y-2'>
@@ -20,7 +20,7 @@ export function Match({ details }) {
         <div>
           <Link
             className={`text-link-text underline relative ${
-              isWinner(details.homeCupsLeft) && 'psudo-winner'
+              isWinner(details.awayCupsLeft) && 'psudo-winner'
             }`}
             to={`/player/${details.home_ID}`}
           >
@@ -31,7 +31,7 @@ export function Match({ details }) {
         <div>
           <Link
             className={`text-link-text underline relative ${
-              isWinner(details.awayCupsLeft) && 'psudo-winner'
+              isWinner(details.homeCupsLeft) && 'psudo-winner'
             }`}
             to={`/player/${details.away_ID}`}
           >

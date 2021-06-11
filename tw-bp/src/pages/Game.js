@@ -2,10 +2,10 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { useAuth } from '../hooks/useAuth';
-import { Container, Header, Card } from '../components';
-import { GamePlay } from '../components/GamePlay';
+import { Container, Header, Card, GamePlay, GameView } from '../components';
 import { fetchGameById } from '../queries';
 import { useQuery } from 'react-query';
+
 /*
   only "authorised" users for this game should be able to save changes
 */
@@ -40,6 +40,11 @@ export function Game({ updatePageTitle }) {
               />
             }
           >
+            {!isZero(data[0].locked) && (
+              <div className='text-right' title='This game is locked'>
+                locked 🔒
+              </div>
+            )}
             <div className='text-center'>
               {data[0].tournament_ID && (
                 <div>
@@ -68,7 +73,11 @@ export function Game({ updatePageTitle }) {
             </div>
             {/* check for if table json in db needs a better check than just exists haha */}
             {data[0]?.game_table ? (
-              <GamePlay gameDetails={data[0]} access='' />
+              isZero(data[0].locked) ? (
+                <GamePlay gameDetails={data[0]} access='' />
+              ) : (
+                <GameView gameDetails={data[0]} />
+              )
             ) : (
               <div className='text-center text-sm font-bold pt-4'>
                 Table state was not entered 😥
@@ -115,3 +124,5 @@ function CardTitle({ home, away, number }) {
     </div>
   );
 }
+
+const isZero = (val) => Number(val) === 0;

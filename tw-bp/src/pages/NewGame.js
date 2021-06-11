@@ -189,6 +189,7 @@ export function NewGame({ updatePageTitle }) {
         ...formState,
         created: new Date(),
         table: pastGame ? null : initialTable,
+        locked: pastGame ? 1 : 0,
       };
       mutate(values);
     }

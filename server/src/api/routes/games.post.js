@@ -56,9 +56,12 @@ INSERT INTO ${process.env.DATABASE}.games
   forfeit,
   created_by,
   modified_by,
-  game_table)
-VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
+  game_table,
+  locked)
+VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 RETURNING game_ID, home_ID, away_ID`;
+
+const whereGameId = `WHERE games.game_ID = ?`;
 
 /* whats hitting error */
 const validateNewGame = (errorMessage) => (req, res, next) => {
@@ -82,6 +85,7 @@ const validateNewGame = (errorMessage) => (req, res, next) => {
   }
 };
 
+/* handle completed game */
 router.post(
   '/new',
   validateNewGame('Could not post new game'),
@@ -96,6 +100,7 @@ router.post(
       req.session.user.user_ID,
       req.session.user.user_ID,
       req.body.table,
+      req.body.locked,
     ];
     let pool;
     try {
@@ -118,18 +123,24 @@ router.post(
 );
 
 // update game details
+/* handle complete game (locked) */
 router.post(
   '/:id',
   //validateNewGame('Could not post new game'),
   async (req, res, next) => {
     let pool;
     try {
+      const lockOnWin =
+        req.body.homeCupsLeft === 0 || req.body.awayCupsLeft === 0
+          ? 'locked=1,'
+          : '';
       const updateSql = `UPDATE ${process.env.DATABASE}.games 
-    SET 
-    homeCupsLeft=${req.body.homeCupsLeft},
-    awayCupsLeft=${req.body.awayCupsLeft},
-    game_table='${req.body.table}'
-    WHERE game_ID = ?`;
+      SET ${lockOnWin}
+      homeCupsLeft=${req.body.homeCupsLeft},
+      awayCupsLeft=${req.body.awayCupsLeft},
+      game_table='${req.body.table}'
+      ${whereGameId}
+      `;
       pool = await poolPromise;
       const updateGame = await pool.query(updateSql, req.params.id);
       if (updateGame) {

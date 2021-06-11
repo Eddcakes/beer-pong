@@ -23,15 +23,16 @@ games.created,
 games.modified,
 games.created_by,
 games.modified_by,
-games.game_table
+games.game_table,
+games.locked
 FROM ${process.env.DATABASE}.games
 INNER JOIN players AS p1 ON home_ID = p1.player_ID
 INNER JOIN players AS p2 ON away_ID = p2.player_ID
 LEFT JOIN tournaments ON games.tournament_ID = tournaments.tournament_ID
 LEFT JOIN venues ON games.venue_ID = venues.venue_ID`;
-const whereGameId = `WHERE games.game_ID = ?`;
-const whereTournamentId = `WHERE games.tournament_ID = ?`;
-const wherePlayerId = `WHERE games.home_ID = ? OR games.away_ID = ?`;
+const whereGameId = `WHERE games.archived = 0 AND games.game_ID = ?`;
+const whereTournamentId = `WHERE games.archived = 0 AND games.tournament_ID = ?`;
+const wherePlayerId = `WHERE games.archived = 0 AND (games.home_ID = ? OR games.away_ID = ?)`;
 const orderByIdDesc = `ORDER BY games.game_ID DESC`;
 const orderByDateDesc = `ORDER BY games.date DESC`;
 const limitByRecent = `LIMIT ${process.env.RECENT_ITEMS}`;

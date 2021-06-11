@@ -2,11 +2,16 @@
 export { AuthorisedRoute } from './AuthorisedRoute';
 export { Avatar } from './Avatar';
 export * from './Button';
-export { Checkbox } from './Checkbox';
 export { Card } from './Card';
+export { Checkbox } from './Checkbox';
 export { Container } from './Container';
+export { Cup } from './Cup';
+export { Cups } from './Cups';
+export { CupsView } from './CupsView';
 export { Decoration } from './Decoration';
 export { Divider } from './Divider';
+export { GamePlay } from './GamePlay';
+export { GameView } from './GameView';
 export { Header } from './Header';
 export { Input } from './Input';
 export { InputNumber } from './InputNumber';

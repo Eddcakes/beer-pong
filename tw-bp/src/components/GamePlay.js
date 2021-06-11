@@ -115,7 +115,6 @@ export function GamePlay({ gameDetails }) {
         />
         {state.matches('playing') && (
           <div className='pb-4'>
-            {' '}
             <Button
               text='Home forfeit?'
               onClick={(_, evt) => send('FORFEIT_HOME')}

@@ -4,18 +4,18 @@ import { poolPromise } from '../../db.js';
 const router = express.Router();
 
 const selectAndExpandGames = `
-SELECT games.game_ID,
-games.venue_ID,
+SELECT games.id,
+games.venue_id,
 venues.title as venue,
 tournaments.title as event,
 games.date,
-games.home_ID,
+games.home_id,
 p1.name as home_name,
-games.homeCupsLeft,
-games.away_ID,
+games.home_cups_left,
+games.away_id,
 p2.name as away_name,
-games.awayCupsLeft,
-games.tournament_ID,
+games.away_cups_left,
+games.tournament_id,
 games.stage,
 games.notes,
 games.forfeit,
@@ -26,95 +26,77 @@ games.modified_by,
 games.game_table,
 games.locked
 FROM ${process.env.DATABASE}.games
-INNER JOIN players AS p1 ON home_ID = p1.player_ID
-INNER JOIN players AS p2 ON away_ID = p2.player_ID
-LEFT JOIN tournaments ON games.tournament_ID = tournaments.tournament_ID
-LEFT JOIN venues ON games.venue_ID = venues.venue_ID`;
-const whereGameId = `WHERE games.archived = 0 AND games.game_ID = ?`;
-const whereTournamentId = `WHERE games.archived = 0 AND games.tournament_ID = ?`;
-const wherePlayerId = `WHERE games.archived = 0 AND (games.home_ID = ? OR games.away_ID = ?)`;
-const orderByIdDesc = `ORDER BY games.game_ID DESC`;
+INNER JOIN players AS p1 ON home_id = p1.id
+INNER JOIN players AS p2 ON away_id = p2.id
+LEFT JOIN tournaments ON games.tournament_id = tournaments.id
+LEFT JOIN venues ON games.venue_id = venues.id`;
+const whereGameId = `WHERE games.archived = false AND games.id = $1`;
+const whereTournamentId = `WHERE games.archived = false AND games.tournament_id = $1`;
+const wherePlayerId = `WHERE games.archived = false AND (games.home_id = $1 OR games.away_id = $2)`;
+const orderByIdDesc = `ORDER BY games.id DESC`;
 const orderByDateDesc = `ORDER BY games.date DESC`;
 const limitByRecent = `LIMIT ${process.env.RECENT_ITEMS}`;
 
 router.get('/', async (req, res) => {
-  let pool;
+  const client = await poolPromise.connect();
   try {
-    pool = await poolPromise;
-    const data = await pool.query(`${selectAndExpandGames} ${orderByIdDesc}`);
-    const transformed = data.map((game) => {
-      if (game.game_table !== null && game.game_table.length > 0) {
-        game.game_table = JSON.parse(game.game_table);
-      }
-      return game;
-    });
-    return res.json(transformed);
+    const data = await client.query(`${selectAndExpandGames} ${orderByIdDesc}`);
+    return res.json(data.rows);
   } catch (err) {
     res.status(500);
     res.send(err.message);
+  } finally {
+    client.release();
   }
 });
 
 router.get('/:id', async (req, res) => {
-  let pool;
+  const client = await poolPromise.connect();
   try {
-    pool = await poolPromise;
-    const data = await pool.query(
-      `${selectAndExpandGames} ${whereGameId}`,
-      req.params.id
-    );
-    const transformed = data.map((game) => {
-      if (game.game_table !== null && game.game_table.length > 0) {
-        game.game_table = JSON.parse(game.game_table);
-      }
-      return game;
-    });
-    return res.json(transformed);
+    const data = await client.query(`${selectAndExpandGames} ${whereGameId}`, [
+      req.params.id,
+    ]);
+    return res.json(data.rows);
   } catch (err) {
     res.status(500);
     res.send(err.message);
+  } finally {
+    client.release();
   }
 });
 
 router.get('/tournament/:id', async (req, res) => {
-  let pool;
+  const client = await poolPromise.connect();
   try {
-    pool = await poolPromise;
-    const data = await pool.query(
+    const data = await client.query(
       `${selectAndExpandGames} ${whereTournamentId}`,
-      req.params.id
+      [req.params.id]
     );
-    const transformed = data.map((game) => {
-      if (game.game_table !== null && game.game_table.length > 0) {
-        game.game_table = JSON.parse(game.game_table);
-      }
-      return game;
-    });
-    return res.json(transformed);
+    return res.json(data.rows);
   } catch (err) {
     res.status(500);
     res.send(err.message);
+  } finally {
+    client.release();
   }
 });
 
 router.get('/recent/:id', async (req, res) => {
-  let pool;
+  const client = await poolPromise.connect();
   try {
-    pool = await poolPromise;
-    const data = await pool.query(
+    console.log(
+      `${selectAndExpandGames} ${wherePlayerId} ${orderByDateDesc} ${limitByRecent}`
+    );
+    const data = await client.query(
       `${selectAndExpandGames} ${wherePlayerId} ${orderByDateDesc} ${limitByRecent}`,
       [req.params.id, req.params.id]
     );
-    const transformed = data.map((game) => {
-      if (game.game_table !== null && game.game_table.length > 0) {
-        game.game_table = JSON.parse(game.game_table);
-      }
-      return game;
-    });
-    return res.json(transformed);
+    return res.json(data.rows);
   } catch (err) {
     res.status(500);
     res.send(err.message);
+  } finally {
+    client.release();
   }
 });
 

@@ -3,15 +3,14 @@ import bcrypt from 'bcryptjs';
 import { respondError422 } from './auth.middlewares.js';
 import { poolPromise } from '../../db.js';
 
-const selectUserLogin = `SELECT users.user_ID, users.email, users.password, users.username, users.active, users.role FROM users WHERE users.username = ? AND active = 1`;
+const selectUserLogin = `SELECT users.id, users.email, users.password, users.username, users.active, users.role FROM users WHERE users.username = $1 AND active = true`;
 
 export const signin = async (req, res, next) => {
-  let pool;
+  const client = await poolPromise.connect();
   try {
-    pool = await poolPromise;
-    const userData = await pool.query(selectUserLogin, req.body.username);
-    if (userData.length > 0) {
-      const { password, ...details } = userData[0];
+    const userData = await client.query(selectUserLogin, [req.body.username]);
+    if (userData.rowCount > 0) {
+      const { password, ...details } = userData.rows[0];
       const compareHashedPassword = await bcrypt.compare(
         req.body.password,
         password
@@ -33,5 +32,7 @@ export const signin = async (req, res, next) => {
     }
   } catch (err) {
     next(err);
+  } finally {
+    client.release();
   }
 };

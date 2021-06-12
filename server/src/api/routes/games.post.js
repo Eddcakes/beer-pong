@@ -33,11 +33,11 @@ const tableSchema = Joi.object()
   .allow(null);
 
 const schema = Joi.object().keys({
-  home_ID: Joi.number().required(),
-  away_ID: Joi.number().required(),
+  home_id: Joi.number().required(),
+  away_id: Joi.number().required(),
   homeCupsLeft: Joi.number().required(),
   awayCupsLeft: Joi.number().required(),
-  venue_ID: Joi.number().required(),
+  venue_id: Joi.number().required(),
   forfeit: Joi.boolean().required(),
   created_by: Joi.number().required(),
   modified_by: Joi.number().required(),
@@ -48,32 +48,32 @@ const router = express.Router();
 
 const insertNewGame = `
 INSERT INTO ${process.env.DATABASE}.games 
-(home_ID,
-  away_ID,
-  homeCupsLeft,
-  awayCupsLeft,
-  venue_ID,
+(home_id,
+  away_id,
+  home_cups_left,
+  away_cups_left,
+  venue_id,
   forfeit,
   created_by,
   modified_by,
   game_table,
   locked)
-VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-RETURNING game_ID, home_ID, away_ID`;
+VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+RETURNING id, home_id, away_id`;
 
-const whereGameId = `WHERE games.game_ID = ?`;
+const whereGameId = `WHERE games.id = $1`;
 
 /* whats hitting error */
 const validateNewGame = (errorMessage) => (req, res, next) => {
   const newGameValid = schema.validate({
-    home_ID: req.body.player1,
-    away_ID: req.body.player2,
+    home_id: req.body.player1,
+    away_id: req.body.player2,
     homeCupsLeft: req.body.homeCupsLeft,
     awayCupsLeft: req.body.awayCupsLeft,
-    venue_ID: req.body.venue,
+    venue_id: req.body.venue,
     forfeit: req.body.homeForfeit || req.body.awayForfeit,
-    created_by: req.session.user.user_ID,
-    modified_by: req.session.user.user_ID,
+    created_by: req.session.user.id,
+    modified_by: req.session.user.id,
     game_table: req.body.table,
   });
   if (!newGameValid.error) {
@@ -96,20 +96,19 @@ router.post(
       req.body.homeCupsLeft,
       req.body.awayCupsLeft,
       req.body.venue,
-      req.body.forfeit ? 1 : 0,
-      req.session.user.user_ID,
-      req.session.user.user_ID,
+      req.body.forfeit,
+      req.session.user.id,
+      req.session.user.id,
       req.body.table,
       req.body.locked,
     ];
-    let pool;
+    const client = await poolPromise.connect();
     try {
-      pool = await poolPromise;
-      const createNewGame = await pool.query(insertNewGame, values);
+      const createNewGame = await client.query(insertNewGame, values);
       if (createNewGame) {
         res.json({
           message: 'New game created!',
-          game_ID: createNewGame[0].game_ID,
+          id: createNewGame[0].id,
         });
       } else {
         const error = new Error('Could not create game');
@@ -118,6 +117,8 @@ router.post(
     } catch (err) {
       res.status(500);
       res.send(err.message);
+    } finally {
+      client.release();
     }
   }
 );
@@ -128,21 +129,20 @@ router.post(
   '/:id',
   //validateNewGame('Could not post new game'),
   async (req, res, next) => {
-    let pool;
+    const client = await poolPromise.connect();
     try {
       const lockOnWin =
         req.body.homeCupsLeft === 0 || req.body.awayCupsLeft === 0
-          ? 'locked=1,'
+          ? 'locked=true,'
           : '';
       const updateSql = `UPDATE ${process.env.DATABASE}.games 
       SET ${lockOnWin}
-      homeCupsLeft=${req.body.homeCupsLeft},
-      awayCupsLeft=${req.body.awayCupsLeft},
+      home_cups_left=${req.body.homeCupsLeft},
+      away_cups_left=${req.body.awayCupsLeft},
       game_table='${req.body.table}'
       ${whereGameId}
       `;
-      pool = await poolPromise;
-      const updateGame = await pool.query(updateSql, req.params.id);
+      const updateGame = await client.query(updateSql, [req.params.id]);
       if (updateGame) {
         res.json({
           message: 'game updated!',
@@ -154,6 +154,8 @@ router.post(
     } catch (err) {
       res.status(500);
       res.send(err.message);
+    } finally {
+      client.release();
     }
   }
 );

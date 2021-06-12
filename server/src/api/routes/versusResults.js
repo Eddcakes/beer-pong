@@ -4,33 +4,34 @@ import { poolPromise } from '../../db.js';
 const router = express.Router();
 
 const query = `SELECT
-games.game_ID, games.venue_ID, games.date, games.home_ID, games.homeCupsLeft, games.away_ID, games.awayCupsLeft, games.tournament_ID, games.stage, games.notes,
+games.id, games.venue_id, games.date, games.home_id, games.home_cups_left, games.away_id, games.away_cups_left, games.tournament_id, games.stage, games.notes,
 p1.name as home_name, p2.name as away_name, tournaments.title as event, venues.title as venue
 FROM ${process.env.DATABASE}.games
-LEFT JOIN players AS p1 ON home_ID = p1.player_ID
-LEFT JOIN players AS p2 ON away_ID = p2.player_ID
-LEFT JOIN tournaments ON games.tournament_ID = tournaments.tournament_ID
-LEFT JOIN venues ON games.venue_ID = venues.venue_ID`;
-const pvp = `WHERE games.archived = 0 AND (home_ID = ? AND away_ID = ? OR away_ID = ? AND home_ID = ?)`;
+LEFT JOIN players AS p1 ON home_id = p1.id
+LEFT JOIN players AS p2 ON away_id = p2.id
+LEFT JOIN tournaments ON games.tournament_id = tournaments.id
+LEFT JOIN venues ON games.venue_id = venues.id`;
+const pvp = `WHERE games.archived = false AND (home_id = $1 AND away_id = $2 OR away_id = $3 AND home_id = $4)`;
 
 router.get('/', async (req, res) => {
   return res.json({ message: 'Versus requires 2 IDs to compare' });
 });
 
 router.get('/:p1Id/:p2Id', async (req, res) => {
-  let pool;
+  const client = await poolPromise.connect();
   try {
-    pool = await poolPromise;
-    const data = await pool.query(`${query} ${pvp}`, [
+    const data = await client.query(`${query} ${pvp}`, [
       req.params.p1Id,
       req.params.p2Id,
       req.params.p1Id,
       req.params.p2Id,
     ]);
-    return res.json(data);
+    return res.json(data.rows);
   } catch (err) {
     res.status(500);
     res.send(err.message);
+  } finally {
+    client.release();
   }
 });
 

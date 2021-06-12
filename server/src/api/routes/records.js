@@ -7,77 +7,83 @@ const router = express.Router();
 
 const selectRecordsAndPlayers = `
 SELECT
-records.record_ID,
+records.id,
 record_types.label,
 record_types.description,
-records.player_ID,
+records.player_id,
 players.name,
 records.value,
 records.current,
 records.created,
 records.modified
 FROM ${process.env.DATABASE}.records
-LEFT JOIN record_types ON records.record_type_ID=record_types.record_type_ID
-LEFT JOIN players ON records.player_ID = players.player_ID
+LEFT JOIN record_types ON records.record_type_id=record_types.id
+LEFT JOIN players ON records.player_id = players.id
 `;
-const whereCurrentRecord = `WHERE records.current = 1`;
-const wherePlayerId = `WHERE records.player_ID = ?`;
-const whereRecordTypeId = `WHERE records.record_type_ID = ?`;
-const orderByDesc = `ORDER BY records.record_ID DESC`;
+const whereCurrentRecord = `WHERE records.current = true`;
+const wherePlayerId = `WHERE records.player_id = $1`;
+const whereRecordTypeId = `WHERE records.record_type_id = $1`;
+const orderByDesc = `ORDER BY records.id DESC`;
 
 router.get('/', async (req, res) => {
-  let pool;
+  const client = await poolPromise.connect();
   try {
-    pool = await poolPromise;
-    const data = await pool.query(
+    const data = await client.query(
       `${selectRecordsAndPlayers} ${whereCurrentRecord} ${orderByDesc}`
     );
-    return res.json(data);
+    return res.json(data.rows);
   } catch (err) {
     res.status(500);
     res.send(err.message);
+  } finally {
+    client.release();
   }
 });
 
 router.get('/all', async (req, res) => {
-  let pool;
+  const client = await poolPromise.connect();
   try {
-    pool = await poolPromise;
-    const data = await pool.query(`${selectRecordsAndPlayers} ${orderByDesc}`);
-    return res.json(data);
+    const data = await client.query(
+      `${selectRecordsAndPlayers} ${orderByDesc}`
+    );
+    return res.json(data.rows);
   } catch (err) {
     res.status(500);
     res.send(err.message);
+  } finally {
+    client.release();
   }
 });
 
 router.get('/player/:id', async (req, res) => {
-  let pool;
+  const client = await poolPromise.connect();
   try {
-    pool = await poolPromise;
-    const data = await pool.query(
+    const data = await client.query(
       `${selectRecordsAndPlayers} ${wherePlayerId}`,
-      req.params.id
+      [req.params.id]
     );
-    return res.json(data);
+    return res.json(data.rows);
   } catch (err) {
     res.status(500);
     res.send(err.message);
+  } finally {
+    client.release();
   }
 });
 
 router.get('/type/:id', async (req, res) => {
-  let pool;
+  const client = await poolPromise.connect();
   try {
-    pool = await poolPromise;
-    const data = await pool.query(
+    const data = await client.query(
       `${selectRecordsAndPlayers} ${whereRecordTypeId} ${orderByDesc}`,
-      req.params.id
+      [req.params.id]
     );
-    return res.json(data);
+    return res.json(data.rows);
   } catch (err) {
     res.status(500);
     res.send(err.message);
+  } finally {
+    client.release();
   }
 });
 

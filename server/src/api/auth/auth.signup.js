@@ -2,18 +2,19 @@ import bcrypt from 'bcryptjs';
 
 import { poolPromise } from '../../db.js';
 
-const selectUserByUsername = `SELECT users.user_ID, users.username, users.email, users.player_ID, users.active, users.role FROM users WHERE users.username = ? AND active = 1`;
+const selectUserByUsername = `SELECT users.id, users.username, users.email, users.player_ID, users.active, users.role FROM users WHERE users.username = $1 AND active = true`;
 const insertUser =
-  'INSERT INTO users (username, password) VALUES (?, ?) RETURNING user_ID, email, username, role';
+  'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id, email, username, role';
 
 export const signup = async (req, res, next) => {
-  let pool;
+  const client = await poolPromise.connect();
   try {
-    pool = await poolPromise;
     //check username is unique
-    const userData = await pool.query(selectUserByUsername, req.body.username);
+    const userData = await client.query(selectUserByUsername, [
+      req.body.username,
+    ]);
 
-    if (userData && userData.length > 0) {
+    if (userData.rowCount > 0) {
       //user already exists with this username
       const userAlreadyExists = new Error(
         'Sorry username is taken. Please choose another one.'
@@ -24,12 +25,13 @@ export const signup = async (req, res, next) => {
     } else {
       //create the new account
       const newHashedPass = await bcrypt.hash(req.body.password, 12);
-      const signUpUser = await pool.query(insertUser, [
+      const signUpUser = await client.query(insertUser, [
         req.body.username,
         newHashedPass,
       ]);
-      if (signUpUser) {
-        const { password, ...details } = signUpUser[0];
+      // take a look at the extra postgres context we might have
+      if (signUpUser.rowCount > 0) {
+        const { password, ...details } = signUpUser.rows[0];
         //successfully signed up
         req.session.user = { ...details };
         req.session.save();
@@ -39,5 +41,7 @@ export const signup = async (req, res, next) => {
     }
   } catch (err) {
     next(err);
+  } finally {
+    client.release();
   }
 };

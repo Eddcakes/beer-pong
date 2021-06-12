@@ -8,32 +8,33 @@ SELECT
 *
 FROM ${process.env.DATABASE}.nicknames
 `;
-const wherePlayerId = `WHERE nicknames.player_ID = ?`;
+const wherePlayerId = `WHERE nicknames.player_id = $1`;
 
 router.get('/', async (req, res) => {
-  let pool;
+  const client = await poolPromise.connect();
   try {
-    pool = await poolPromise;
-    const data = await pool.query(selectNicks);
-    return res.json(data);
+    const data = await client.query(selectNicks);
+    return res.json(data.rows);
   } catch (err) {
     res.status(500);
     res.send(err.message);
+  } finally {
+    client.release();
   }
 });
 
 router.get('/player/:id', async (req, res) => {
-  let pool;
+  const client = await poolPromise.connect();
   try {
-    pool = await poolPromise;
-    const data = await pool.query(
-      `${selectNicks} ${wherePlayerId}`,
-      req.params.id
-    );
-    return res.json(data);
+    const data = await client.query(`${selectNicks} ${wherePlayerId}`, [
+      req.params.id,
+    ]);
+    return res.json(data.rows);
   } catch (err) {
     res.status(500);
     res.send(err.message);
+  } finally {
+    client.release();
   }
 });
 

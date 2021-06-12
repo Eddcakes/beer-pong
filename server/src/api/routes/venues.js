@@ -7,14 +7,15 @@ const allVenues = `
 SELECT * FROM ${process.env.DATABASE}.venues`;
 
 router.get('/', async (req, res) => {
-  let pool;
+  const client = await poolPromise.connect();
   try {
-    pool = await poolPromise;
-    const data = await pool.query(allVenues);
-    return res.json(data);
+    const data = await client.query(allVenues);
+    return res.json(data.rows);
   } catch (err) {
     res.status(500);
     res.send(err.message);
+  } finally {
+    client.release();
   }
 });
 

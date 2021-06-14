@@ -19,7 +19,7 @@ const router = express.Router();
 const allUsers = `
 SELECT id, username, player_id, active, role FROM ${process.env.DATABASE}.users`;
 
-const getUser = `SELECT id, username, player_id, active, role FROM ${process.env.DATABASE}.users WHERE id = ?`;
+const getUser = `SELECT id, username, player_id, active, role FROM ${process.env.DATABASE}.users WHERE id = $1`;
 
 // why doesnt this work, o shit i think parameters have to be 1 thing, not strings
 //const updateUser = `UPDATE ${process.env.DATABASE}.users SET ? WHERE user_id = ?`;
@@ -54,7 +54,7 @@ router.patch('/:id', async (req, res, next) => {
           return `${col} = '${data[col]}'`;
         });
         const sqlParam = dataArray.join(', ');
-        const rebuildQuery = `UPDATE ${process.env.DATABASE}.users SET ${sqlParam} WHERE id = ?`;
+        const rebuildQuery = `UPDATE ${process.env.DATABASE}.users SET ${sqlParam} WHERE id = $1`;
         const dbUpdate = await client.query(rebuildQuery, [req.params.id]);
         if (dbUpdate) {
           //get updated response to res.json

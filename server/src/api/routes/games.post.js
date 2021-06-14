@@ -96,7 +96,7 @@ router.post(
       req.body.homeCupsLeft,
       req.body.awayCupsLeft,
       req.body.venue,
-      req.body.forfeit,
+      false,
       req.session.user.id,
       req.session.user.id,
       req.body.table,
@@ -108,7 +108,7 @@ router.post(
       if (createNewGame) {
         res.json({
           message: 'New game created!',
-          id: createNewGame[0].id,
+          id: createNewGame.rows[0].id,
         });
       } else {
         const error = new Error('Could not create game');
@@ -137,12 +137,17 @@ router.post(
           : '';
       const updateSql = `UPDATE ${process.env.DATABASE}.games 
       SET ${lockOnWin}
-      home_cups_left=${req.body.homeCupsLeft},
-      away_cups_left=${req.body.awayCupsLeft},
-      game_table='${req.body.table}'
-      ${whereGameId}
+      home_cups_left=$1,
+      away_cups_left=$2,
+      game_table=$3
+      WHERE games.id=$4
       `;
-      const updateGame = await client.query(updateSql, [req.params.id]);
+      const updateGame = await client.query(updateSql, [
+        req.body.homeCupsLeft,
+        req.body.awayCupsLeft,
+        req.body.table,
+        req.params.id,
+      ]);
       if (updateGame) {
         res.json({
           message: 'game updated!',

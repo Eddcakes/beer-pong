@@ -9,7 +9,7 @@ const schema = Joi.object().keys({
 const router = express.Router();
 
 const selectUserPreferences = `
-SELECT avatar_link as avatarLink, modified, user_id FROM ${process.env.DATABASE}.preferences WHERE user_id = $1`;
+SELECT avatar_link as "avatarLink", modified, user_id FROM ${process.env.DATABASE}.preferences WHERE user_id = $1`;
 
 const insertUserPreferences = `
 INSERT INTO ${process.env.DATABASE}.preferences (user_id, avatar_link) VALUES($1, $2)`;
@@ -40,11 +40,14 @@ router.post('/', async (req, res, next) => {
       const userPreferences = await client.query(`${selectUserPreferences}`, [
         req.session.user.id,
       ]);
-      if (userPreferences.length > 0) {
+      if (userPreferences.rowCount > 0) {
         const update = `UPDATE ${process.env.DATABASE}.preferences
-        SET avatar_link="${req.body.avatar_link}"
-        WHERE user_id=${req.session.user.id}`;
-        const updateUserPreferences = await client.query(update);
+        SET avatar_link=$1
+        WHERE user_id=$2`;
+        const updateUserPreferences = await client.query(update, [
+          req.body.avatar_link,
+          req.session.user.id,
+        ]);
         if (updateUserPreferences) {
           res.json({ message: 'Preferences updated' });
         } else {

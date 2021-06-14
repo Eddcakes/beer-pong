@@ -11,7 +11,7 @@ const playerDetails = `
 SELECT 
 players.id,
 players.name
-FROM players`;
+FROM ${process.env.DATABASE}.players`;
 
 const wherePlayerId = `WHERE players.id = $1`;
 

@@ -9,36 +9,37 @@ SELECT * FROM ${process.env.DATABASE}.players`;
 //getting nicks a bit weird?
 const playerDetails = `
 SELECT 
-players.player_ID,
+players.id,
 players.name
-FROM players`;
+FROM ${process.env.DATABASE}.players`;
 
-const wherePlayerId = `WHERE players.player_ID = ?`;
+const wherePlayerId = `WHERE players.id = $1`;
 
 router.get('/', async (req, res) => {
-  let pool;
+  const client = await poolPromise.connect();
   try {
-    pool = await poolPromise;
-    const data = await pool.query(allPlayers);
-    return res.json(data);
+    const data = await client.query(allPlayers);
+    return res.json(data.rows);
   } catch (err) {
     res.status(500);
     res.send(err.message);
+  } finally {
+    client.release();
   }
 });
 
 router.get('/:id', async (req, res) => {
-  let pool;
+  const client = await poolPromise.connect();
   try {
-    pool = await poolPromise;
-    const data = await pool.query(
-      `${playerDetails} ${wherePlayerId}`,
-      req.params.id
-    );
-    return res.json(data);
+    const data = await client.query(`${playerDetails} ${wherePlayerId}`, [
+      req.params.id,
+    ]);
+    return res.json(data.rows);
   } catch (err) {
     res.status(500);
     res.send(err.message);
+  } finally {
+    client.release();
   }
 });
 

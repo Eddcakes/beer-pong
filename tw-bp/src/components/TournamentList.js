@@ -21,12 +21,7 @@ export function TournamentList() {
               return date > new Date();
             })
             .map((t) => (
-              <Short
-                key={`${t.tournament_ID}`}
-                id={t.tournament_ID}
-                title={t.title}
-                date={t.date}
-              />
+              <Short key={`${t.id}`} id={t.id} title={t.title} date={t.date} />
             ))}
       </div>
       <div>
@@ -39,12 +34,7 @@ export function TournamentList() {
               return date < new Date();
             })
             .map((t) => (
-              <Short
-                key={`${t.tournament_ID}`}
-                id={t.tournament_ID}
-                title={t.title}
-                date={t.date}
-              />
+              <Short key={`${t.id}`} id={t.id} title={t.title} date={t.date} />
             ))}
       </div>
     </>

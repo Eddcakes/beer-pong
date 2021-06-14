@@ -17,33 +17,33 @@ const schema = Joi.object().keys({
 const router = express.Router();
 
 const allUsers = `
-SELECT user_ID, username, player_ID, active, role FROM ${process.env.DATABASE}.users`;
+SELECT id, username, player_id, active, role FROM ${process.env.DATABASE}.users`;
 
-const getUser = `SELECT user_ID, username, player_ID, active, role FROM ${process.env.DATABASE}.users WHERE user_ID = ?`;
+const getUser = `SELECT id, username, player_id, active, role FROM ${process.env.DATABASE}.users WHERE id = $1`;
 
 // why doesnt this work, o shit i think parameters have to be 1 thing, not strings
-//const updateUser = `UPDATE ${process.env.DATABASE}.users SET ? WHERE user_ID = ?`;
+//const updateUser = `UPDATE ${process.env.DATABASE}.users SET ? WHERE user_id = ?`;
 /* pool.query(updateUser, [sqlParam, req.params.id]) */
 
 router.get('/', async (req, res, next) => {
-  let pool;
+  const client = await poolPromise.connect();
   try {
-    pool = await poolPromise;
-    const data = await pool.query(allUsers);
-    return res.json(data);
+    const data = await client.query(allUsers);
+    return res.json(data.rows);
   } catch (err) {
     next(err);
+  } finally {
+    client.release();
   }
 });
 
 router.patch('/:id', async (req, res, next) => {
-  let pool;
+  const client = await poolPromise.connect();
   try {
     const checkUsers = schema.validate(req.body);
     if (!checkUsers.error) {
-      pool = await poolPromise;
-      const dbResponse = await pool.query(getUser, req.params.id);
-      if (dbResponse.length > 0) {
+      const dbResponse = await client.query(getUser, [req.params.id]);
+      if (dbResponse.rowCount > 0) {
         //update user
         const data = req.body;
         if (data.password) {
@@ -54,8 +54,8 @@ router.patch('/:id', async (req, res, next) => {
           return `${col} = '${data[col]}'`;
         });
         const sqlParam = dataArray.join(', ');
-        const rebuildQuery = `UPDATE ${process.env.DATABASE}.users SET ${sqlParam} WHERE user_ID = ?`;
-        const dbUpdate = await pool.query(rebuildQuery, req.params.id);
+        const rebuildQuery = `UPDATE ${process.env.DATABASE}.users SET ${sqlParam} WHERE id = $1`;
+        const dbUpdate = await client.query(rebuildQuery, [req.params.id]);
         if (dbUpdate) {
           //get updated response to res.json
           res.json({ message: `User ${req.params.id} updated` });
@@ -73,6 +73,8 @@ router.patch('/:id', async (req, res, next) => {
     }
   } catch (err) {
     next(err);
+  } finally {
+    client.release();
   }
 });
 

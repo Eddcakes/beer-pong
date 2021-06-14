@@ -6,7 +6,7 @@ const router = express.Router();
 /* group by priority? */
 
 const selectNewsAndUsers = `
-SELECT news.news_ID,
+SELECT news.id,
 news.content,
 news.image_url,
 news.priority,
@@ -18,41 +18,42 @@ p1.name as created_by_name,
 news.modified_by,
 p2.name as modified_by_name
 FROM ${process.env.DATABASE}.news
-LEFT JOIN players AS p1 ON news.created_by = p1.player_ID
-LEFT JOIN players AS p2 ON news.modified_by = p2.player_ID
+LEFT JOIN ${process.env.DATABASE}.players AS p1 ON news.created_by = p1.id
+LEFT JOIN ${process.env.DATABASE}.players AS p2 ON news.modified_by = p2.id
 `;
-const whereApproved = `WHERE news.approved = 1`;
-const whereId = `WHERE news.news_ID = ?`;
-const orderByDesc = `ORDER BY news.news_ID DESC`;
+const whereApproved = `WHERE news.approved = true`;
+const whereId = `WHERE news.id = $1`;
+const orderByDesc = `ORDER BY news.id DESC`;
 // create admin page for approving news
-const whereNotApproved = `WHERE news.approved = 0`;
+const whereNotApproved = `WHERE news.approved = true`;
 
 router.get('/', async (req, res) => {
-  let pool;
+  const client = await poolPromise.connect();
   try {
-    pool = await poolPromise;
-    const data = await pool.query(
+    const data = await client.query(
       `${selectNewsAndUsers} ${whereApproved} ${orderByDesc}`
     );
-    return res.json(data);
+    return res.json(data.rows);
   } catch (err) {
     res.status(500);
     res.send(err.message);
+  } finally {
+    client.release();
   }
 });
 
 router.get('/:id', async (req, res) => {
-  let pool;
+  const client = await poolPromise.connect();
   try {
-    pool = await poolPromise;
-    const data = await pool.query(
-      `${selectNewsAndUsers} ${whereId}`,
-      req.params.id
-    );
-    return res.json(data);
+    const data = await client.query(`${selectNewsAndUsers} ${whereId}`, [
+      req.params.id,
+    ]);
+    return res.json(data.rows);
   } catch (err) {
     res.status(500);
     res.send(err.message);
+  } finally {
+    client.release();
   }
 });
 

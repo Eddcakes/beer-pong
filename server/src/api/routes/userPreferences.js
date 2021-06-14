@@ -9,23 +9,23 @@ const schema = Joi.object().keys({
 const router = express.Router();
 
 const selectUserPreferences = `
-SELECT avatar_link as avatarLink, modified, user_ID FROM ${process.env.DATABASE}.preferences WHERE user_ID = ?`;
+SELECT avatar_link as "avatarLink", modified, user_id FROM ${process.env.DATABASE}.preferences WHERE user_id = $1`;
 
 const insertUserPreferences = `
-INSERT INTO ${process.env.DATABASE}.preferences (user_ID, avatar_link) VALUES(?, ?)`;
+INSERT INTO ${process.env.DATABASE}.preferences (user_id, avatar_link) VALUES($1, $2)`;
 
 router.get('/', async (req, res) => {
-  let pool;
+  const client = await poolPromise.connect();
   try {
-    pool = await poolPromise;
-    const data = await pool.query(
-      selectUserPreferences,
-      req.session.user.user_ID
-    );
-    return res.json(data);
+    const data = await client.query(selectUserPreferences, [
+      req.session.user.id,
+    ]);
+    return res.json(data.rows);
   } catch (err) {
     res.status(500);
     res.send(err.message);
+  } finally {
+    client.release();
   }
 });
 
@@ -34,19 +34,20 @@ router.post('/', async (req, res, next) => {
     avatar_link: req.body.avatar_link,
   });
   if (preferences.error === undefined) {
-    let pool;
+    const client = await poolPromise.connect();
     try {
-      pool = await poolPromise;
       //check that the user has any preferences
-      const userPreferences = await pool.query(
-        `${selectUserPreferences}`,
-        req.session.user.user_ID
-      );
-      if (userPreferences.length > 0) {
+      const userPreferences = await client.query(`${selectUserPreferences}`, [
+        req.session.user.id,
+      ]);
+      if (userPreferences.rowCount > 0) {
         const update = `UPDATE ${process.env.DATABASE}.preferences
-        SET avatar_link="${req.body.avatar_link}"
-        WHERE user_ID=${req.session.user.user_ID}`;
-        const updateUserPreferences = await pool.query(update);
+        SET avatar_link=$1
+        WHERE user_id=$2`;
+        const updateUserPreferences = await client.query(update, [
+          req.body.avatar_link,
+          req.session.user.id,
+        ]);
         if (updateUserPreferences) {
           res.json({ message: 'Preferences updated' });
         } else {
@@ -54,8 +55,8 @@ router.post('/', async (req, res, next) => {
           next(error);
         }
       } else {
-        const values = [req.session.user.user_ID, req.body.avatar_link];
-        const createUserPreferences = await pool.query(
+        const values = [req.session.user.id, req.body.avatar_link];
+        const createUserPreferences = await client.query(
           insertUserPreferences,
           values
         );
@@ -68,6 +69,8 @@ router.post('/', async (req, res, next) => {
       }
     } catch (err) {
       next(err);
+    } finally {
+      client.release();
     }
   } else {
     // unprocessable entity, validation issue (using unuseable chars ect)

@@ -36,7 +36,7 @@ export function News() {
       {data.map((article) => {
         return (
           <ClipNews
-            key={article.news_ID}
+            key={article.id}
             content={article.content}
             size={maxHeight.large}
           />

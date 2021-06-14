@@ -61,6 +61,7 @@ export function UserPreferences() {
   useEffect(() => {
     //sync form state with react-query, or use uncontrolled components with a default?
     if (data) {
+      console.log(data[0]);
       setPreferences(data[0]);
     }
   }, [data]);

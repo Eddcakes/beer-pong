@@ -16,7 +16,7 @@ export function GamePlay({ gameDetails }) {
       // error toast
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['game', gameDetails.game_ID]);
+      queryClient.invalidateQueries(['game', gameDetails.id]);
       //save toast
     },
   });
@@ -68,7 +68,7 @@ export function GamePlay({ gameDetails }) {
     const toStringify = JSON.stringify(state.context);
     let data = {
       //...gameDetails,
-      game_ID: gameDetails.game_ID,
+      id: gameDetails.id,
       player1: gameDetails.player1,
       player2: gameDetails.player2,
       homeCupsLeft: state.context.homeCupsLeft,

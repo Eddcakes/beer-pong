@@ -22,7 +22,7 @@ export function PlayerPicker({
     items.filter(
       (item) =>
         item.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
-        item.player_ID.toString().indexOf(searchText) > -1
+        item.id.toString().indexOf(searchText) > -1
     );
 
   //should i look at useCallback instead of the extending selectPlayer on li onclick
@@ -57,19 +57,19 @@ export function PlayerPicker({
             <ul role='listbox' className='overflow-y-auto w-full'>
               {search(playerNames).map((player) => (
                 <li
-                  key={player.player_ID}
-                  value={player.player_ID}
+                  key={player.id}
+                  value={player.id}
                   role='option'
                   className='flex justify-between px-6 py-2 border-b cursor-pointer hover:bg-gray-200'
                   onClick={() => {
-                    selectPlayer(name, `${player.player_ID}`);
+                    selectPlayer(name, `${player.id}`);
                     toggleModal();
                   }}
                   aria-selected={false}
                 >
                   <span className='select-none'>+</span>
                   <span>{player.name}</span>
-                  <span className='text-gray-700'>{player.player_ID}</span>
+                  <span className='text-gray-700'>{player.id}</span>
                 </li>
               ))}
             </ul>

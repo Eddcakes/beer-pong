@@ -20,31 +20,28 @@ export function Match({ details }) {
         <div>
           <Link
             className={`text-link-text underline relative ${
-              isWinner(details.awayCupsLeft) && 'psudo-winner'
+              isWinner(details.away_cups_left) && 'psudo-winner'
             }`}
             to={`/player/${details.home_ID}`}
           >
             {details.home_name}
           </Link>
-          <div>{details.homeCupsLeft}</div>
+          <div>{details.home_cups_left}</div>
         </div>
         <div>
           <Link
             className={`text-link-text underline relative ${
-              isWinner(details.homeCupsLeft) && 'psudo-winner'
+              isWinner(details.home_cups_left) && 'psudo-winner'
             }`}
             to={`/player/${details.away_ID}`}
           >
             {details.away_name}
           </Link>
-          <div>{details.awayCupsLeft}</div>
+          <div>{details.away_cups_left}</div>
         </div>
       </div>
       <div className='text-right'>
-        <Link
-          className='text-link-text underline'
-          to={`/games/${details.game_ID}`}
-        >
+        <Link className='text-link-text underline' to={`/games/${details.id}`}>
           details...
         </Link>
       </div>

@@ -30,10 +30,10 @@ p2.name as second_name,
 tournaments.third_id,
 p3.name as third_name
 FROM ${process.env.DATABASE}.tournaments
-LEFT JOIN venues ON tournaments.venue_id = venues.id
-LEFT JOIN players AS p1 ON first_id = p1.id
-LEFT JOIN players AS p2 ON second_id = p2.id
-LEFT JOIN players AS p3 ON third_id = p3.id
+LEFT JOIN ${process.env.DATABASE}.venues ON tournaments.venue_id = venues.id
+LEFT JOIN ${process.env.DATABASE}.players AS p1 ON first_id = p1.id
+LEFT JOIN ${process.env.DATABASE}.players AS p2 ON second_id = p2.id
+LEFT JOIN ${process.env.DATABASE}.players AS p3 ON third_id = p3.id
 `;
 
 const orderByDate = `ORDER BY tournaments.date DESC`;

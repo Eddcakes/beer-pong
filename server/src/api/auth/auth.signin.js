@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import { respondError422 } from './auth.middlewares.js';
 import { poolPromise } from '../../db.js';
 
-const selectUserLogin = `SELECT users.id, users.email, users.password, users.username, users.active, users.role FROM users WHERE users.username = $1 AND active = true`;
+const selectUserLogin = `SELECT users.id, users.email, users.password, users.username, users.active, users.role FROM ${process.env.DATABASE}.users WHERE users.username = $1 AND active = true`;
 
 export const signin = async (req, res, next) => {
   const client = await poolPromise.connect();

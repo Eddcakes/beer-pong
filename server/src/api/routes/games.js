@@ -26,10 +26,10 @@ games.modified_by,
 games.game_table,
 games.locked
 FROM ${process.env.DATABASE}.games
-INNER JOIN players AS p1 ON home_id = p1.id
-INNER JOIN players AS p2 ON away_id = p2.id
-LEFT JOIN tournaments ON games.tournament_id = tournaments.id
-LEFT JOIN venues ON games.venue_id = venues.id`;
+INNER JOIN ${process.env.DATABASE}.players AS p1 ON home_id = p1.id
+INNER JOIN ${process.env.DATABASE}.players AS p2 ON away_id = p2.id
+LEFT JOIN ${process.env.DATABASE}.tournaments ON games.tournament_id = tournaments.id
+LEFT JOIN ${process.env.DATABASE}.venues ON games.venue_id = venues.id`;
 const whereGameId = `WHERE games.archived = false AND games.id = $1`;
 const whereTournamentId = `WHERE games.archived = false AND games.tournament_id = $1`;
 const wherePlayerId = `WHERE games.archived = false AND (games.home_id = $1 OR games.away_id = $2)`;

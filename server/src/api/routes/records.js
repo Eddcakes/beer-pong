@@ -17,8 +17,8 @@ records.current,
 records.created,
 records.modified
 FROM ${process.env.DATABASE}.records
-LEFT JOIN record_types ON records.record_type_id=record_types.id
-LEFT JOIN players ON records.player_id = players.id
+LEFT JOIN ${process.env.DATABASE}.record_types ON records.record_type_id=record_types.id
+LEFT JOIN ${process.env.DATABASE}.players ON records.player_id = players.id
 `;
 const whereCurrentRecord = `WHERE records.current = true`;
 const wherePlayerId = `WHERE records.player_id = $1`;

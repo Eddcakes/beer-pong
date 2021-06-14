@@ -18,8 +18,8 @@ p1.name as created_by_name,
 news.modified_by,
 p2.name as modified_by_name
 FROM ${process.env.DATABASE}.news
-LEFT JOIN players AS p1 ON news.created_by = p1.id
-LEFT JOIN players AS p2 ON news.modified_by = p2.id
+LEFT JOIN ${process.env.DATABASE}.players AS p1 ON news.created_by = p1.id
+LEFT JOIN ${process.env.DATABASE}.players AS p2 ON news.modified_by = p2.id
 `;
 const whereApproved = `WHERE news.approved = true`;
 const whereId = `WHERE news.id = $1`;

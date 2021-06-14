@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
     const data = await client.query(selectUserPreferences, [
       req.session.user.id,
     ]);
-    return res.json(data);
+    return res.json(data.rows);
   } catch (err) {
     res.status(500);
     res.send(err.message);

@@ -84,9 +84,6 @@ router.get('/tournament/:id', async (req, res) => {
 router.get('/recent/:id', async (req, res) => {
   const client = await poolPromise.connect();
   try {
-    console.log(
-      `${selectAndExpandGames} ${wherePlayerId} ${orderByDateDesc} ${limitByRecent}`
-    );
     const data = await client.query(
       `${selectAndExpandGames} ${wherePlayerId} ${orderByDateDesc} ${limitByRecent}`,
       [req.params.id, req.params.id]

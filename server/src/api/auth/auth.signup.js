@@ -34,7 +34,7 @@ export const signup = async (req, res, next) => {
         //successfully signed up
         req.session.user = { ...details };
         req.session.save();
-        console.log(req.session.user);
+        //console.log(req.session.user);
         res.json({ message: 'Successfully signed in', user: { ...details } });
       }
     }

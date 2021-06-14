@@ -81,14 +81,14 @@ export function Versus({ updatePageTitle }) {
     if (!loadingPlayerList) {
       if (playerList.length > 0) {
         let player1Exists = playerList.some(
-          (player) => player.player_ID === Number(player1Id)
+          (player) => player.id === Number(player1Id)
         );
         if (player1Exists) {
           selectPlayer('player1', player1Id);
           // if player exists then check player 2
           if (isIntOrStringInt(player2Id)) {
             let player2Exists = playerList.some(
-              (player) => player.player_ID === Number(player2Id)
+              (player) => player.id === Number(player2Id)
             );
             if (player2Exists) {
               selectPlayer('player2', player2Id);
@@ -136,9 +136,7 @@ export function Versus({ updatePageTitle }) {
             <Card title='Games'>
               <div className='grid md:grid-cols-3 gap-4'>
                 {gameData.length > 0 ? (
-                  gameData.map((game) => (
-                    <Match key={game.game_ID} details={game} />
-                  ))
+                  gameData.map((game) => <Match key={game.id} details={game} />)
                 ) : (
                   <div>No games played ⚠</div>
                 )}

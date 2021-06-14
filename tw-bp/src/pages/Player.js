@@ -83,7 +83,7 @@ export function Player({ updatePageTitle }) {
                     .filter((name) => name.nick !== playerData.name)
                     .map((nick) => {
                       return (
-                        <li key={`${nick.nick}${nick.nick_ID}`}>{nick.nick}</li>
+                        <li key={`${nick.nick}${nick.id}`}>{nick.nick}</li>
                       );
                     })}
                 </ul>
@@ -100,7 +100,7 @@ export function Player({ updatePageTitle }) {
                 <>
                   <h2 className='text-lg font-bold'>Accolades</h2>
                   {playerRecords.map((record) => {
-                    return <div key={record.record_ID}>{record.label}🥇</div>;
+                    return <div key={record.id}>{record.label}🥇</div>;
                   })}
                 </>
               ) : null}

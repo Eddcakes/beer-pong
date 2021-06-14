@@ -67,7 +67,7 @@ export function NewGame({ updatePageTitle }) {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries('games');
-      history.push(`/games/${data.game_ID}`);
+      history.push(`/games/${data.id}`);
     },
   });
   const minGameSize = 6;
@@ -189,8 +189,9 @@ export function NewGame({ updatePageTitle }) {
         ...formState,
         created: new Date(),
         table: pastGame ? null : initialTable,
-        locked: pastGame ? 1 : 0,
+        locked: pastGame,
       };
+      console.log(values);
       mutate(values);
     }
   };
@@ -304,7 +305,7 @@ export function NewGame({ updatePageTitle }) {
                 <Select name='venue' onChange={handleSelect}>
                   {venues.data.map((item) => {
                     return (
-                      <option key={item.venue_ID} value={item.venue_ID}>
+                      <option key={item.id} value={item.id}>
                         {item.title}
                       </option>
                     );

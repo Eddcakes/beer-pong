@@ -6,7 +6,7 @@ export function GameView({ gameDetails }) {
     <>
       <div>
         <div>{gameDetails.home_name}</div>
-        <div>home cups left: {gameDetails.homeCupsLeft}</div>
+        <div>home cups left: {gameDetails.home_cups_left}</div>
         <div>hit rim: {gameDetails.game_table.awayCupRimCount}</div>
         <div>
           reracked:
@@ -20,10 +20,10 @@ export function GameView({ gameDetails }) {
       </div>
       <div>
         <div>{gameDetails.away_name}</div>
-        <div>away cups left: {gameDetails.awayCupsLeft}</div>
+        <div>away cups left: {gameDetails.away_cups_left}</div>
         <div>hit rim: {gameDetails.game_table.homeCupRimCount}</div>
         <div>
-          reracked:{' '}
+          reracked:
           {JSON.stringify(gameDetails.game_table.awayCupRerackComplete)}
         </div>
         <CupsView

@@ -36,17 +36,17 @@ export function Game({ updatePageTitle }) {
               <CardTitle
                 home={data[0].home_name}
                 away={data[0].away_name}
-                number={data[0].game_ID}
+                number={data[0].id}
               />
             }
           >
-            {!isZero(data[0].locked) && (
+            {data[0].locked && (
               <div className='text-right' title='This game is locked'>
                 locked 🔒
               </div>
             )}
             <div className='text-center'>
-              {data[0].tournament_ID && (
+              {data[0].tournament && (
                 <div>
                   <div>{data[0].event}</div>
                   <div>{data[0].stage}</div>
@@ -63,17 +63,17 @@ export function Game({ updatePageTitle }) {
               <div>
                 <h2 className='font-bold text-center'>Home Results</h2>
                 <div>Name: {data[0].home_name}</div>
-                <div>Cups left: {data[0].homeCupsLeft}</div>
+                <div>Cups left: {data[0].home_cups_left}</div>
               </div>
               <div>
                 <h2 className='font-bold text-center'>Away Results</h2>
                 <div>Name: {data[0].away_name}</div>
-                <div>Cups left: {data[0].awayCupsLeft}</div>
+                <div>Cups left: {data[0].away_cups_left}</div>
               </div>
             </div>
             {/* check for if table json in db needs a better check than just exists haha */}
             {data[0]?.game_table ? (
-              isZero(data[0].locked) ? (
+              !data[0].locked ? (
                 <GamePlay gameDetails={data[0]} access='' />
               ) : (
                 <GameView gameDetails={data[0]} />
@@ -104,7 +104,7 @@ SVG with circles as cups
 
 on desktop show side by side
 
-change homeCupsLeft/awayCupsLeft
+change home_cups_left/away_cups_left
 to home_cups_left
 lower case all _ID
 pitchSize -> pitch_size
@@ -124,5 +124,3 @@ function CardTitle({ home, away, number }) {
     </div>
   );
 }
-
-const isZero = (val) => Number(val) === 0;

@@ -61,13 +61,14 @@ function ColumnPlayer({ last = true, playerData }) {
       <Cell>{playerData.forfeits ? playerData.forfeits : '0'}</Cell>
       <Cell>
         {playerData.homeWins && playerData.awayWins
-          ? playerData.homeWins + playerData.awayWins
+          ? Number(playerData.homeWins) + Number(playerData.awayWins)
           : '0'}
       </Cell>
       <Cell>
         {playerData.homeWins && playerData.awayWins && playerData.games
           ? (
-              ((playerData.homeWins + playerData.awayWins) / playerData.games) *
+              ((Number(playerData.homeWins) + Number(playerData.awayWins)) /
+                Number(playerData.games)) *
               100
             ).toFixed(2) + '%'
           : '0'}

@@ -5,7 +5,7 @@ export function MatchGrid({ games }) {
   return (
     <div className='grid md:grid-cols-3 gap-4'>
       {games.map((game) => {
-        return <Match key={game.game_ID} details={game} />;
+        return <Match key={game.id} details={game} />;
       })}
     </div>
   );

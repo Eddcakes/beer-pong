@@ -1,5 +1,5 @@
 export async function postSaveGamePlay(data) {
-  const { game_ID: gameId, ...rest } = data;
+  const { id: gameId, ...rest } = data;
   try {
     const updateGame = await fetch(
       `${process.env.REACT_APP_BACKEND_URL}/api/v1/games/${gameId}`,

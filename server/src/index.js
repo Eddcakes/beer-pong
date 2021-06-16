@@ -4,10 +4,13 @@ import cors from 'cors';
 import session from 'express-session';
 import pgSession from 'connect-pg-simple';
 import helmet from 'helmet';
+import path from 'path';
 
 import { notFound, errorHandler } from './middlewares.js';
 import { api } from './api/index.js';
 import { poolPromise } from './db.js';
+
+const __dirname = path.resolve();
 
 const app = express();
 
@@ -41,6 +44,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/api/v1', api);
+
+app.use(express.static(path.join(__dirname, 'build')));
+
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 app.use(notFound);
 app.use(errorHandler);

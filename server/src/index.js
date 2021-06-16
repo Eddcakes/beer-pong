@@ -3,6 +3,7 @@ import morgan from 'morgan'; //logger
 import cors from 'cors';
 import session from 'express-session';
 import pgSession from 'connect-pg-simple';
+import helmet from 'helmet';
 
 import { notFound, errorHandler } from './middlewares.js';
 import { api } from './api/index.js';
@@ -17,6 +18,7 @@ const constring = `postgresql://${process.env.PGUSER}:${process.env.PGPASSWORD}@
 const cookiesSecure = process.env.NODE_ENV.toLowerCase() === 'production';
 
 app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }));
+app.use(helmet());
 app.use(morgan('common'));
 app.use(
   session({

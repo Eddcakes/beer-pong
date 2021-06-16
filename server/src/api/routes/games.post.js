@@ -85,7 +85,6 @@ const validateNewGame = (errorMessage) => (req, res, next) => {
   }
 };
 
-/* handle completed game */
 router.post(
   '/new',
   validateNewGame('Could not post new game'),
@@ -123,8 +122,6 @@ router.post(
   }
 );
 
-// update game details
-/* handle complete game (locked) */
 router.post(
   '/:id',
   //validateNewGame('Could not post new game'),
@@ -140,7 +137,7 @@ router.post(
       home_cups_left=$1,
       away_cups_left=$2,
       game_table=$3
-      WHERE games.id=$4
+      WHERE ${process.env.DATABASE}.games.id=$4
       `;
       const updateGame = await client.query(updateSql, [
         req.body.homeCupsLeft,

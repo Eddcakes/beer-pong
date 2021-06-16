@@ -3,15 +3,6 @@ import { poolPromise } from '../../db.js';
 
 const router = express.Router();
 
-const alltournaments = `
-SELECT * FROM ${process.env.DATABASE}.tournaments`;
-
-/* tournament state
-created
-In progress
-completej
-postponed
-*/
 const selectTournaments = `
 SELECT tournaments.id,
 tournaments.title,

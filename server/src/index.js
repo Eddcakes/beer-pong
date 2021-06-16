@@ -7,8 +7,6 @@ import pgSession from 'connect-pg-simple';
 import { notFound, errorHandler } from './middlewares.js';
 import { api } from './api/index.js';
 import { poolPromise } from './db.js';
-// do i want to use helmet?
-// do i want to use knex?
 
 const app = express();
 
@@ -46,5 +44,5 @@ app.use(errorHandler);
 const port = process.env.PORT || 1337;
 
 app.listen(port, () => {
-  console.log(`listening at http://localhost:${port}`);
+  console.log(`listening at ${process.env.DB_HOST}:${port}`);
 });

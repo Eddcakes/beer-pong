@@ -27,13 +27,16 @@ import { AuthorisedRoute, Refreshing } from './components';
 /* could try lazy loading protected routes like NewGame? */
 
 const defaultTheme = () => {
-  if (localStorage.getItem('tw-bp:theme'))
+  if (localStorage.getItem('tw-bp:theme')) {
     return localStorage.getItem('tw-bp:theme');
-  if (window.matchMedia && window.matchMedia('prefers-color-scheme: dark')) {
+  }
+  /* dark theme needs work before it should be default */
+  return DEFAULT_THEME;
+  /*   if (window.matchMedia && window.matchMedia('prefers-color-scheme: dark')) {
     return 'dark';
   } else {
     return DEFAULT_THEME;
-  }
+  } */
 };
 
 const queryClient = new QueryClient();

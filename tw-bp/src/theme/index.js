@@ -7,6 +7,6 @@ import { carling } from './carling';
 export * from './base';
 export * from './utils';
 
-export const DEFAULT_THEME = 'base';
+export const DEFAULT_THEME = 'carling';
 
 export const themes = { base, dark, casual, vb, mixedFruit, carling };

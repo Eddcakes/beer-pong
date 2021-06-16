@@ -14,6 +14,8 @@ const pgs = pgSession(session);
 
 const constring = `postgresql://${process.env.PGUSER}:${process.env.PGPASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.PGDATABASE}`;
 
+const cookiesSecure = process.env.NODE_ENV.toLowerCase() === 'production';
+
 app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }));
 app.use(morgan('common'));
 app.use(
@@ -29,7 +31,7 @@ app.use(
     cookie: {
       httpOnly: true,
       maxAge: Number(process.env.SESSION_MAX_AGE),
-      secure: true,
+      secure: cookiesSecure,
     },
   })
 );

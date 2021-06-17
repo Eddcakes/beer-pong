@@ -22,7 +22,8 @@
   "scripts": {
     "start": "node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "seed:admin": "node src/tasks/createAdminUser.js"
+    "seed:admin": "node src/tasks/createAdminUser.js",
+    "as:production": "set NODE_ENV=production && node src/index.js "
   },
   "author": "eddcakes",
   "license": "ISC"

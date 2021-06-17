@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { useAuth } from '../hooks/useAuth';
+//import { useAuth } from '../hooks/useAuth';
 import { Container, Header, Card, GamePlay, GameView } from '../components';
 import { fetchGameById } from '../queries';
 import { useQuery } from 'react-query';
@@ -12,7 +12,7 @@ import { useQuery } from 'react-query';
 
 /* owner -> playerId, side -> home/away, how to calculate for 10 cups/team games */
 export function Game({ updatePageTitle }) {
-  const auth = useAuth();
+  //const auth = useAuth();
   //{JSON.stringify(auth.user)}
   const { gameId } = useParams();
   // might be nice to save first throw

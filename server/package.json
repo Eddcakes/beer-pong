@@ -11,6 +11,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
+    "helmet": "^4.6.0",
     "joi": "^17.4.0",
     "morgan": "^1.10.0",
     "pg": "^8.6.0"
@@ -21,7 +22,8 @@
   "scripts": {
     "start": "node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "seed:admin": "node src/tasks/createAdminUser.js"
+    "seed:admin": "node src/tasks/createAdminUser.js",
+    "as:production": "set NODE_ENV=production && node src/index.js "
   },
   "author": "eddcakes",
   "license": "ISC"

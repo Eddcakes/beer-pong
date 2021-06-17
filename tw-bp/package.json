@@ -44,5 +44,6 @@
   },
   "devDependencies": {
     "@xstate/inspect": "^0.4.1"
-  }
+  },
+  "proxy": "http://localhost:1337"
 }

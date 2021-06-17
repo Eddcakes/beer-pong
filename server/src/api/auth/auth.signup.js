@@ -12,8 +12,11 @@ export const signup = async (req, res, next) => {
     const userData = await client.query(selectUserByUsername, [
       req.body.username,
     ]);
-
-    if (userData.rowCount > 0) {
+    // be able to disallow new accounts from env vars
+    if (process.env.DISABLE_SIGNUP === 'true') {
+      res.status(405); // Method Not allowed
+      next(new Error('Sign up is currently disabled.'));
+    } else if (userData.rowCount > 0) {
       //user already exists with this username
       const userAlreadyExists = new Error(
         'Sorry username is taken. Please choose another one.'

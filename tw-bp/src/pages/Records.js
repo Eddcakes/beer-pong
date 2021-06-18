@@ -65,7 +65,7 @@ function DisplayRecords({ record }) {
         className={`${
           record.current && 'psudo-winner'
         } text-link-text underline`}
-        to={`/players/${record.player_ID}`}
+        to={`/players/${record.player_id}`}
       >
         {record.name}
       </Link>

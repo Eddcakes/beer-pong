@@ -86,7 +86,7 @@ function Cell({ header = false, children }) {
     <div
       className={`${
         header ? 'header' : ''
-      } border-secondary table-like-border py-2 px-4`}
+      } border-secondary table-like-border py-2 px-4 h-8 overflow-hidden`}
     >
       {children}
     </div>

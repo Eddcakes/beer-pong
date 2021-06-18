@@ -5,10 +5,10 @@ import { AuthContext } from '../AuthContext';
 export function Test({ updatePageTitle }) {
   const testGame = {
     home_name: 'home player',
-    home_ID: 1,
+    home_id: 1,
     homeCupsLeft: 0,
     away_name: 'away player',
-    away_ID: 2,
+    away_id: 2,
     awayCupsLeft: 3,
     event: 'some event',
     date: 'new Date()',

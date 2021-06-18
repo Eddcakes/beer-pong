@@ -8,7 +8,7 @@ export function Match({ details }) {
     <div className='shadow px-4 pb-4 space-y-2'>
       <div className='flex justify-between text-xs font-semibold'>
         <div>{details.venue}</div>
-        <div>{details.tournament_ID ? details.stage : 'friendly'} </div>
+        <div>{details.tournament_id ? details.stage : 'friendly'} </div>
       </div>
       <div className='text-center'>
         <div className='font-bold'>{details.event}</div>
@@ -22,7 +22,7 @@ export function Match({ details }) {
             className={`text-link-text underline relative ${
               isWinner(details.away_cups_left) && 'psudo-winner'
             }`}
-            to={`/player/${details.home_ID}`}
+            to={`/player/${details.home_id}`}
           >
             {details.home_name}
           </Link>
@@ -33,7 +33,7 @@ export function Match({ details }) {
             className={`text-link-text underline relative ${
               isWinner(details.home_cups_left) && 'psudo-winner'
             }`}
-            to={`/player/${details.away_ID}`}
+            to={`/player/${details.away_id}`}
           >
             {details.away_name}
           </Link>

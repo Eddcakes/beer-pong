@@ -106,7 +106,7 @@ on desktop show side by side
 
 change home_cups_left/away_cups_left
 to home_cups_left
-lower case all _ID
+lower case all _id
 pitchSize -> pitch_size
 */
 

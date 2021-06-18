@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { poolPromise } from '../db.js';
 
-const selectAdmin = `SELECT id, username, player_ID, active FROM ${process.env.DATABASE}.users WHERE role = 'admin'`;
+const selectAdmin = `SELECT id, username, player_id, active FROM ${process.env.DATABASE}.users WHERE role = 'admin'`;
 const insertUser = `INSERT INTO ${process.env.DATABASE}.users (username, password, role, active) VALUES ($1, $2, $3, $4)`;
 
 export async function createAdminUser() {

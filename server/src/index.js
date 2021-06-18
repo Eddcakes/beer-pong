@@ -16,7 +16,7 @@ const app = express();
 
 const pgs = pgSession(session);
 
-const constring = `postgresql://${process.env.PGUSER}:${process.env.PGPASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.PGDATABASE}`;
+const constring = `postgresql://${process.env.PGUSER}:${process.env.PGPASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.PGDATABASE}?ssl=true`;
 
 const cookiesSecure = process.env.NODE_ENV.toLowerCase() === 'production';
 

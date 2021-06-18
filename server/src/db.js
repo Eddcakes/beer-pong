@@ -3,7 +3,8 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const sslProd = process.env.NODE_ENV === 'production' ? true : false;
+const sslProd =
+  process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false;
 
 const db_settings = {
   user: process.env.PGUSER,

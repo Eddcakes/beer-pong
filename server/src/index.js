@@ -16,8 +16,6 @@ const app = express();
 
 const pgs = pgSession(session);
 
-const constring = `postgresql://${process.env.PGUSER}:${process.env.PGPASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.PGDATABASE}?ssl=true`;
-
 const cookiesSecure = process.env.NODE_ENV.toLowerCase() === 'production';
 
 app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }));
@@ -26,12 +24,12 @@ app.use(morgan('common'));
 app.use(
   session({
     store: new pgs({
-      conString: constring,
+      conString: process.env.DATABASE_URL,
       schemaName: process.env.DATABASE,
       pool: poolPromise,
     }),
     secret: process.env.SESSION_SECRET,
-    saveUninitialized: true,
+    saveUninitialized: false,
     resave: false,
     cookie: {
       httpOnly: true,

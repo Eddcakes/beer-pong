@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 
 import { poolPromise } from '../../db.js';
 
-const selectUserByUsername = `SELECT users.id, users.username, users.email, users.player_id, users.active, users.role FROM ${process.env.DATABASE}.users WHERE users.username = $1 AND active = true`;
+const selectUserByUsername = `SELECT users.id, users.username, users.email, users.player_id, users.active, users.role FROM ${process.env.DATABASE}.users WHERE LOWER(users.username) = LOWER($1) AND active = true`;
 const insertUser = `INSERT INTO ${process.env.DATABASE}.users (username, password) VALUES ($1, $2) RETURNING id, email, username, role`;
 
 export const signup = async (req, res, next) => {

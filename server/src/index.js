@@ -16,8 +16,9 @@ const app = express();
 
 const pgs = pgSession(session);
 
-const cookiesSecure = process.env.NODE_ENV.toLowerCase() === 'production';
-
+const cookiesSecure =
+  process.env.NODE_ENV.trim().toLowerCase() === 'production';
+app.set('trust proxy', 1);
 app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }));
 app.use(helmet());
 app.use(morgan('common'));

@@ -16,16 +16,20 @@ export function Modal({ isOpen = false, dismiss = () => {}, title, children }) {
             <div className='absolute inset-0 bg-gray-500 opacity-75'></div>
           </div>
           <div
-            className='inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full z-20 w-3/4'
+            className='inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full z-20 w-full'
             role='dialog'
             aria-modal='true'
             aria-labelledby='modal-headline'
           >
             <div className='flex justify-between'>
-              <h3 className='text-lg p-4' id='modal-headline'>
+              <h3 className='text-xl p-4 font-bold' id='modal-headline'>
                 {title}
               </h3>
-              <button onClick={dismiss} className='cursor-pointer px-2 text-lg'>
+              <button
+                onClick={dismiss}
+                className='cursor-pointer px-2 text-lg'
+                aria-label='close-modal'
+              >
                 ×
               </button>
             </div>

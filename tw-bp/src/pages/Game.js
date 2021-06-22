@@ -59,18 +59,20 @@ export function Game({ updatePageTitle }) {
                 {data[0].notes && <div>Notes: {data[0].notes}</div>}
               </div>
             </div>
-            <div className='grid grid-cols-2 gap-4'>
-              <div>
-                <h2 className='font-bold text-center'>Home Results</h2>
-                <div>Name: {data[0].home_name}</div>
-                <div>Cups left: {data[0].home_cups_left}</div>
+            {data[0]?.game_table && data[0].locked && (
+              <div className='grid grid-cols-2 gap-4'>
+                <div>
+                  <h2 className='font-bold text-center'>Home Results</h2>
+                  <div>Name: {data[0].home_name}</div>
+                  <div>Cups left: {data[0].home_cups_left}</div>
+                </div>
+                <div>
+                  <h2 className='font-bold text-center'>Away Results</h2>
+                  <div>Name: {data[0].away_name}</div>
+                  <div>Cups left: {data[0].away_cups_left}</div>
+                </div>
               </div>
-              <div>
-                <h2 className='font-bold text-center'>Away Results</h2>
-                <div>Name: {data[0].away_name}</div>
-                <div>Cups left: {data[0].away_cups_left}</div>
-              </div>
-            </div>
+            )}
             {/* check for if table json in db needs a better check than just exists haha */}
             {data[0]?.game_table ? (
               !data[0].locked ? (

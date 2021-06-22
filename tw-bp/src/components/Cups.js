@@ -21,47 +21,45 @@ export function Cups({
     return <svg viewBox='0 0 12 12' data-name={`${side}Svg`}></svg>;
   }
   return (
-    <div className='grid justify-center pb-4'>
-      <svg
-        viewBox='0 0 12 12'
-        height='15em'
-        width='15em'
-        data-name={`${side}Svg`}
-        ref={forwardRef}
-        onMouseMove={newMove}
-        onMouseLeave={mouseExit}
-        onClick={movingState ? svgCoord : undefined} //pickspot
-        className='border'
-      >
-        {rerack &&
-          lines.map(({ x1, y1, x2, y2 }) => (
-            <line
-              key={`${x1}${x2}${y1}${y2}`}
-              x1={x1}
-              x2={x2}
-              y1={y1}
-              y2={y2}
-              className='stroke-current text-gray-500'
-              strokeWidth={0.1}
+    <svg
+      viewBox='0 0 12 12'
+      height='15em'
+      width='15em'
+      data-name={`${side}Svg`}
+      ref={forwardRef}
+      onMouseMove={newMove}
+      onMouseLeave={mouseExit}
+      onClick={movingState ? svgCoord : undefined} //pickspot
+      className='border'
+    >
+      {rerack &&
+        lines.map(({ x1, y1, x2, y2 }) => (
+          <line
+            key={`${x1}${x2}${y1}${y2}`}
+            x1={x1}
+            x2={x2}
+            y1={y1}
+            y2={y2}
+            className='stroke-current text-gray-500'
+            strokeWidth={0.1}
+          />
+        ))}
+      {movingState && side === selectedCup?.side && (
+        <HoverElement x={lastHover.x} y={lastHover.y} size={highlightSize} />
+      )}
+      {cups
+        .filter((cup) => !cup.hit)
+        .map((cup) => {
+          return (
+            <Cup
+              details={cup}
+              key={cup.name}
+              rerack={rerack}
+              pickCup={pickCup}
             />
-          ))}
-        {movingState && side === selectedCup?.side && (
-          <HoverElement x={lastHover.x} y={lastHover.y} size={highlightSize} />
-        )}
-        {cups
-          .filter((cup) => !cup.hit)
-          .map((cup) => {
-            return (
-              <Cup
-                details={cup}
-                key={cup.name}
-                rerack={rerack}
-                pickCup={pickCup}
-              />
-            );
-          })}
-      </svg>
-    </div>
+          );
+        })}
+    </svg>
   );
 }
 

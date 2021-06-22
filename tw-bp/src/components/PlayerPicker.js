@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Button } from './Button';
-import { Modal } from './Modal';
+
+import { Button, Modal, Input } from './index';
+import { Plus, Tick } from '../icons';
 
 export function PlayerPicker({
   name,
@@ -45,9 +46,8 @@ export function PlayerPicker({
         <div className='px-2'>
           <div className='text-center'>
             <form role='search'>
-              <input
+              <Input
                 placeholder='Filter names'
-                className='p-2 shadow mb-2'
                 onChange={handleSearchInput}
                 value={searchText}
               />
@@ -60,16 +60,24 @@ export function PlayerPicker({
                   key={player.id}
                   value={player.id}
                   role='option'
-                  className='flex justify-between px-6 py-2 border-b cursor-pointer hover:bg-gray-200'
+                  className='grid grid-cols-3 hover:text-sec-background justify-items-center px-6 py-4 border-b cursor-pointer hover:bg-primary'
                   onClick={() => {
                     selectPlayer(name, `${player.id}`);
                     toggleModal();
                   }}
                   aria-selected={false}
+                  tabIndex={0}
                 >
-                  <span className='select-none'>+</span>
-                  <span>{player.name}</span>
-                  <span className='text-gray-700'>{player.id}</span>
+                  {Number(selected) === Number(player.id) && (
+                    <span className='text-positive'>
+                      <Tick />
+                    </span>
+                  )}
+
+                  <span className='col-start-2 font-semibold'>
+                    {player.name}
+                  </span>
+                  <Plus />
                 </li>
               ))}
             </ul>

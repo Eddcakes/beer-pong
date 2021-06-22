@@ -81,6 +81,91 @@ export function GamePlay({ gameDetails }) {
 
   return (
     <>
+      <div className='text-center'>
+        <Button text='Save' onClick={handleSubmit} />
+      </div>
+      <div className='grid md:grid-cols-2'>
+        <div className='grid grid-cols-2'>
+          <span>Name:</span>
+          <span>{gameDetails.home_name}</span>
+          <span>home cups left:</span>
+          <span>{state.context.homeCupsLeft}</span>
+          <span>hit rim:</span>
+          <span>{state.context.awayCupRimCount}</span>
+          <span>reracked:</span>
+          <span>{JSON.stringify(state.context.homeCupRerackComplete)}</span>
+          <div className='col-span-2 m-auto text-center pt-4'>
+            <Cups
+              side='home'
+              cups={state.context.homeCups}
+              gameSize={6}
+              forwardRef={cupsRef}
+              mouseExit={() => send('EXIT')}
+              pickCup={(evt) => send({ type: 'PICKCUP', details: evt })}
+              newMove={newMove}
+              svgCoord={svgCoord}
+              rerack={state.matches('rerack')}
+              movingState={state.matches('rerack.moving')}
+              lastHover={state.context.lastHover}
+              selectedCup={state.context.selectedCup}
+            />
+            {state.matches('playing') && (
+              <div className='p-4'>
+                <Button
+                  text='Home forfeit?'
+                  onClick={(_, evt) => {
+                    let check = window.confirm('Are you sure HOME forfeits?');
+                    if (check) {
+                      send('FORFEIT_HOME');
+                    }
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+        <div>
+          <div className='grid grid-cols-2'>
+            <span>Name:</span>
+            <span>{gameDetails.away_name}</span>
+            <span>home cups left:</span>
+            <span>{state.context.awayCupsLeft}</span>
+            <span>hit rim:</span>
+            <span>{state.context.homeCupRimCount}</span>
+            <span>reracked:</span>
+            <span>{JSON.stringify(state.context.awayCupRerackComplete)}</span>
+            <div className='col-span-2 m-auto text-center pt-4'>
+              <Cups
+                side='away'
+                cups={state.context.awayCups}
+                gameSize={6}
+                forwardRef={cupsRef}
+                mouseExit={() => send('EXIT')}
+                pickCup={(evt) => send({ type: 'PICKCUP', details: evt })}
+                newMove={newMove}
+                svgCoord={svgCoord}
+                rerack={state.matches('rerack')}
+                movingState={state.matches('rerack.moving')}
+                lastHover={state.context.lastHover}
+                selectedCup={state.context.selectedCup}
+              />
+              {state.matches('playing') && (
+                <div className='p-4'>
+                  <Button
+                    text='Away forfeit?'
+                    onClick={(_, evt) => {
+                      let check = window.confirm('Are you sure AWAY forfeits?');
+                      if (check) {
+                        send('FORFEIT_AWAY');
+                      }
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
       <div>
         {state.matches('rerack') ? (
           <>
@@ -91,71 +176,6 @@ export function GamePlay({ gameDetails }) {
           <Button text='Rerack' onClick={() => send('RERACK')} fullWidth />
         )}
       </div>
-      <div>
-        <div>{gameDetails.home_name}</div>
-        <div>home cups left: {state.context.homeCupsLeft}</div>
-        <div>hit rim: {state.context.awayCupRimCount}</div>
-        <div>
-          reracked:
-          {JSON.stringify(state.context.homeCupRerackComplete)}
-        </div>
-        <Cups
-          side='home'
-          cups={state.context.homeCups}
-          gameSize={6}
-          forwardRef={cupsRef}
-          mouseExit={() => send('EXIT')}
-          pickCup={(evt) => send({ type: 'PICKCUP', details: evt })}
-          newMove={newMove}
-          svgCoord={svgCoord}
-          rerack={state.matches('rerack')}
-          movingState={state.matches('rerack.moving')}
-          lastHover={state.context.lastHover}
-          selectedCup={state.context.selectedCup}
-        />
-        {state.matches('playing') && (
-          <div className='pb-4'>
-            <Button
-              text='Home forfeit?'
-              onClick={(_, evt) => send('FORFEIT_HOME')}
-            />
-          </div>
-        )}
-      </div>
-      <div>
-        <div>{gameDetails.away_name}</div>
-        <div>away cups left: {state.context.awayCupsLeft}</div>
-        <div>hit rim: {state.context.homeCupRimCount}</div>
-        <div>
-          reracked: {JSON.stringify(state.context.awayCupRerackComplete)}
-        </div>
-        <Cups
-          side='away'
-          cups={state.context.awayCups}
-          gameSize={6}
-          forwardRef={cupsRef}
-          mouseExit={() => send('EXIT')}
-          pickCup={(evt) => send({ type: 'PICKCUP', details: evt })}
-          newMove={newMove}
-          svgCoord={svgCoord}
-          rerack={state.matches('rerack')}
-          movingState={state.matches('rerack.moving')}
-          lastHover={state.context.lastHover}
-          selectedCup={state.context.selectedCup}
-        />
-        {state.matches('playing') && (
-          <div className='pb-4'>
-            <Button
-              text='Away forfeit?'
-              onClick={(_, evt) => send('FORFEIT_AWAY')}
-            />
-          </div>
-        )}
-      </div>
-      <div>
-        <Button text='Submit' onClick={handleSubmit} />
-      </div>
-
       <Modal
         isOpen={state.matches('modal')}
         dismiss={() => send('CANCEL')}

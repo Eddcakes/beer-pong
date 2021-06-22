@@ -81,14 +81,14 @@ export function Versus({ updatePageTitle }) {
     if (!loadingPlayerList) {
       if (playerList.length > 0) {
         let player1Exists = playerList.some(
-          (player) => player.id === Number(player1Id)
+          (player) => Number(player.id) === Number(player1Id)
         );
         if (player1Exists) {
           selectPlayer('player1', player1Id);
           // if player exists then check player 2
           if (isIntOrStringInt(player2Id)) {
             let player2Exists = playerList.some(
-              (player) => player.id === Number(player2Id)
+              (player) => Number(player.id) === Number(player2Id)
             );
             if (player2Exists) {
               selectPlayer('player2', player2Id);

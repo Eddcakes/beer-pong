@@ -34,7 +34,6 @@ export function Input({
         pr-8
         rounded
         leading-tight
-        focus:outline-none
         focus:bg-white
         focus:border-gray-500`}
         value={value}

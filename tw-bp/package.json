@@ -43,6 +43,8 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^11.2.7",
     "@xstate/inspect": "^0.4.1"
   },
   "proxy": "http://localhost:1337"

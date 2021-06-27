@@ -22,6 +22,7 @@ export { Modal } from './Modal';
 export { Nav } from './Nav';
 export { News } from './News';
 export { PinnedNews } from './PinnedNews';
+export { PlayerDetails } from './PlayerDetails';
 export { PlayerOverview } from './PlayerOverview';
 export { PlayerPicker } from './PlayerPicker';
 export { Refreshing } from './Refreshing';

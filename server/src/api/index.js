@@ -4,6 +4,7 @@ import { auth } from './auth/index.js';
 import { message } from './placeholder.js';
 import { games } from './routes/games.js';
 import { players } from './routes/players.js';
+import { postPlayer } from './routes/players.post.js';
 import { tournaments } from './routes/tournaments.js';
 import { users } from './routes/users.js';
 import { venues } from './routes/venues.js';
@@ -41,6 +42,7 @@ router.use('/versus', versusResults);
 //protected routes
 router.use('/preferences', isLoggedIn, userPreferences);
 router.use('/games', isLoggedIn, postGames);
+router.use('/players', isLoggedIn, postPlayer);
 router.use('/users', isLoggedIn, isAdmin, users);
 
 export { router as api };

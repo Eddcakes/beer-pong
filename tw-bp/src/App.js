@@ -20,6 +20,7 @@ import {
   SignUp,
   Test,
   Records,
+  NewPlayer,
 } from './pages';
 import { LoggedOutRoute } from './components/LoggedOutRoute';
 import { AuthorisedRoute, Refreshing } from './components';
@@ -70,6 +71,9 @@ function App() {
               <Route path='/versus/:player1Id(\d+)?/:player2Id(\d+)?'>
                 <Versus updatePageTitle={updatePageTitle} />
               </Route>
+              <AuthorisedRoute path='/player/new'>
+                <NewPlayer updatePageTitle={updatePageTitle} />
+              </AuthorisedRoute>
               <Route path='/player/:playerId(\d+)?'>
                 <Player updatePageTitle={updatePageTitle} />
               </Route>

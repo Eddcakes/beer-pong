@@ -15,5 +15,6 @@ export * from './fetchTournaments';
 export * from './fetchVenues';
 export * from './fetchVersus';
 export * from './postNewGame';
+export * from './postNewPlayer';
 export * from './postPreferences';
 export * from './postSaveGamePlay';

@@ -3,6 +3,7 @@ export { Game } from './Game';
 export { Games } from './Games';
 export { Home } from './Home';
 export { NewGame } from './NewGame';
+export { NewTournament } from './NewTournament';
 export { Player } from './Player';
 export { Records } from './Records';
 export { Settings } from './Settings';

@@ -5,6 +5,7 @@ import {
   Header,
   TournamentList,
   TournamentDetail,
+  Button,
 } from '../components';
 
 export function Tournament({ updatePageTitle }) {
@@ -20,7 +21,12 @@ export function Tournament({ updatePageTitle }) {
         {tournamentId ? (
           <TournamentDetail id={tournamentId} />
         ) : (
-          <TournamentList />
+          <>
+            <div className='text-center'>
+              <Button text='Create a Tournament!' to='/tournaments/new' />
+            </div>
+            <TournamentList />
+          </>
         )}
       </Container>
     </>

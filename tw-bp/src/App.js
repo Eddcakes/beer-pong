@@ -20,6 +20,7 @@ import {
   SignUp,
   Test,
   Records,
+  NewTournament,
 } from './pages';
 import { LoggedOutRoute } from './components/LoggedOutRoute';
 import { AuthorisedRoute, Refreshing } from './components';
@@ -84,6 +85,9 @@ function App() {
               </AuthorisedRoute>
               <AuthorisedRoute path='/games/:gameId(\d+)'>
                 <Game updatePageTitle={updatePageTitle} />
+              </AuthorisedRoute>
+              <AuthorisedRoute path='/tournaments/new'>
+                <NewTournament updatePageTitle={updatePageTitle} />
               </AuthorisedRoute>
               <Route path='/tournaments' exact>
                 <Tournament updatePageTitle={updatePageTitle} />

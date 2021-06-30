@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { NavLink, useHistory, useLocation } from 'react-router-dom';
 
+import { ChevronDown } from '../icons';
 import { useAuth } from '../hooks/useAuth';
 
 /* i think i prefer github version of opening up a drawer to cover the entire right side. currently bit janky when removes scroll bar */
@@ -29,6 +30,7 @@ export function Menu() {
   return (
     <div>
       <button
+        aria-label='site-menu'
         className={`
       h-16
       w-16
@@ -38,10 +40,17 @@ export function Menu() {
       mr-4
       z-20
       relative
-      bg-primary-background`}
+      grid
+      items-center
+      justify-center
+      transition
+      duration-500
+      ease-in-out
+      ${auth.user ? 'bg-positive' : 'bg-negative'}       
+      `}
         onClick={toggleMenu}
       >
-        {auth.user ? <span>T</span> : <span>F</span>}
+        <ChevronDown />
       </button>
       {isOpen && (
         <>

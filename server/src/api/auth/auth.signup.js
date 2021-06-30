@@ -5,11 +5,10 @@ import { poolPromise } from '../../db.js';
 const selectUserByUsername = `
 SELECT users.id,
 users.username,
-users.email,
 users.player_id,
 users.active
 FROM ${process.env.DATABASE}.users 
-WHERE LOWER(users.username) = LOWER($1) AND active = true`;
+WHERE LOWER(users.username) = LOWER($1)`;
 
 const insertUser = `
 INSERT INTO ${process.env.DATABASE}.users

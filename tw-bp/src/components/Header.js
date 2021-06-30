@@ -1,7 +1,4 @@
-import { Nav } from './Nav';
-import { Logo } from './Logo';
-import { Menu } from './Menu';
-import { Search } from './Search';
+import { Nav, Logo, Menu, Search } from '../components';
 
 export function Header() {
   return (

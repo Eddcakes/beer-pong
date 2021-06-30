@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
+
 import { Button, Header, Card, Match, Container, Swatch } from '../components';
-import { AuthContext } from '../AuthContext';
+import { AuthContext } from '../contexts';
 
 export function Test({ updatePageTitle }) {
   const testGame = {

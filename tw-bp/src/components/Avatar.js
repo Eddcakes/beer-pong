@@ -1,7 +1,7 @@
 import React from 'react';
+
 import { useAuth } from '../hooks/useAuth';
 
-// hook to check valid token?
 export function Avatar() {
   const { user } = useAuth();
   return (

@@ -3,8 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
-import { ThemeProvider } from './ThemeProvider';
-import { AuthProvider } from './AuthProvider';
+import { ThemeProvider, AuthProvider } from './contexts';
 import { applyTheme, DEFAULT_THEME } from './theme';
 import {
   E404,
@@ -22,8 +21,7 @@ import {
   Records,
   NewPlayer,
 } from './pages';
-import { LoggedOutRoute } from './components/LoggedOutRoute';
-import { AuthorisedRoute, Refreshing } from './components';
+import { AuthorisedRoute, LoggedOutRoute, Refreshing } from './components';
 
 /* could try lazy loading protected routes like NewGame? */
 

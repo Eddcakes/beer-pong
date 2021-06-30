@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-//assessibility concerns
+
+//accessibility  concerns
 export const buttonVariant = {
   square: 'square',
   regular: 'regular',

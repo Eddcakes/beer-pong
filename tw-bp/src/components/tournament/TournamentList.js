@@ -1,8 +1,9 @@
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 
-import placeholderImg from '../assets/evt-placeholder.jpg';
-import { fetchTournaments } from '../queries';
+import placeholderImg from '../../assets/evt-placeholder.jpg';
+import { fetchTournaments } from '../../queries';
+
 /* sidebar on homepage */
 export function TournamentList() {
   const { isLoading, error, data } = useQuery('tournaments', fetchTournaments);

@@ -1,5 +1,4 @@
-import { Cup } from './Cup';
-import { HoverElement } from './HoverElement';
+import { Cup, HoverElement } from './index';
 
 export function Cups({
   side,

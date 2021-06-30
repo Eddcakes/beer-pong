@@ -1,8 +1,8 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 
-import { Unauthorised } from '../pages';
-import { useAuth } from '../hooks/useAuth';
+import { Unauthorised } from '../../pages';
+import { useAuth } from '../../hooks/useAuth';
 
 export function AuthorisedRoute({ children, minimumRole = 1, ...rest }) {
   let auth = useAuth();

@@ -42,7 +42,7 @@ router.use('/versus', versusResults);
 //protected routes
 router.use('/preferences', isLoggedIn, userPreferences);
 router.use('/games', isLoggedIn, postGames);
-router.use('/players', isLoggedIn, postPlayer);
+router.use('/players', isLoggedIn, isAdmin, postPlayer);
 router.use('/users', isLoggedIn, isAdmin, users);
 
 export { router as api };

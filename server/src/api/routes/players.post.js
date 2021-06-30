@@ -10,6 +10,13 @@ const schema = Joi.object().keys({
 
 const router = express.Router();
 
+const selectPlayerByName = `
+SELECT players.id,
+players.name,
+players.active
+FROM ${process.env.DATABASE}.players 
+WHERE LOWER(players.name) = LOWER($1)`;
+
 const insertNewPlayer = `
 INSERT INTO ${process.env.DATABASE}.players
 (name)
@@ -36,15 +43,28 @@ router.post(
     const values = [req.body.playerName];
     const client = await poolPromise.connect();
     try {
-      const createNewPlayer = await client.query(insertNewPlayer, values);
-      if (createNewPlayer) {
-        res.json({
-          message: 'New player created!',
-          id: createNewPlayer.rows[0].id,
-        });
+      const checkPlayers = await client.query(selectPlayerByName, [
+        req.body.playerName,
+      ]);
+      if (checkPlayers.rowCount > 0) {
+        //user already exists with this username
+        const playerAlreadyExists = new Error(
+          'Sorry username is taken. Please choose another one.'
+        );
+        // conflict status code (same username)
+        res.status(409);
+        next(playerAlreadyExists);
       } else {
-        const error = new Error('Could not create player');
-        next(error);
+        const createNewPlayer = await client.query(insertNewPlayer, values);
+        if (createNewPlayer) {
+          res.json({
+            message: 'New player created!',
+            id: createNewPlayer.rows[0].id,
+          });
+        } else {
+          const error = new Error('Could not create player');
+          next(error);
+        }
       }
     } catch (err) {
       res.status(500);

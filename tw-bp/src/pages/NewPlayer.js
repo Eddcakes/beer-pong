@@ -2,10 +2,6 @@ import Joi from 'joi';
 import { useReducer, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 
-/*
-  need to check that the name doesnt already exist
-*/
-
 import { Header, Card, Container, Input, Button } from '../components';
 import { postNewPlayer } from '../queries';
 
@@ -34,12 +30,17 @@ export function NewPlayer() {
   const queryClient = useQueryClient();
   const { mutate } = useMutation(postNewPlayer, {
     onError: (error) => {
-      setErrorMsg('Could not create game, please try again later.');
+      setErrorMsg('Could not create player, please try again later.');
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries('games');
-      // history.push(`/games/${data.id}`);
-      // nothing really to do on player page at the moment
+      // currently queries (based on fetch) return as success if we send back custom error
+      if (data.error) {
+        setErrorMsg(data.error); // or data.message
+      } else {
+        queryClient.invalidateQueries('players');
+        // history.push(`/games/${data.id}`);
+        // nothing really to do on player page at the moment
+      }
     },
   });
 
@@ -80,6 +81,7 @@ export function NewPlayer() {
               name='playerName'
               onChange={handleInput}
             />
+            {errorMsg.length > 0 && <p className='text-negative'>{errorMsg}</p>}
             <div className='pt-4'>
               <Button
                 text='Create!'

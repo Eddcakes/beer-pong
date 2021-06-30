@@ -15,8 +15,11 @@ export function Unauthorised() {
           resource.
         </div>
         <p>
-          You are currently signed in as
-          <span className='bg-sec-background'>{user?.username}</span>.
+          You are currently signed in as{' '}
+          <span className='bg-sec-background font-semibold px-1'>
+            {user?.username}
+          </span>
+          .
         </p>
         <p>
           If you think you are logged in as the correct user and should have

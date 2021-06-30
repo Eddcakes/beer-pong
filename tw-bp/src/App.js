@@ -71,7 +71,7 @@ function App() {
               <Route path='/versus/:player1Id(\d+)?/:player2Id(\d+)?'>
                 <Versus updatePageTitle={updatePageTitle} />
               </Route>
-              <AuthorisedRoute path='/player/new'>
+              <AuthorisedRoute path='/player/new' minimumRole={5}>
                 <NewPlayer updatePageTitle={updatePageTitle} />
               </AuthorisedRoute>
               <Route path='/player/:playerId(\d+)?'>

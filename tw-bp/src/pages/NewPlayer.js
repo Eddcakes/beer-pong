@@ -2,6 +2,10 @@ import Joi from 'joi';
 import { useReducer, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 
+/*
+  need to check that the name doesnt already exist
+*/
+
 import { Header, Card, Container, Input, Button } from '../components';
 import { postNewPlayer } from '../queries';
 

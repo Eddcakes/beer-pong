@@ -2,8 +2,32 @@ import bcrypt from 'bcryptjs';
 
 import { poolPromise } from '../../db.js';
 
-const selectUserByUsername = `SELECT users.id, users.username, users.email, users.player_id, users.active, users.role FROM ${process.env.DATABASE}.users WHERE LOWER(users.username) = LOWER($1) AND active = true`;
-const insertUser = `INSERT INTO ${process.env.DATABASE}.users (username, password) VALUES ($1, $2) RETURNING id, email, username, role`;
+const selectUserByUsername = `
+SELECT users.id,
+users.username,
+users.player_id,
+users.active
+FROM ${process.env.DATABASE}.users 
+WHERE LOWER(users.username) = LOWER($1)`;
+
+const insertUser = `
+INSERT INTO ${process.env.DATABASE}.users
+(username, password)
+VALUES ($1, $2)
+RETURNING id, email, username`;
+
+/* not sure about returning a joined query so instead new query for session + role */
+const selectUserWithRoleById = `
+SELECT users.id,
+users.email,
+users.username,
+users.active,
+roles.name as role_name,
+roles.label as role_label,
+roles.level as role_level
+FROM ${process.env.DATABASE}.users
+LEFT JOIN ${process.env.DATABASE}.roles ON users.role_id = roles.id
+WHERE users.id = $1 AND active = true`;
 
 export const signup = async (req, res, next) => {
   const client = await poolPromise.connect();
@@ -33,12 +57,22 @@ export const signup = async (req, res, next) => {
       ]);
       // take a look at the extra postgres context we might have
       if (signUpUser.rowCount > 0) {
+        //was popping password in order to add rest of details to session
         const { password, ...details } = signUpUser.rows[0];
-        //successfully signed up
-        req.session.user = { ...details };
-        req.session.save();
-        //console.log(req.session.user);
-        res.json({ message: 'Successfully signed in', user: { ...details } });
+        // now do new query to join with role and add to session
+        const newUserAndRole = await client.query(selectUserWithRoleById, [
+          details.id,
+        ]);
+        if (newUserAndRole.rowCount > 0) {
+          const userDetails = newUserAndRole.rows[0];
+          req.session.user = { ...userDetails };
+          req.session.save();
+          res.json({
+            message: 'Successfully signed in',
+            user: { ...userDetails },
+          });
+        }
+        //successfully signed up, but cannot find entry
       }
     }
   } catch (err) {

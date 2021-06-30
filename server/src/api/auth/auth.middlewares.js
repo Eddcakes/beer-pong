@@ -12,7 +12,7 @@ export function isLoggedIn(req, res, next) {
 
 export function isAdmin(req, res, next) {
   const { user } = req.session;
-  if (user.role !== 'admin') {
+  if (Number(user.role_level) < 5) {
     const error = new Error('Unauthorised ⛔');
     res.status(401);
     next(error);

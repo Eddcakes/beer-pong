@@ -1,10 +1,20 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 
+import { Unauthorised } from '../pages';
 import { useAuth } from '../hooks/useAuth';
 
-export function AuthorisedRoute({ children, ...rest }) {
+export function AuthorisedRoute({ children, minimumRole = 1, ...rest }) {
   let auth = useAuth();
+
+  const checkRole = (roleLevel) => {
+    if (auth.user.role_level >= Number(roleLevel)) {
+      return children;
+    } else {
+      return <Unauthorised />;
+    }
+  };
+
   if (auth.user === null) {
     return <div>loading session</div>;
   }
@@ -13,7 +23,7 @@ export function AuthorisedRoute({ children, ...rest }) {
       {...rest}
       render={({ location }) =>
         auth.user ? (
-          children
+          checkRole(minimumRole)
         ) : (
           <Redirect to={{ pathname: '/signin', state: { from: location } }} />
         )
@@ -21,35 +31,3 @@ export function AuthorisedRoute({ children, ...rest }) {
     />
   );
 }
-
-/* 
-To work with different levels of access could use something like this. 
-Need to remember to add level to backend auth
-
-  const accessLevels = [
-    { name: 'admin', level: 5},
-    { name: 'creator', level: 1},
-  ]
-
-  export function AuthorisedRoute({children, ...rest}) {
-  let auth = useAuth();
-  const checkRole = (role) => {
-    //minimum role required
-    if (auth.user.role.level >= role.level) {
-      return (children)
-    }
-    // does not match minimum role
-    return (
-      <Unauthorised />
-    )
-  }
-  return (
-    <Route {...rest}
-    render={ ({location}) => (auth.user 
-    ? checkRole(access)
-    : <Redirect to={{pathname: '/signin', state: { from: location}}} />)
-    }
-    />
-  )
-}
-*/

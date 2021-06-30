@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { NavLink, useHistory, useLocation } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 
 import { ChevronDown } from '../icons';
 import { useAuth } from '../hooks/useAuth';
@@ -10,15 +10,13 @@ export function Menu() {
   const [isOpen, setIsOpen] = useState(false);
   const toggleMenu = () => setIsOpen(!isOpen);
   const closeMenu = () => setIsOpen(false);
-  const location = useLocation();
   const history = useHistory();
   const auth = useAuth();
 
   const handleSignOut = () => {
     auth.signOut();
     closeMenu();
-    history.push(location.pathname);
-    // if its a protected route redirect should activate anyway
+    history.go(0);
     //send toast?
   };
   useEffect(() => {

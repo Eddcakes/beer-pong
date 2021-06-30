@@ -33,7 +33,7 @@ export const signin = async (req, res, next) => {
         req.session.save();
         //console.log(req.session);
         res.json({
-          message: 'Authentication successfull!',
+          message: 'Authentication successful!',
           user: { ...details },
         });
       } else {

@@ -1,4 +1,4 @@
-import { Cup } from './Cup';
+import { Cup } from './index';
 
 export function CupsView({ side, cups, gameSize = 6 }) {
   if (Number(gameSize) === 10) {

@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 import { useWindowSize } from '../hooks/useWindowSize';
-import { Divider } from './Divider';
+import { Divider } from './layout';
 
 /* uld like to break nav down for mobile view 
   have bottom nav similar to Youtube mobile

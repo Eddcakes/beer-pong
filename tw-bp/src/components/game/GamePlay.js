@@ -2,10 +2,9 @@ import { useRef } from 'react';
 import { useMachine } from '@xstate/react';
 import { useMutation, useQueryClient } from 'react-query';
 
-import { createMachineFromState } from '../tableMachine';
-import { Button, buttonColor, Modal } from './index';
-import { Cups } from './Cups';
-import { postSaveGamePlay } from '../queries';
+import { createMachineFromState } from '../../utils/tableMachine';
+import { Button, buttonColor, Modal, Cups } from '../index';
+import { postSaveGamePlay } from '../../queries';
 
 //on start first throw - Math.random() < 0.5;
 // https://react-query.tanstack.com/guides/mutations

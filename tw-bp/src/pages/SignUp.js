@@ -2,9 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import Joi from 'joi';
 
-import { Card, Button, Container, Input, Decoration } from '../components';
+import {
+  Card,
+  Button,
+  Container,
+  Input,
+  Decoration,
+  Logo,
+} from '../components';
 import { useAuth } from '../hooks/useAuth';
-import { Logo } from '../components/Logo';
 
 const schema = Joi.object().keys({
   username: Joi.string()

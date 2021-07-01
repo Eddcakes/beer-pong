@@ -1,5 +1,5 @@
 /* if locked or view only people should see GameView instead of GamePlay */
-import { CupsView } from './CupsView';
+import { CupsView } from './index';
 
 export function GameView({ gameDetails }) {
   return (

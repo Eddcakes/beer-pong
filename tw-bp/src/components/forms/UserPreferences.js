@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Joi from 'joi';
-import { Button } from './Button';
-import { Input } from './Input';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { fetchPreferences, postPreferences } from '../queries';
-import { useAuth } from '../hooks/useAuth';
+
+import { Button, Input } from '../index';
+import { fetchPreferences, postPreferences } from '../../queries';
+import { useAuth } from '../../hooks/useAuth';
 
 const schema = Joi.object().keys({
   avatar_link: Joi.string().trim().uri(),

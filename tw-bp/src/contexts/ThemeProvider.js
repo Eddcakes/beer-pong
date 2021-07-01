@@ -1,5 +1,6 @@
 import React from 'react';
-import ThemeContext from './ThemeContext';
+
+import { ThemeContext } from './ThemeContext';
 
 export function ThemeProvider({ theme, changeTheme, children }) {
   return (

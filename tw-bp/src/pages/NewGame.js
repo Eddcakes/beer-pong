@@ -15,7 +15,7 @@ import {
   Select,
   Toggle,
 } from '../components';
-import { createInitialCups } from '../tableMachine';
+import { createInitialCups } from '../utils/tableMachine';
 import { fetchPlayers, fetchVenues, postNewGame } from '../queries';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 

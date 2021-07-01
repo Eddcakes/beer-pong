@@ -3,8 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
-import { ThemeProvider } from './ThemeProvider';
-import { AuthProvider } from './AuthProvider';
+import { ThemeProvider, AuthProvider } from './contexts';
 import { applyTheme, DEFAULT_THEME } from './theme';
 import {
   E404,
@@ -21,9 +20,9 @@ import {
   Test,
   Records,
   NewTournament,
+  NewPlayer,
 } from './pages';
-import { LoggedOutRoute } from './components/LoggedOutRoute';
-import { AuthorisedRoute, Refreshing } from './components';
+import { AuthorisedRoute, LoggedOutRoute, Refreshing } from './components';
 
 /* could try lazy loading protected routes like NewGame? */
 
@@ -71,6 +70,9 @@ function App() {
               <Route path='/versus/:player1Id(\d+)?/:player2Id(\d+)?'>
                 <Versus updatePageTitle={updatePageTitle} />
               </Route>
+              <AuthorisedRoute path='/player/new' minimumRole={5}>
+                <NewPlayer updatePageTitle={updatePageTitle} />
+              </AuthorisedRoute>
               <Route path='/player/:playerId(\d+)?'>
                 <Player updatePageTitle={updatePageTitle} />
               </Route>

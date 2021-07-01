@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Input } from './Input';
-import { searchPages } from '../searchPages';
+
+import { Input } from './controls';
+import { searchPages } from '../utils/searchPages';
 
 /* bbc search bar spans full screen in a new area */
 export function Search() {

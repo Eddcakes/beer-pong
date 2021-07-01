@@ -1,6 +1,7 @@
 import { useQuery } from 'react-query';
-import { fetchGamesByTournamentId, fetchTournamentById } from '../queries';
-import { MatchGrid } from './MatchGrid';
+
+import { fetchGamesByTournamentId, fetchTournamentById } from '../../queries';
+import { MatchGrid } from '../index';
 
 export function TournamentDetail({ id }) {
   const { data: games, isLoading: isLoadingGames } = useQuery(

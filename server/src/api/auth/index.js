@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
   res.json({ message: 'hitting auth endpoint ✨🔐' });
 });
 
-router.post('/signup', validateUser('Unable to login'), signup);
+router.post('/signup', validateUser('Unable to sign up'), signup);
 router.post('/signin', validateUser('Unable to login'), signin);
 router.post('/signout', serverSignOut);
 

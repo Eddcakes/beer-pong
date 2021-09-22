@@ -19,23 +19,26 @@ export default function (database) {
   app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }));
   app.use(helmet());
   app.use(morgan('common'));
-  app.use(
-    session({
-      store: new pgs({
-        conString: process.env.DATABASE_URL,
-        schemaName: process.env.DATABASE,
-        pool: poolPromise,
-      }),
-      secret: process.env.SESSION_SECRET,
-      saveUninitialized: false,
-      resave: false,
-      cookie: {
-        httpOnly: true,
-        maxAge: Number(process.env.SESSION_MAX_AGE),
-        secure: cookiesSecure,
-      },
-    })
-  );
+  // in test dont want to open db connection yet
+  if (process.env.NODE_ENV !== 'test') {
+    app.use(
+      session({
+        store: new pgs({
+          conString: process.env.DATABASE_URL,
+          schemaName: process.env.DATABASE,
+          pool: poolPromise,
+        }),
+        secret: process.env.SESSION_SECRET,
+        saveUninitialized: false,
+        resave: false,
+        cookie: {
+          httpOnly: true,
+          maxAge: Number(process.env.SESSION_MAX_AGE),
+          secure: cookiesSecure,
+        },
+      })
+    );
+  }
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
 

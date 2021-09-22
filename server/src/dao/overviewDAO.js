@@ -1,8 +1,3 @@
-import express from 'express';
-import { poolPromise } from '../../db.js';
-
-const router = express.Router();
-
 const collate = `
 SELECT 
   (SELECT players.name FROM ${process.env.DATABASE}.players WHERE players.id = $1) AS "name",
@@ -29,28 +24,43 @@ SELECT
   ) AS "finalsWon"
 		FROM ${process.env.DATABASE}.games WHERE home_id = $8 OR away_id = $9`;
 
-// should i return the ID i searched for aswell? or even join on player name
-router.get('/:id', async (req, res) => {
-  const client = await poolPromise.connect();
-  try {
-    const data = await client.query(`${collate}`, [
-      req.params.id,
-      req.params.id,
-      req.params.id,
-      req.params.id,
-      req.params.id,
-      req.params.id,
-      req.params.id,
-      req.params.id,
-      req.params.id,
-    ]);
-    return res.json(data.rows);
-  } catch (err) {
-    res.status(500);
-    res.send(err.message);
-  } finally {
-    client.release();
+let client;
+let poolRef;
+export default class OverviewDAO {
+  static async injectDB(connection) {
+    if (client) {
+      return;
+    }
+    try {
+      poolRef = connection;
+      client = await poolRef.connect();
+    } catch (err) {
+      console.error(
+        `Unable to connect to connection pool in OverviewDAO: ${err}`
+      );
+    } finally {
+      client.release();
+    }
   }
-});
-
-export { router as overview };
+  static async getOverviewByPlayerId(playerId) {
+    try {
+      client = await poolRef.connect();
+      const playerOverview = await client.query(`${collate}`, [
+        playerId,
+        playerId,
+        playerId,
+        playerId,
+        playerId,
+        playerId,
+        playerId,
+        playerId,
+        playerId,
+      ]);
+      return playerOverview.rows;
+    } catch (err) {
+      console.error(err.message);
+    } finally {
+      client.release();
+    }
+  }
+}

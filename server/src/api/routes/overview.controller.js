@@ -7,3 +7,7 @@ export const apiOverviewByPlayerId = (db) => async (req, res) => {
     res.send(err.message);
   }
 };
+
+export const apiOverviewInvalid = async (req, res) => {
+  res.json({ message: 'Player overview requires a player id' });
+};

@@ -10,6 +10,10 @@ Simple express server for interfacing with a postgres database
 
 create-react-app base using tailwindcss for styling
 
+## live site
+
+[live heroku app](https://pongleby.herokuapp.com/)
+
 ## build
 
 As trying to deploy on heroku (starting tiers) the server and client must be in one app.

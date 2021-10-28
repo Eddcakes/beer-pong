@@ -22,7 +22,9 @@ describe('user preferences demonstrate protected routes', () => {
       expect(e).toBeNull();
     }
   });
-  test('login to test user', async () => {
+  test.todo('login to test user');
+
+  /* async () => {
     // const testUser = await createTestUser();
     const testUsername = 'ApiTestUser';
     const pw = process.env.TEST_USER_PASS;
@@ -35,7 +37,7 @@ describe('user preferences demonstrate protected routes', () => {
     } catch (err) {
       expect(err).toBeNull();
     }
-  });
+  }); */
   // will this successfully pass session data?
   test.todo(
     'should now be able to read preferences, needs to pass authentication'

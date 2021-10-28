@@ -1,6 +1,8 @@
 import supertest from 'supertest';
-import app from '../../app.js';
+import makeApp from '../../app.js';
 const apiRoute = '/api/v1';
+
+const app = makeApp({});
 
 test('should not be able to access  ', async () => {
   try {

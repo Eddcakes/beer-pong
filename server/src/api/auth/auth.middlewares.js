@@ -11,7 +11,7 @@ const authSchema = Joi.object().keys({
 });
 
 export function isLoggedIn(req, res, next) {
-  const { user } = req.session;
+  const { user } = req?.session || {};
   if (!user) {
     const error = new Error('Unauthorised ⛔');
     res.status(401);

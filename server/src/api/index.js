@@ -21,7 +21,7 @@ export const apiWithDb = (db) => {
   router.get('/', (req, res) => {
     res.json({
       message: message,
-      user: req.session.user,
+      user: req?.session?.user,
     });
   });
   router.use('/auth', authRouter(db));

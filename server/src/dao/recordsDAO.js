@@ -4,6 +4,7 @@ const selectRecordsAndPlayers = `
 SELECT
 records.id,
 record_types.label,
+record_types.id as record_type_id,
 record_types.description,
 records.player_id,
 players.name,

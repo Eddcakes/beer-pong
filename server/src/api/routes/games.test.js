@@ -10,7 +10,11 @@ const getGameById = jest.fn((byId) =>
 const getTournamentGamesById = jest.fn((tournamentId) =>
   mockGames.filter((game) => game.tournament_id === tournamentId)
 );
-const getRecentGamesByPlayerId = jest.fn();
+const getRecentGamesByPlayerId = jest.fn((playerId) => {
+  return mockGames.filter((game) => {
+    return game.home_id === playerId || game.away_id === playerId;
+  });
+});
 const postNewGame = jest.fn();
 const patchGame = jest.fn();
 
@@ -43,8 +47,33 @@ describe('games routes mock tests', () => {
     expect(getTournamentGamesById.mock.calls.length).toBe(1);
     expect(getTournamentGamesById.mock.results[0].value.length).toBe(2);
   });
-  test.todo('get recent games by player id');
+  test('get recent games by player id', async () => {
+    await supertest(app).get(`${apiRoute}/games/recent/1`);
+    expect(getRecentGamesByPlayerId.mock.calls.length).toBe(1);
+    expect(getRecentGamesByPlayerId.mock.results[0].value.length).toBe(2);
+  });
   test.todo('create a new game');
+  /*   test('create a new game', async () => {
+      const newGame = {
+        awayCupsLeft: 2,
+        awayForfeit: false,
+        gameSize: 6,
+        homeCupsLeft: 0,
+        homeForfeit: false,
+        locked: true,
+        player1: 1,
+        player2: 3,
+        table: null,
+        venue: 5,
+        created: new Date(),
+      };
+    await supertest(app)
+      .post(`${apiRoute}/games/new`)
+      .set('Content-type', 'application/json')
+      .send(newGame);
+    expect(postNewGame.mock.calls.length).toBe(1);
+  }); */
+
   test.todo('modify an existing game');
 });
 

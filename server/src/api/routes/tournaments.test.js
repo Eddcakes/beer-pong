@@ -2,9 +2,13 @@ import supertest from 'supertest';
 import makeApp from '../../app.js';
 import { jest } from '@jest/globals';
 
+const recentLimit = 2;
 /* mock db calls */
 const getTournaments = jest.fn(() => mockTournaments);
-const getRecentTournaments = jest.fn();
+const getRecentTournaments = jest.fn(() => {
+  // assumption tournaments already sorted by query
+  return mockTournaments.slice(mockTournaments.length - recentLimit);
+});
 const getTournamentById = jest.fn((tId) =>
   mockTournaments.filter((tournament) => tournament.id === tId)
 );
@@ -24,7 +28,13 @@ describe('tournaments routes mock tests', () => {
     expect(getTournaments.mock.results[0].value.length).toBe(3);
     expect(getTournaments.mock.results[0].value).toStrictEqual(mockTournaments);
   });
-  test.todo('get recent tournaments');
+  test('get recent tournaments', async () => {
+    await supertest(app).get(`${apiRoute}/recent`);
+    expect(getRecentTournaments.mock.calls.length).toBe(1);
+    expect(
+      getRecentTournaments.mock.results[0].value.length
+    ).toBeLessThanOrEqual(recentLimit);
+  });
   test('get tournament by ID', async () => {
     await supertest(app).get(`${apiRoute}/2`);
     expect(getTournamentById.mock.calls.length).toBe(1);

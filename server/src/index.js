@@ -1,48 +1,68 @@
-import express from 'express';
-import morgan from 'morgan'; //logger
-import cors from 'cors';
-import session from 'express-session';
-import pgSession from 'connect-pg-simple';
-import helmet from 'helmet';
 import path from 'path';
 
-import { notFound, errorHandler } from './middlewares.js';
-import { api } from './api/index.js';
+import makeApp from './app.js';
+import GamesDAO from './dao/gamesDAO.js';
+import NewsDAO from './dao/newsDAO.js';
+import OverviewDAO from './dao/overviewDAO.js';
+import NicknamesDAO from './dao/nicknamesDAO.js';
+import PlayersDAO from './dao/playersDAO.js';
+import RecordsDAO from './dao/recordsDAO.js';
+import TournamentsDAO from './dao/tournamentsDAO.js';
+import UserPreferencesDAO from './dao/userPreferencesDAO.js';
+import UsersDAO from './dao/usersDAO.js';
+import VenuesDAO from './dao/venuesDAO.js';
+import VersusDAO from './dao/versusDAO.js';
+import AuthDAO from './api/auth/authDAO.js';
 import { poolPromise } from './db.js';
 
 const __dirname = path.resolve();
 
-const app = express();
+const port = process.env.PORT || 1337;
 
-const pgs = pgSession(session);
+await GamesDAO.injectDB(poolPromise);
+await NewsDAO.injectDB(poolPromise);
+await OverviewDAO.injectDB(poolPromise);
+await NicknamesDAO.injectDB(poolPromise);
+await PlayersDAO.injectDB(poolPromise);
+await RecordsDAO.injectDB(poolPromise);
+await TournamentsDAO.injectDB(poolPromise);
+await UserPreferencesDAO.injectDB(poolPromise);
+await UsersDAO.injectDB(poolPromise);
+await VenuesDAO.injectDB(poolPromise);
+await VersusDAO.injectDB(poolPromise);
+await AuthDAO.injectDB(poolPromise);
 
-const cookiesSecure =
-  process.env.NODE_ENV.trim().toLowerCase() === 'production';
-app.set('trust proxy', 1);
-app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }));
-app.use(helmet());
-app.use(morgan('common'));
-app.use(
-  session({
-    store: new pgs({
-      conString: process.env.DATABASE_URL,
-      schemaName: process.env.DATABASE,
-      pool: poolPromise,
-    }),
-    secret: process.env.SESSION_SECRET,
-    saveUninitialized: false,
-    resave: false,
-    cookie: {
-      httpOnly: true,
-      maxAge: Number(process.env.SESSION_MAX_AGE),
-      secure: cookiesSecure,
-    },
-  })
-);
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-
-app.use('/api/v1', api);
+const app = makeApp({
+  getGames: GamesDAO.getGames,
+  getGameById: GamesDAO.getGameById,
+  getTournamentGamesById: GamesDAO.getTournamentGamesById,
+  getRecentGamesByPlayerId: GamesDAO.getRecentGamesByPlayerId,
+  postNewGame: GamesDAO.postNewGame,
+  patchGame: GamesDAO.patchGame,
+  getNews: NewsDAO.getNews,
+  getNewsById: NewsDAO.getNewsById,
+  getOverviewByPlayerId: OverviewDAO.getOverviewByPlayerId,
+  getNicknames: NicknamesDAO.getNicknames,
+  getNicknameOfPlayerId: NicknamesDAO.getNicknameOfPlayerId,
+  getPlayers: PlayersDAO.getPlayers,
+  getPlayerById: PlayersDAO.getPlayerById,
+  postNewPlayer: PlayersDAO.postNewPlayer,
+  getCurrentRecords: RecordsDAO.getCurrentRecords,
+  getAllRecords: RecordsDAO.getAllRecords,
+  getRecordsByPlayerId: RecordsDAO.getRecordsByPlayerId,
+  getRecordsByTypeId: RecordsDAO.getRecordsByTypeId,
+  getTournaments: TournamentsDAO.getTournaments,
+  getRecentTournaments: TournamentsDAO.getRecentTournaments,
+  getTournamentById: TournamentsDAO.getTournamentById,
+  getUserPreferences: UserPreferencesDAO.getUserPreferences,
+  postUserPreferences: UserPreferencesDAO.postUserPreferences,
+  getAllUsers: UsersDAO.getAllUsers,
+  patchUser: UsersDAO.patchUser,
+  getAllVenues: VenuesDAO.getAllVenues,
+  getVersusResults: VersusDAO.getVersusResults,
+  signin: AuthDAO.signin,
+  signup: AuthDAO.signup,
+});
 
 // in production use the build file, in dev run server & front end individually
 // space in package.json as:production means we have to trim
@@ -53,11 +73,6 @@ if (process.env.NODE_ENV.toLowerCase().trim() === 'production') {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
   });
 }
-
-app.use(notFound);
-app.use(errorHandler);
-
-const port = process.env.PORT || 1337;
 
 app.listen(port, () => {
   console.log(`listening at ${process.env.DB_HOST}:${port}`);

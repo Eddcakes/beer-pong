@@ -51,12 +51,17 @@ export function Nav() {
 }
 
 const StyledNavLink = ({ to, text, exact = false }) => {
+  const commonClasses =
+    'p-2 font-bold text-xl uppercase inline-block w-full hover:text-primary border-b-4';
   return (
     <NavLink
       to={to}
-      exact={exact}
-      activeClassName='text-primary border-b-4 border-solid border-primary'
-      className='p-2 font-bold text-xl uppercase inline-block w-full hover:text-primary border-b-4 border-opacity-0'
+      end={exact}
+      className={({ isActive }) =>
+        isActive
+          ? `${commonClasses} text-primary border-solid border-primary`
+          : `${commonClasses} border-opacity-0`
+      }
     >
       {text}
     </NavLink>

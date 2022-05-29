@@ -29,63 +29,72 @@ export function Game({ updatePageTitle }) {
       <Header />
       <Container>
         {error && <div>Error {gameId}</div>}
-        {isLoading && <div>Loading {gameId}</div>}
-        {!isLoading && (
-          <Card
-            title={
-              <CardTitle
-                home={data[0].home_name}
-                away={data[0].away_name}
-                number={data[0].id}
-              />
-            }
-          >
-            {data[0].locked && (
-              <div className='text-right' title='This game is locked'>
-                locked 🔒
-              </div>
-            )}
-            <div className='text-center'>
-              {data[0].tournament && (
-                <div>
-                  <div>{data[0].event}</div>
-                  <div>{data[0].stage}</div>
+        {gameId ? (
+          isLoading ? (
+            <div>Loading {gameId}</div>
+          ) : data.length > 0 ? (
+            <Card
+              title={
+                <CardTitle
+                  home={data[0].home_name}
+                  away={data[0].away_name}
+                  number={data[0].id}
+                />
+              }
+            >
+              {data[0].locked && (
+                <div className='text-right' title='This game is locked'>
+                  locked 🔒
                 </div>
               )}
-              <div>
-                <div>Venue: {data[0].venue}</div>
-                <div>Starting cups: 6</div>
-                {data[0].forfeit ? <div>Ended by forfeit</div> : null}
-                {data[0].notes && <div>Notes: {data[0].notes}</div>}
-              </div>
-            </div>
-            {data[0]?.game_table && data[0].locked && (
-              <div className='grid grid-cols-2 gap-4'>
+              <div className='text-center'>
+                {data[0].tournament && (
+                  <div>
+                    <div>{data[0].event}</div>
+                    <div>{data[0].stage}</div>
+                  </div>
+                )}
                 <div>
-                  <h2 className='font-bold text-center'>Home Results</h2>
-                  <div>Name: {data[0].home_name}</div>
-                  <div>Cups left: {data[0].home_cups_left}</div>
-                </div>
-                <div>
-                  <h2 className='font-bold text-center'>Away Results</h2>
-                  <div>Name: {data[0].away_name}</div>
-                  <div>Cups left: {data[0].away_cups_left}</div>
+                  <div>Venue: {data[0].venue}</div>
+                  <div>Starting cups: 6</div>
+                  {data[0].forfeit ? <div>Ended by forfeit</div> : null}
+                  {data[0].notes && <div>Notes: {data[0].notes}</div>}
                 </div>
               </div>
-            )}
-            {/* check for if table json in db needs a better check than just exists haha */}
-            {data[0]?.game_table ? (
-              !data[0].locked ? (
-                <GamePlay gameDetails={data[0]} access='' />
+              {data[0]?.game_table && data[0].locked && (
+                <div className='grid grid-cols-2 gap-4'>
+                  <div>
+                    <h2 className='font-bold text-center'>Home Results</h2>
+                    <div>Name: {data[0].home_name}</div>
+                    <div>Cups left: {data[0].home_cups_left}</div>
+                  </div>
+                  <div>
+                    <h2 className='font-bold text-center'>Away Results</h2>
+                    <div>Name: {data[0].away_name}</div>
+                    <div>Cups left: {data[0].away_cups_left}</div>
+                  </div>
+                </div>
+              )}
+              {/* check for if table json in db needs a better check than just exists haha */}
+              {data[0]?.game_table ? (
+                !data[0].locked ? (
+                  <GamePlay gameDetails={data[0]} access='' />
+                ) : (
+                  <GameView gameDetails={data[0]} />
+                )
               ) : (
-                <GameView gameDetails={data[0]} />
-              )
-            ) : (
-              <div className='text-center text-sm font-bold pt-4'>
-                Table state was not entered 😥
-              </div>
-            )}
-          </Card>
+                <div className='text-center text-sm font-bold pt-4'>
+                  Table state was not entered 😥
+                </div>
+              )}
+            </Card>
+          ) : (
+            <div>Game {gameId} does not exist</div>
+          )
+        ) : (
+          {
+            /* game list is already its own route */
+          }
         )}
       </Container>
       <div className='spacer py-8'></div>
@@ -113,7 +122,7 @@ pitchSize -> pitch_size
 */
 
 /* 
-how to represent rearanges, need to make sure can haddle 10 & 6 cup games
+how to represent rearanges, need to make sure can handle 10 & 6 cup games
 */
 
 function CardTitle({ home, away, number }) {

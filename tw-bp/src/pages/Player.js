@@ -5,7 +5,6 @@ import { useParams } from 'react-router-dom';
 import { Header, Container, PlayerDetails } from '../components';
 import { fetchPlayerById } from '../queries';
 
-/* add last 5 games */
 export function Player({ updatePageTitle }) {
   const { playerId } = useParams();
   const { data, isLoading } = useQuery(['player', playerId], () =>

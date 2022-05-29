@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { useHistory } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 
 import {
   Card,
@@ -13,7 +13,9 @@ import {
 import { fetchPlayerOverview, fetchPlayers } from '../queries';
 
 export function Versus({ updatePageTitle }) {
-  let history = useHistory();
+  let navigate = useNavigate();
+  let location = useLocation();
+  console.log(location);
   const [players, setPlayers] = useState({
     player1: '',
     player2: '',
@@ -31,8 +33,8 @@ export function Versus({ updatePageTitle }) {
     (name, value) => {
       //how to prevent picking the same player?
       setPlayers((previous) => ({ ...previous, [name]: value }));
-      // split path
-      const sp = history.location.pathname.split('/');
+      // back button not enjoying it
+      const sp = location.pathname.split('/');
       fetchPlayerOverview(value).then((overview) => {
         if (name === 'player1') {
           if (isIntOrStringInt(value)) {
@@ -41,19 +43,19 @@ export function Versus({ updatePageTitle }) {
                 ? [overview[0], previous[1]]
                 : [overview[0]];
             });
-            history.push(`${[sp[0], sp[1], value, sp[3]].join('/')}`);
+            navigate(`${[sp[0], sp[1], value, sp[3]].join('/')}`);
           } else {
-            history.push(`${[sp[0], sp[1]].join('/')}`);
+            navigate(`${[sp[0], sp[1]].join('/')}`);
           }
         } else {
           if (isIntOrStringInt(value)) {
             setPlayerOverview((previous) => [previous[0], overview[0]]);
-            history.push(`${[sp[0], sp[1], sp[2], value].join('/')}`);
+            navigate(`${[sp[0], sp[1], sp[2], value].join('/')}`);
           }
         }
       });
     },
-    [history]
+    [location.pathname, navigate]
   );
 
   const goCompare = (player1, player2) => {

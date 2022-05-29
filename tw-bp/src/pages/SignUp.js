@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Joi from 'joi';
 
 import {
@@ -24,7 +24,7 @@ const schema = Joi.object().keys({
 });
 
 export function SignUp({ updatePageTitle }) {
-  let history = useHistory();
+  let navigate = useNavigate();
   const auth = useAuth();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -51,7 +51,7 @@ export function SignUp({ updatePageTitle }) {
           return setErrorMsg(signupResp.error);
         }
         //redirect to login page on successful account creation
-        history.push('/');
+        navigate('/');
       } catch (err) {
         setErrorMsg('Something went wrong!');
       }

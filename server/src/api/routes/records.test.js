@@ -45,6 +45,12 @@ describe('records routes mock tests', () => {
     expect(getRecordsByTypeId.mock.calls.length).toBe(1);
     expect(getRecordsByTypeId.mock.results[0].value.length).toBe(1);
   });
+  test('invalid player ids should return 422 error', async () => {
+    await supertest(app).get(`${apiRoute}/player/frog`).expect(422);
+  });
+  test('invalid type ids should return 422 error', async () => {
+    await supertest(app).get(`${apiRoute}/type/frog`).expect(422);
+  });
 });
 
 const mockRecords = [

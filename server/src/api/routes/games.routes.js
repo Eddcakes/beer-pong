@@ -8,6 +8,7 @@ import {
   apiPostNewGame,
   apiPatchGame,
 } from './games.controller.js';
+import { validId } from '../../middlewares.js';
 
 const tableSchema = Joi.object()
   .keys({
@@ -75,9 +76,17 @@ const validateNewGame = (errorMessage) => (req, res, next) => {
 export const gamesRouter = (db) => {
   const router = new Router();
   router.get('/', apiGetGames(db));
-  router.get('/:id', apiGetGameById(db));
-  router.get('/tournament/:id', apiGetTournamentGamesById(db));
-  router.get('/recent/:id', apiGetRecentGamesByPlayerId(db));
+  router.get('/:id', validId('Not a valid game ID'), apiGetGameById(db));
+  router.get(
+    '/tournament/:id',
+    validId('Not a valid tournament ID'),
+    apiGetTournamentGamesById(db)
+  );
+  router.get(
+    '/recent/:id',
+    validId('Not a valid player ID'),
+    apiGetRecentGamesByPlayerId(db)
+  );
   return router;
 };
 
@@ -88,6 +97,6 @@ export const gamesProtectedRoutes = (db) => {
     validateNewGame('Could not post new game'),
     apiPostNewGame(db)
   );
-  router.post('/:id', apiPatchGame(db));
+  router.post('/:id', validId('Not a valid game ID'), apiPatchGame(db));
   return router;
 };

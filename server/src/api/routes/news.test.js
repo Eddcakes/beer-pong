@@ -26,6 +26,9 @@ describe('news routes mock tests', () => {
     expect(getNewsById.mock.calls.length).toBe(1);
     expect(getNewsById.mock.results[0].value).toBe(mockNews[0]);
   });
+  test('invalid news ids should return 422 error', async () => {
+    await supertest(app).get(`${apiRoute}/frog`).expect(422);
+  });
 });
 
 const mockNews = [

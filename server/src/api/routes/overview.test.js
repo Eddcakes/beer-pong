@@ -25,6 +25,9 @@ describe('overviews routes mock tests', () => {
       mockOverview
     );
   });
+  test('invalid player ids should return 422 error', async () => {
+    await supertest(app).get(`${apiRoute}/frog`).expect(422);
+  });
 });
 
 const mockOverview = [

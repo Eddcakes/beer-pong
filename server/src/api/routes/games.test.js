@@ -52,6 +52,15 @@ describe('games routes mock tests', () => {
     expect(getRecentGamesByPlayerId.mock.calls.length).toBe(1);
     expect(getRecentGamesByPlayerId.mock.results[0].value.length).toBe(2);
   });
+  test('invalid game ids should return 422 error', async () => {
+    await supertest(app).get(`${apiRoute}/games/frog`).expect(422);
+  });
+  test('invalid recent ids should return 422 error', async () => {
+    await supertest(app).get(`${apiRoute}/games/recent/frog`).expect(422);
+  });
+  test('invalid tournament ids should return 422 error', async () => {
+    await supertest(app).get(`${apiRoute}/games/tournament/frog`).expect(422);
+  });
   test.todo('create a new game');
   /*   test('create a new game', async () => {
       const newGame = {

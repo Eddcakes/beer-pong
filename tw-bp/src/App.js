@@ -67,7 +67,7 @@ function App() {
           <Router>
             <Routes>
               <Route
-                path='/versus*'
+                path='/versus/*'
                 element={<Versus updatePageTitle={updatePageTitle} />}
               >
                 {/* not valid in #6, need to move checking for digit to the component */}

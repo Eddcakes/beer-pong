@@ -69,9 +69,7 @@ function App() {
               <Route
                 path='/versus/*'
                 element={<Versus updatePageTitle={updatePageTitle} />}
-              >
-                {/* not valid in #6, need to move checking for digit to the component */}
-              </Route>
+              />
               <Route
                 path='/player/new'
                 element={
@@ -83,24 +81,22 @@ function App() {
               <Route
                 path='/player/:playerId'
                 element={<Player updatePageTitle={updatePageTitle} />}
-              ></Route>
+              />
               <Route
                 path='/records/'
                 element={<Records updatePageTitle={updatePageTitle} />}
-              ></Route>
+              />
               <Route
                 path='/games/'
                 exact
                 element={<Games updatePageTitle={updatePageTitle} />}
-              ></Route>
+              />
               <Route
                 path='/games/new'
                 element={
-                  <RequireRole
-                    redirectTo='/signin'
-                    minimumRole={1}
-                    element={<NewGame updatePageTitle={updatePageTitle} />}
-                  ></RequireRole>
+                  <RequireRole redirectTo='/signin' minimumRole={1}>
+                    <NewGame updatePageTitle={updatePageTitle} />
+                  </RequireRole>
                 }
               />
               <Route
@@ -110,16 +106,16 @@ function App() {
                     <Game updatePageTitle={updatePageTitle} />
                   </RequireRole>
                 }
-              ></Route>
+              />
               <Route
                 path='/tournaments'
                 exact
                 element={<Tournament updatePageTitle={updatePageTitle} />}
-              ></Route>
+              />
               <Route
                 path='/tournaments/:tournamentId'
                 element={<Tournament updatePageTitle={updatePageTitle} />}
-              ></Route>
+              />
               <Route
                 path='/settings'
                 element={<Settings updatePageTitle={updatePageTitle} />}
@@ -143,16 +139,16 @@ function App() {
               <Route
                 path='/test'
                 element={<Test updatePageTitle={updatePageTitle} />}
-              ></Route>
+              />
               <Route
                 path='/'
                 exact
                 element={<Home updatePageTitle={updatePageTitle} />}
-              ></Route>
+              />
               <Route
                 path='/*'
                 element={<E404 updatePageTitle={updatePageTitle} />}
-              ></Route>
+              />
             </Routes>
           </Router>
           <ReactQueryDevtools />

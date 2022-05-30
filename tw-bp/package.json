@@ -7,18 +7,18 @@
     "joi": "^17.4.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
-    "react-markdown": "^6.0.2",
+    "react-markdown": "^8.0.3",
     "react-query": "^3.16.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
-    "remark-gfm": "^1.0.0",
+    "remark-gfm": "^3.0.1",
     "xstate": "^4.31.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "dev": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!@codemirror)/'",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

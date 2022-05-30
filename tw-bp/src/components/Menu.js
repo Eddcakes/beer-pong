@@ -12,9 +12,15 @@ export function Menu() {
   const closeMenu = () => setIsOpen(false);
   const navigate = useNavigate();
   const auth = useAuth();
-
-  const handleSignOut = () => {
-    auth.signOut();
+  const handleSignOut = async () => {
+    try {
+      const signOutResp = await auth.signOut();
+      if (signOutResp.error) {
+        throw new Error('Error sending signout request');
+      }
+    } catch (err) {
+      console.error(err);
+    }
     closeMenu();
     navigate(0);
     //send toast?

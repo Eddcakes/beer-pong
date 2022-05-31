@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
@@ -21,7 +21,7 @@ import {
   Records,
   NewPlayer,
 } from './pages';
-import { AuthorisedRoute, LoggedOutRoute, Refreshing } from './components';
+import { AlreadySignedIn, RequireRole, Refreshing } from './components';
 
 /* could try lazy loading protected routes like NewGame? */
 
@@ -65,53 +65,91 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <Refreshing />
           <Router>
-            <Switch>
-              <Route path='/versus/:player1Id(\d+)?/:player2Id(\d+)?'>
-                <Versus updatePageTitle={updatePageTitle} />
-              </Route>
-              <AuthorisedRoute path='/player/new' minimumRole={5}>
-                <NewPlayer updatePageTitle={updatePageTitle} />
-              </AuthorisedRoute>
-              <Route path='/player/:playerId(\d+)?'>
-                <Player updatePageTitle={updatePageTitle} />
-              </Route>
-              <Route path='/records/'>
-                <Records updatePageTitle={updatePageTitle} />
-              </Route>
-              <Route path='/games/' exact>
-                <Games updatePageTitle={updatePageTitle} />
-              </Route>
-              <AuthorisedRoute path='/games/new'>
-                <NewGame updatePageTitle={updatePageTitle} />
-              </AuthorisedRoute>
-              <AuthorisedRoute path='/games/:gameId(\d+)'>
-                <Game updatePageTitle={updatePageTitle} />
-              </AuthorisedRoute>
-              <Route path='/tournaments' exact>
-                <Tournament updatePageTitle={updatePageTitle} />
-              </Route>
-              <Route path='/tournaments/:tournamentId(\d+)'>
-                <Tournament updatePageTitle={updatePageTitle} />
-              </Route>
-              <Route path='/settings'>
-                <Settings updatePageTitle={updatePageTitle} />
-              </Route>
-              <LoggedOutRoute path='/signin'>
-                <SignIn updatePageTitle={updatePageTitle} />
-              </LoggedOutRoute>
-              <LoggedOutRoute path='/signup'>
-                <SignUp updatePageTitle={updatePageTitle} />
-              </LoggedOutRoute>
-              <Route path='/test'>
-                <Test updatePageTitle={updatePageTitle} />
-              </Route>
-              <Route path='/' exact>
-                <Home updatePageTitle={updatePageTitle} />
-              </Route>
-              <Route path='/*'>
-                <E404 updatePageTitle={updatePageTitle} />
-              </Route>
-            </Switch>
+            <Routes>
+              <Route
+                path='/versus/*'
+                element={<Versus updatePageTitle={updatePageTitle} />}
+              />
+              <Route
+                path='/player/new'
+                element={
+                  <RequireRole redirectTo='/signin' minimumRole={5}>
+                    <NewPlayer updatePageTitle={updatePageTitle} />
+                  </RequireRole>
+                }
+              />
+              <Route
+                path='/player/:playerId'
+                element={<Player updatePageTitle={updatePageTitle} />}
+              />
+              <Route
+                path='/records/'
+                element={<Records updatePageTitle={updatePageTitle} />}
+              />
+              <Route
+                path='/games/'
+                exact
+                element={<Games updatePageTitle={updatePageTitle} />}
+              />
+              <Route
+                path='/games/new'
+                element={
+                  <RequireRole redirectTo='/signin' minimumRole={1}>
+                    <NewGame updatePageTitle={updatePageTitle} />
+                  </RequireRole>
+                }
+              />
+              <Route
+                path='/games/:gameId'
+                element={
+                  <RequireRole redirectTo='/signin' minimumRole={1}>
+                    <Game updatePageTitle={updatePageTitle} />
+                  </RequireRole>
+                }
+              />
+              <Route
+                path='/tournaments'
+                exact
+                element={<Tournament updatePageTitle={updatePageTitle} />}
+              />
+              <Route
+                path='/tournaments/:tournamentId'
+                element={<Tournament updatePageTitle={updatePageTitle} />}
+              />
+              <Route
+                path='/settings'
+                element={<Settings updatePageTitle={updatePageTitle} />}
+              ></Route>
+              <Route
+                path='/signin'
+                element={
+                  <AlreadySignedIn>
+                    <SignIn updatePageTitle={updatePageTitle} />
+                  </AlreadySignedIn>
+                }
+              />
+              <Route
+                path='/signup'
+                element={
+                  <AlreadySignedIn>
+                    <SignUp updatePageTitle={updatePageTitle} />
+                  </AlreadySignedIn>
+                }
+              />
+              <Route
+                path='/test'
+                element={<Test updatePageTitle={updatePageTitle} />}
+              />
+              <Route
+                path='/'
+                exact
+                element={<Home updatePageTitle={updatePageTitle} />}
+              />
+              <Route
+                path='/*'
+                element={<E404 updatePageTitle={updatePageTitle} />}
+              />
+            </Routes>
           </Router>
           <ReactQueryDevtools />
         </QueryClientProvider>

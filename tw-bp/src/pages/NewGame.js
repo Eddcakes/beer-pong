@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Joi from 'joi';
 
 import {
@@ -59,7 +59,7 @@ function reducer(state, action) {
 }
 
 export function NewGame({ updatePageTitle }) {
-  let history = useHistory();
+  let navigate = useNavigate();
   const queryClient = useQueryClient();
   const { mutate } = useMutation(postNewGame, {
     onError: (error) => {
@@ -67,7 +67,7 @@ export function NewGame({ updatePageTitle }) {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries('games');
-      history.push(`/games/${data.id}`);
+      navigate(`/games/${data.id}`);
     },
   });
   const minGameSize = 6;

@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { validPlayerId } from '../../middlewares.js';
 import {
   apiOverviewByPlayerId,
   apiOverviewInvalid,
@@ -7,6 +8,10 @@ import {
 export const overviewRouter = (db) => {
   const router = new Router();
   router.get('/', apiOverviewInvalid);
-  router.get('/:playerId', apiOverviewByPlayerId(db));
+  router.get(
+    '/:playerId',
+    validPlayerId('Invalid player Id'),
+    apiOverviewByPlayerId(db)
+  );
   return router;
 };

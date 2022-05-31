@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Joi from 'joi';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 import {
   Card,
@@ -23,7 +23,7 @@ const schema = Joi.object().keys({
 });
 
 export function SignIn({ updatePageTitle }) {
-  let history = useHistory();
+  let navigate = useNavigate();
   let location = useLocation();
   /* redirect from location, or redirect home */
   let { from } = location.state || { from: { pathname: '/' } };
@@ -50,7 +50,7 @@ export function SignIn({ updatePageTitle }) {
             'Unable to login, please double check your credentials.'
           );
         }
-        history.replace(from);
+        navigate(from);
       } catch (err) {
         setErrorMsg('Something went wrong!');
       }

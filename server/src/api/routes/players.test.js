@@ -35,6 +35,9 @@ describe('players routes mock tests', () => {
       },
     ]);
   });
+  test('invalid player ids should return 422 error', async () => {
+    await supertest(app).get(`${apiRoute}/frog`).expect(422);
+  });
   test.todo('test post request to create new player');
   test.todo('test post new player passes validation');
   /*('Add a new player', async () => {

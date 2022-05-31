@@ -31,7 +31,7 @@ export function Search() {
   };
   return (
     <>
-      <div className='flex flex-col relative max-w-md flex-grow mx-4'>
+      <div className='flex flex-col relative max-w-md grow mx-4'>
         <Input
           placeholder='Search site...'
           type='search'

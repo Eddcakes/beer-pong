@@ -4,6 +4,7 @@ import {
   apiGetPlayerById,
   apiPostNewPlayer,
 } from './players.controller.js';
+import { validId } from '../../middlewares.js';
 
 const validateNewPlayer = (errorMessage) => (req, res, next) => {
   const newPlayerValid = schema.validate({
@@ -21,7 +22,7 @@ const validateNewPlayer = (errorMessage) => (req, res, next) => {
 export const playersRouter = (db) => {
   const router = new Router();
   router.get('/', apiGetPlayers(db));
-  router.get('/:id', apiGetPlayerById(db));
+  router.get('/:id', validId('Not a valid player ID'), apiGetPlayerById(db));
   return router;
 };
 

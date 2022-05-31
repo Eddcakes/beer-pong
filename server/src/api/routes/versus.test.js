@@ -32,6 +32,15 @@ describe('Versus routes mock tests', () => {
       mockVersusResults
     );
   });
+  test('versus with 2 invalid ids should return 422', async () => {
+    await supertest(app).get(`${apiRoute}/frog/dog`).expect(422);
+  });
+  test('versus with p1 invalid ids should return 422', async () => {
+    await supertest(app).get(`${apiRoute}/frog/2`).expect(422);
+  });
+  test('versus with p2 invalid ids should return 422', async () => {
+    await supertest(app).get(`${apiRoute}/1/frog`).expect(422);
+  });
 });
 
 //1 vs 2

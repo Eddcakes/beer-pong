@@ -60,6 +60,9 @@ describe('tournaments routes mock tests', () => {
       },
     ]);
   });
+  test('invalid tournament ids should return 422 error', async () => {
+    await supertest(app).get(`${apiRoute}/frog`).expect(422);
+  });
 });
 
 const mockTournaments = [

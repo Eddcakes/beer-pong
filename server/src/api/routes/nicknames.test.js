@@ -30,6 +30,9 @@ describe('nicknames routes mock tests', () => {
       mockPlayer2
     );
   });
+  test('invalid player ids should return 422 error', async () => {
+    await supertest(app).get(`${apiRoute}/player/frog`).expect(422);
+  });
 });
 
 const mockPlayer2 = [

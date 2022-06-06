@@ -19,7 +19,10 @@ export function Input({
 }) {
   return (
     <div className='flex flex-col mb-2'>
-      <label htmlFor={name}>{label}</label>
+      <label htmlFor={name}>
+        {label}
+        {required && ' *'}
+      </label>
       <input
         name={name}
         className={`

@@ -89,33 +89,32 @@ export function SignIn({ updatePageTitle }) {
           </div>
         }
       >
-        <form>
+        <form onSubmit={handleSubmit}>
           <Input
             label='Username'
+            id='username'
             name='username'
             required={true}
             value={username}
             onChange={handleUsername}
+            autoComplete='username'
           />
           <Input
             label='Password'
+            id='password'
             name='password'
             type='password'
             required={true}
             value={password}
             onChange={handlePassword}
+            autoComplete='current-password'
           />
           <Link to='/' className='text-link-text hover:underline'>
             Forgotten password?
           </Link>
           {errorMsg.length > 0 && <p className='text-negative'>{errorMsg}</p>}
           <div className='pt-2'>
-            <Button
-              text='Sign in'
-              handleClick={handleSubmit}
-              color='outlined'
-              fullWidth
-            />
+            <Button text='Sign in' color='outlined' fullWidth type='submit' />
           </div>
           <Link to='/signup' className='text-link-text hover:underline'>
             Or sign up here

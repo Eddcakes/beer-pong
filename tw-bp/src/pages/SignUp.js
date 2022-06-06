@@ -96,9 +96,10 @@ export function SignUp({ updatePageTitle }) {
           </div>
         }
       >
-        <form>
+        <form onSubmit={handleSubmit}>
           <Input
             label='Username'
+            id='username'
             name='username'
             required={true}
             value={username}
@@ -106,16 +107,20 @@ export function SignUp({ updatePageTitle }) {
             aria-describedby='usernameHelp'
             helpText='Username must be between 2 and 30 characters. Alphanumeric and
               underscores only.'
+            autoComplete='username'
           />
           <Input
             label='Email address'
+            id='email'
             name='email'
             type='email'
             value={email}
             onChange={handleEmail}
+            autoComplete='email'
           />
           <Input
             label='Password'
+            id='password'
             name='password'
             minLength='6'
             type='password'
@@ -124,25 +129,23 @@ export function SignUp({ updatePageTitle }) {
             onChange={handlePassword}
             aria-describedby='passwordHelp'
             helpText='Password must be at least 6 characters.'
+            autoComplete='new-password'
           />
 
           <Input
             label='Confirm Password'
+            id='confirmPassword'
             name='confirmPassword'
             minLength='6'
             type='password'
             required
             value={confirmPassword}
             onChange={handleConfirmPassword}
+            autoComplete='new-password'
           />
           {errorMsg.length > 0 && <p className='text-negative'>{errorMsg}</p>}
           <div className='pt-2'>
-            <Button
-              text='Sign up'
-              handleClick={handleSubmit}
-              color='outlined'
-              fullWidth
-            />
+            <Button text='Sign up' color='outlined' fullWidth type='submit' />
           </div>
           <Link to='/signin' className='text-link-text hover:underline'>
             Or sign in here

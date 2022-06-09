@@ -76,6 +76,7 @@ export function UserPreferences() {
         <>
           <Input
             name='avatarLink'
+            id='avatarLink'
             label='Link to avatar'
             value={preferences?.avatarLink}
             onChange={updatePreferences}

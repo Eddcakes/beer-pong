@@ -7,6 +7,7 @@ import {
   ThemeSwitcher,
   UserPreferences,
 } from '../components';
+import { UpdatePassword } from '../components/forms/UpdatePassword';
 
 export function Settings() {
   return (
@@ -18,6 +19,9 @@ export function Settings() {
         </Card>
         <Card title='My preferences'>
           <UserPreferences />
+        </Card>
+        <Card title='Account details'>
+          <UpdatePassword />
         </Card>
       </Container>
     </>

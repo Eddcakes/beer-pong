@@ -18,3 +18,4 @@ export * from './postNewGame';
 export * from './postNewPlayer';
 export * from './postPreferences';
 export * from './postSaveGamePlay';
+export * from './postUpdatePassword';

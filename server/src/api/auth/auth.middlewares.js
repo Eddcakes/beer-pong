@@ -10,6 +10,17 @@ const authSchema = Joi.object().keys({
   password: Joi.string().trim().min(6).required(),
 });
 
+const changePasswordSchema = Joi.object().keys({
+  username: Joi.string()
+    .trim()
+    .regex(/^[a-zA-Z0-9_]+$/)
+    .min(2)
+    .max(30)
+    .required(),
+  currentPassword: Joi.string().trim().min(6).required(),
+  newPassword: Joi.string().trim().min(6).required(),
+});
+
 export function isLoggedIn(req, res, next) {
   const { user } = req?.session || {};
   if (!user) {
@@ -49,3 +60,14 @@ export function respondError422(res, next) {
   );
   next(error);
 }
+
+export const validateChangePassword = (msg) => (req, res, next) => {
+  const changePassword = changePasswordSchema.validate(req.body);
+  if (!changePassword.error) {
+    next();
+  } else {
+    const error = msg ? new Error(msg) : changePassword.error;
+    res.status(422);
+    next(error || changePassword.error);
+  }
+};

@@ -50,3 +50,36 @@ export const apiSignup = (db) => async (req, res, next) => {
     next(err);
   }
 };
+
+export const apiUpdatePassword = (db) => async (req, res, next) => {
+  try {
+    const checkDetails = await db.signin(
+      req.body.username,
+      req.body.currentPassword
+    );
+    // if correct current password now we can save the new one
+    if (checkDetails) {
+      const updatePassword = await db.updatePassword(
+        req.body.username,
+        req.body.newPassword
+      );
+      if (updatePassword) {
+        res.json({
+          message: 'Updated password',
+        });
+      }
+    }
+  } catch (err) {
+    if (String(err).includes('Unable to login')) {
+      return respondCheckPassword(res, next);
+    }
+    res.status(500);
+    res.send(err);
+  }
+};
+
+function respondCheckPassword(res, next) {
+  res.status(401);
+  const error = new Error('Current password does not match');
+  next(error);
+}

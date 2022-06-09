@@ -40,6 +40,8 @@ FROM ${process.env.DATABASE}.users
 LEFT JOIN ${process.env.DATABASE}.roles ON users.role_id = roles.id
 WHERE users.id = $1 AND active = true`;
 
+const updateUserPW = `UPDATE ${process.env.DATABASE}.users SET password=$1 WHERE username=$2`;
+
 let client;
 let poolRef;
 export default class AuthDAO {
@@ -110,6 +112,21 @@ export default class AuthDAO {
         }
       }
       throw new Error('Could not find new user');
+    } catch (err) {
+      throw new Error(err);
+    } finally {
+      client.release();
+    }
+  }
+  static async updatePassword(username, password) {
+    try {
+      client = await poolRef.connect();
+      const newHashedPass = await bcrypt.hash(password, 12);
+      const updateUserPassword = await client.query(updateUserPW, [
+        newHashedPass,
+        username,
+      ]);
+      return updateUserPassword.rows;
     } catch (err) {
       throw new Error(err);
     } finally {

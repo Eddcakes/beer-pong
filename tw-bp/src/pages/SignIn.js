@@ -75,7 +75,7 @@ export function SignIn({ updatePageTitle }) {
     updatePageTitle('Sign in');
   }, [updatePageTitle]);
   return (
-    <Container maxW='max-w-screen-md'>
+    <Container maxW='max-w-screen-sm'>
       <div className='flex justify-center pb-4'>
         <Logo />
       </div>

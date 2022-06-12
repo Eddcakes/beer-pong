@@ -1,11 +1,6 @@
 import { useState } from 'react';
 import { Eye, EyeOff } from '../../icons';
-/*
-input should have
-label
-input
-error msg
-*/
+
 /* spreading extra input props allows optional use of aria properties*/
 export function Input({
   name,
@@ -31,38 +26,40 @@ export function Input({
           {label}
           {required && ' *'}
         </label>
-        <div className='relative w-full'>
+        <div
+          className='
+          inline-flex 
+          w-full 
+          bg-input-background
+          border
+        border-gray-200
+        text-gray-700
+          rounded
+          leading-tight
+          focus-within:bg-white
+          focus-within:border-gray-500'
+        >
+          <div className='w-full rounded leading-tight py-3 pl-4 focus-within:ring-2 ring-slate-700'>
+            <input
+              name={name}
+              className='outline-none bg-inherit w-full'
+              value={value}
+              onChange={onChange}
+              required={required}
+              type={showPassword ? 'text' : 'password'}
+              placeholder={placeholder}
+              {...inputProps}
+            />
+          </div>
           <span
-            className='absolute inset-y-0 right-0 flex items-center px-2'
+            className='flex items-center px-2'
             onClick={handleShowPassword}
             role='button'
             aria-label={showPassword ? 'Hide password' : 'Show password'}
+            tabIndex={0}
           >
             {showPassword ? <EyeOff /> : <Eye />}
           </span>
-          <input
-            name={name}
-            className={`
-        w-full block
-        appearance-none
-        bg-input-background
-        border
-        border-gray-200
-        text-gray-700
-        py-3
-        px-4
-        pr-10
-        rounded
-        leading-tight
-        focus:bg-white
-        focus:border-gray-500`}
-            value={value}
-            onChange={onChange}
-            required={required}
-            type={showPassword ? 'text' : 'password'}
-            placeholder={placeholder}
-            {...inputProps}
-          />
         </div>
         {helpText.length > 0 ? (
           <small id={name + 'Help'}>{helpText}</small>

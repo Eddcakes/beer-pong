@@ -18,6 +18,7 @@ module.exports = {
       'link-text': 'var(--color-link-text)',
       transparent: 'transparent',
       current: 'currentColor',
+      inherit: 'inherit',
       black: colors.black,
       blue: colors.blue,
       white: colors.white,
@@ -25,6 +26,7 @@ module.exports = {
       indigo: colors.indigo,
       red: colors.rose,
       yellow: colors.amber,
+      slate: colors.slate,
     },
     maxHeight: (theme) => ({
       ...theme('spacing'),

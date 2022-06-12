@@ -7,13 +7,14 @@ export function RequireRole({
   children,
   minimumRole = 1,
   redirectTo = '/signin',
+  updatePageTitle = () => {},
 }) {
   let auth = useAuth();
   const checkRole = (roleLevel) => {
     if (auth.user.role_level >= Number(roleLevel)) {
       return children;
     } else {
-      return <Unauthorised />;
+      return <Unauthorised updatePageTitle={updatePageTitle} />;
     }
   };
   if (auth.user === null) {

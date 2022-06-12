@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect } from 'react';
 
 import {
   Card,
@@ -9,7 +9,10 @@ import {
 } from '../components';
 import { UpdatePassword } from '../components/forms/UpdatePassword';
 
-export function Settings() {
+export function Settings({ updatePageTitle }) {
+  useEffect(() => {
+    updatePageTitle('Settings');
+  }, [updatePageTitle]);
   return (
     <>
       <Header />

@@ -14,6 +14,7 @@ import { isAdmin, isLoggedIn } from './auth/auth.middlewares.js';
 import { newsRouter } from './routes/news.routes.js';
 import { recordsRouter } from './routes/records.routes.js';
 import { nicknamesRouter } from './routes/nicknames.routes.js';
+import { emailRouter } from './routes/email.routes.js';
 
 export const apiWithDb = (db) => {
   const router = express.Router();
@@ -35,6 +36,7 @@ export const apiWithDb = (db) => {
 
   router.use('/venues', venuesRouter(db));
   router.use('/versus', versusRouter(db));
+  router.use('/email', emailRouter(db));
 
   //protected routes
   router.use('/preferences', isLoggedIn, userPreferencesRouter(db));

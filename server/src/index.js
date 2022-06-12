@@ -13,6 +13,7 @@ import UsersDAO from './dao/usersDAO.js';
 import VenuesDAO from './dao/venuesDAO.js';
 import VersusDAO from './dao/versusDAO.js';
 import AuthDAO from './api/auth/authDAO.js';
+import EmailDAO from './dao/emailDAO.js';
 import { poolPromise } from './db.js';
 
 const __dirname = path.resolve();
@@ -31,6 +32,7 @@ await UsersDAO.injectDB(poolPromise);
 await VenuesDAO.injectDB(poolPromise);
 await VersusDAO.injectDB(poolPromise);
 await AuthDAO.injectDB(poolPromise);
+await EmailDAO.injectDB(poolPromise);
 
 const app = makeApp({
   getGames: GamesDAO.getGames,
@@ -63,6 +65,7 @@ const app = makeApp({
   signin: AuthDAO.signin,
   signup: AuthDAO.signup,
   updatePassword: AuthDAO.updatePassword,
+  postEmail: EmailDAO.postEmail,
 });
 
 // in production use the build file, in dev run server & front end individually

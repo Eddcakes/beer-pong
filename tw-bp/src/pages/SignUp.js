@@ -88,7 +88,7 @@ export function SignUp({ updatePageTitle }) {
       </div>
       <Card
         title={
-          <div className='grid justify-center'>
+          <div className='flex flex-col text-center'>
             <Decoration />
             <h2 className='text-3xl font-semibold text-primary-text py-2'>
               Sign up

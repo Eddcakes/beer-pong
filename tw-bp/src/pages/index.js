@@ -1,4 +1,5 @@
 export { E404 } from './E404';
+export { ForgotPassword } from './ForgotPassword';
 export { Game } from './Game';
 export { Games } from './Games';
 export { Home } from './Home';

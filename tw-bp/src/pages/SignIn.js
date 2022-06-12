@@ -81,7 +81,7 @@ export function SignIn({ updatePageTitle }) {
       </div>
       <Card
         title={
-          <div className='grid justify-center'>
+          <div className='flex flex-col text-center'>
             <Decoration />
             <h2 className='text-3xl font-semibold text-primary-text py-2'>
               Sign in
@@ -109,7 +109,10 @@ export function SignIn({ updatePageTitle }) {
             onChange={handlePassword}
             autoComplete='current-password'
           />
-          <Link to='/' className='text-link-text hover:underline'>
+          <Link
+            to='/forgot-password'
+            className='text-link-text hover:underline'
+          >
             Forgotten password?
           </Link>
           {errorMsg.length > 0 && <p className='text-negative'>{errorMsg}</p>}

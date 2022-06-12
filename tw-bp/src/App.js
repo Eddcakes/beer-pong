@@ -20,6 +20,7 @@ import {
   Test,
   Records,
   NewPlayer,
+  ForgotPassword,
 } from './pages';
 import { AlreadySignedIn, RequireRole, Refreshing } from './components';
 
@@ -137,6 +138,14 @@ function App() {
                 element={
                   <AlreadySignedIn>
                     <SignUp updatePageTitle={updatePageTitle} />
+                  </AlreadySignedIn>
+                }
+              />
+              <Route
+                path='/forgot-password'
+                element={
+                  <AlreadySignedIn>
+                    <ForgotPassword updatePageTitle={updatePageTitle} />
                   </AlreadySignedIn>
                 }
               />

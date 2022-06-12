@@ -18,7 +18,7 @@ const validateUserDetails = (errorMessage) => (req, res, next) => {
   if (!userDetails.error) {
     next();
   } else {
-    const error = errorMessage ? new Error(errorMessage) : preferences.error;
+    const error = errorMessage ? new Error(errorMessage) : userDetails.error;
     res.status(422);
     next(error);
   }

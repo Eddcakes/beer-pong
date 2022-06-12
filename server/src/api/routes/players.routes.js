@@ -1,10 +1,15 @@
 import { Router } from 'express';
+import Joi from 'joi';
 import {
   apiGetPlayers,
   apiGetPlayerById,
   apiPostNewPlayer,
 } from './players.controller.js';
 import { validId } from '../../middlewares.js';
+
+const schema = Joi.object().keys({
+  playerName: Joi.string().trim().min(2),
+});
 
 const validateNewPlayer = (errorMessage) => (req, res, next) => {
   const newPlayerValid = schema.validate({

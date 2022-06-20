@@ -101,7 +101,6 @@ export function Button({
   py-2
   px-4 
   border
-  border-primary
   rounded
   border-b-4
   active:border-b

@@ -1,10 +1,17 @@
 import { Router } from 'express';
-import { validateChangePassword, validateUser } from './auth.middlewares.js';
+import {
+  validateChangePassword,
+  validateEmail,
+  validateResetPassword,
+  validateUser,
+} from './auth.middlewares.js';
 import {
   apiServerSignOut,
   apiSignin,
   apiSignup,
   apiUpdatePassword,
+  apiForgotPassword,
+  apiResetForgotPassword,
 } from './auth.controller.js';
 
 // replaces index.js
@@ -21,6 +28,17 @@ export const authRouter = (db) => {
     '/update',
     validateChangePassword('Unable to change password'),
     apiUpdatePassword(db)
+  );
+  router.post(
+    '/forgot-password',
+    validateEmail('Requires valid email'),
+    apiForgotPassword(db)
+  );
+  // add a validator
+  router.post(
+    '/reset-password/:token',
+    validateResetPassword(),
+    apiResetForgotPassword(db)
   );
   return router;
 };

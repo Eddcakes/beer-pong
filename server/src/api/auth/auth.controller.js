@@ -83,3 +83,45 @@ function respondCheckPassword(res, next) {
   const error = new Error('Current password does not match');
   next(error);
 }
+
+export const apiForgotPassword = (db) => async (req, res) => {
+  try {
+    const email = req.body.email.trim().toLowerCase();
+    const forgotPassword = await db.forgotPassword(email);
+    res.json({ message: forgotPassword.message });
+  } catch (err) {
+    res.status(500);
+    next(err);
+  }
+};
+
+export const apiResetForgotPassword = (db) => async (req, res, next) => {
+  try {
+    const { token } = req.params;
+    const { username, newPassword } = req.body;
+    const resetPassword = await db.resetForgotPassword(
+      token,
+      username.toLowerCase(),
+      newPassword
+    );
+    if (resetPassword) {
+      res.json({
+        message: 'Updated password',
+      });
+    }
+  } catch (err) {
+    const stringErr = String(err);
+    if (
+      stringErr.includes('TokenExpiredError') ||
+      stringErr.includes('invalid signature')
+    ) {
+      res.status(401);
+      next(
+        new Error(
+          'Token has expired, a new password reset is required if you still want to change your password.'
+        )
+      );
+    }
+    next(err);
+  }
+};

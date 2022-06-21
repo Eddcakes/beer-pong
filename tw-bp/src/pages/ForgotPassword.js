@@ -22,6 +22,7 @@ const schema = Joi.object().keys({
 export function ForgotPassword({ updatePageTitle }) {
   const [email, setEmail] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
 
   const handleEmail = (evt) => setEmail(evt.target.value);
 
@@ -34,33 +35,31 @@ export function ForgotPassword({ updatePageTitle }) {
       if (resp.error) {
         setErrorMsg(resp.error);
       }
-      if (resp.message.includes('Sent email')) {
-        console.log('Password reset sent to email');
+      if (resp.message.includes('this email')) {
+        setSuccessMsg(resp.message);
       }
     },
   });
 
   const handleSubmit = async (evt) => {
     evt.preventDefault();
+    setSuccessMsg('');
+    setErrorMsg('');
     if (validEmailFormat()) {
       const postEmail = {
         email: email,
-        subject: 'test email from FE',
-        text: 'uwu email sent',
       };
       sendEmailMutation.mutate(postEmail);
     }
   };
 
   function validEmailFormat() {
-    setErrorMsg('');
     const valid = schema.validate({
       email: email,
     });
     if (valid.error == null) {
       return true;
     } else {
-      console.log('run');
       setErrorMsg('Error with email format');
       return false;
     }
@@ -98,11 +97,15 @@ export function ForgotPassword({ updatePageTitle }) {
           <div className='pt-2'>
             <Button
               text='Send reset link'
+              disabled={sendEmailMutation.isLoading}
               color='outlined'
               fullWidth
               type='submit'
             />
           </div>
+          {successMsg.length > 0 && (
+            <p className='py-2 text-positive'>{successMsg}</p>
+          )}
           <Link to='/signin' className='text-link-text hover:underline'>
             Or sign in here
           </Link>

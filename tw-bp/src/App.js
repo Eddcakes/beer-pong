@@ -21,6 +21,7 @@ import {
   Records,
   NewPlayer,
   ForgotPassword,
+  ForgotPasswordReset,
 } from './pages';
 import { AlreadySignedIn, RequireRole, Refreshing } from './components';
 
@@ -146,6 +147,14 @@ function App() {
                 element={
                   <AlreadySignedIn>
                     <ForgotPassword updatePageTitle={updatePageTitle} />
+                  </AlreadySignedIn>
+                }
+              />
+              <Route
+                path='/forgot-password/:token'
+                element={
+                  <AlreadySignedIn>
+                    <ForgotPasswordReset updatePageTitle={updatePageTitle} />
                   </AlreadySignedIn>
                 }
               />

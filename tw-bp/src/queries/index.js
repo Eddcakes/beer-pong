@@ -17,5 +17,6 @@ export * from './fetchVersus';
 export * from './postNewGame';
 export * from './postNewPlayer';
 export * from './postPreferences';
+export * from './postResetPassword';
 export * from './postSaveGamePlay';
 export * from './postUpdatePassword';

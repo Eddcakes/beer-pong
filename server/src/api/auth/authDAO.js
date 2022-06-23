@@ -51,7 +51,8 @@ users.email,
 users.password,
 users.player_id,
 users.active,
-users.role 
+users.role,
+EXTRACT (EPOCH FROM users.token_expires_at) as token_expires_at
 FROM ${process.env.DATABASE}.users
 WHERE lower(users.email) = $1 AND users.active = true`;
 
@@ -175,21 +176,36 @@ export default class AuthDAO {
           email,
           password: hashedP,
           player_id,
+          token_expires_at,
         } = foundEmail.rows[0];
         const tokenDetails = {
           username,
           email,
           player_id,
         };
-        const newToken = jwt.sign(tokenDetails, hashedP, { expiresIn: '1h' });
-        const updateTime = await client.query(updateResetTime, [email]);
-        if (updateTime.rowCount > 0) {
-          const opts = {
-            subject: 'Pongleby password reset requested',
-            text: `A password reset has been requested, ${process.env.FRONTEND_URL}/forgot-password/${newToken} to reset your password.`,
-            html: `<p>A password reset has been requested, <a href="${process.env.FRONTEND_URL}/forgot-password/${newToken}" target="_blank">click here</a> to reset your password.</p>`,
+        // if its within 10 mins of last request, send cool-down warning
+        const hour = 60 * 60;
+        // postgres epoch is in seconds
+        const dbEpochTime = Math.trunc(Number(token_expires_at) - hour);
+        // web epoch in milliseconds
+        const nowEpoch = new Date().getTime() / 1000;
+        const timeSinceReset = Math.trunc(nowEpoch) - dbEpochTime;
+        if (timeSinceReset > 600) {
+          const newToken = jwt.sign(tokenDetails, hashedP, { expiresIn: '1h' });
+          const updateTime = await client.query(updateResetTime, [email]);
+          if (updateTime.rowCount > 0) {
+            const opts = {
+              subject: 'Pongleby password reset requested',
+              text: `A password reset has been requested, ${process.env.FRONTEND_URL}/forgot-password/${newToken} to reset your password.`,
+              html: `<p>A password reset has been requested, <a href="${process.env.FRONTEND_URL}/forgot-password/${newToken}" target="_blank">click here</a> to reset your password.</p>`,
+            };
+            await sendEmail(email, opts.subject, opts.text, opts.html);
+          }
+        } else {
+          return {
+            message:
+              'Please wait at least 10 minutes before a new password reset',
           };
-          await sendEmail(email, opts.subject, opts.text, opts.html);
         }
       }
       return {

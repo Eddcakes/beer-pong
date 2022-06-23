@@ -35,6 +35,9 @@ export function ForgotPassword({ updatePageTitle }) {
       if (resp.error) {
         setErrorMsg(resp.error);
       }
+      if (resp.message.includes('Please wait')) {
+        setErrorMsg(resp.message);
+      }
       if (resp.message.includes('this email')) {
         setSuccessMsg(resp.message);
       }

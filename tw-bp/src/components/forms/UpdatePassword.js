@@ -30,6 +30,7 @@ export function UpdatePassword() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
 
   const handleCurrentPassword = (evt) => setCurrentPassword(evt.target.value);
   const handleNewPassword = (evt) => setNewPassword(evt.target.value);
@@ -45,7 +46,10 @@ export function UpdatePassword() {
         setErrorMsg(resp.error);
       }
       if (resp.message.includes('Updated password')) {
-        console.log('Updated password successfully');
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+        setSuccessMsg('Successfully updated password');
       }
     },
   });
@@ -53,6 +57,7 @@ export function UpdatePassword() {
   const handleSubmit = async (evt) => {
     evt.preventDefault();
     setErrorMsg('');
+    setSuccessMsg('');
     if (validDetails()) {
       const data = {
         username: user.username,
@@ -130,6 +135,9 @@ export function UpdatePassword() {
         autoComplete='new-password'
       />
       {errorMsg.length > 0 && <p className='text-negative'>{errorMsg}</p>}
+      {successMsg.length > 0 && (
+        <p className='py-2 text-positive'>{successMsg}</p>
+      )}
       <Button text='Save changes' type='submit' disabled={mutation.isLoading} />
     </form>
   );

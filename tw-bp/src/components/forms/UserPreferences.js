@@ -69,13 +69,14 @@ export function UserPreferences() {
     return <div>Please log in to save personal preferences</div>;
   }
   return (
-    <form>
+    <form onSubmit={saveChanges}>
       {isLoading && <span>Loading...</span>}
       {error && <span>Error {JSON.stringify(error, null, 2)}</span>}
       {!isLoading && (
         <>
           <Input
             name='avatarLink'
+            id='avatarLink'
             label='Link to avatar'
             value={preferences?.avatarLink}
             onChange={updatePreferences}
@@ -83,7 +84,7 @@ export function UserPreferences() {
           />
           <Button
             text='Save changes'
-            handleClick={saveChanges}
+            type='submit'
             disabled={mutation.isLoading}
           />
         </>

@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { useReducer, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 
 import { Header, Card, Container, Input, Button } from '../components';
@@ -24,7 +24,7 @@ function reducer(state, action) {
   }
 }
 
-export function NewPlayer() {
+export function NewPlayer({ updatePageTitle }) {
   const [errorMsg, setErrorMsg] = useState('');
   const [formState, dispatch] = useReducer(reducer, initialForm);
   const queryClient = useQueryClient();
@@ -70,6 +70,10 @@ export function NewPlayer() {
       mutate(formState);
     }
   };
+
+  useEffect(() => {
+    updatePageTitle('New player');
+  }, [updatePageTitle]);
   return (
     <>
       <Header />

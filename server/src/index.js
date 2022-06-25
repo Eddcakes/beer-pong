@@ -62,6 +62,9 @@ const app = makeApp({
   getVersusResults: VersusDAO.getVersusResults,
   signin: AuthDAO.signin,
   signup: AuthDAO.signup,
+  updatePassword: AuthDAO.updatePassword,
+  forgotPassword: AuthDAO.forgotPassword,
+  resetForgotPassword: AuthDAO.resetForgotPassword,
 });
 
 // in production use the build file, in dev run server & front end individually

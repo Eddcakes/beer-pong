@@ -20,6 +20,8 @@ import {
   Test,
   Records,
   NewPlayer,
+  ForgotPassword,
+  ForgotPasswordReset,
 } from './pages';
 import { AlreadySignedIn, RequireRole, Refreshing } from './components';
 
@@ -42,7 +44,7 @@ const queryClient = new QueryClient();
 
 function App() {
   //probably want a authentication provider so in <Route render can redirect depending if logged in or not
-  //if its null, its not loaded yet. if undefined user not logge in
+  //if its null, its not loaded yet. if undefined user not logged in
   const [theme, setTheme] = useState(defaultTheme);
   const [pageTitle, setPageTitle] = useState('');
   const updatePageTitle = (newTitle) => setPageTitle(newTitle);
@@ -73,7 +75,11 @@ function App() {
               <Route
                 path='/player/new'
                 element={
-                  <RequireRole redirectTo='/signin' minimumRole={5}>
+                  <RequireRole
+                    redirectTo='/signin'
+                    minimumRole={5}
+                    updatePageTitle={updatePageTitle}
+                  >
                     <NewPlayer updatePageTitle={updatePageTitle} />
                   </RequireRole>
                 }
@@ -133,6 +139,22 @@ function App() {
                 element={
                   <AlreadySignedIn>
                     <SignUp updatePageTitle={updatePageTitle} />
+                  </AlreadySignedIn>
+                }
+              />
+              <Route
+                path='/forgot-password'
+                element={
+                  <AlreadySignedIn>
+                    <ForgotPassword updatePageTitle={updatePageTitle} />
+                  </AlreadySignedIn>
+                }
+              />
+              <Route
+                path='/forgot-password/:token'
+                element={
+                  <AlreadySignedIn>
+                    <ForgotPasswordReset updatePageTitle={updatePageTitle} />
                   </AlreadySignedIn>
                 }
               />

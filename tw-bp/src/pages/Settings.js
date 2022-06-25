@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect } from 'react';
 
 import {
   Card,
@@ -7,8 +7,12 @@ import {
   ThemeSwitcher,
   UserPreferences,
 } from '../components';
+import { UpdatePassword } from '../components/forms/UpdatePassword';
 
-export function Settings() {
+export function Settings({ updatePageTitle }) {
+  useEffect(() => {
+    updatePageTitle('Settings');
+  }, [updatePageTitle]);
   return (
     <>
       <Header />
@@ -18,6 +22,9 @@ export function Settings() {
         </Card>
         <Card title='My preferences'>
           <UserPreferences />
+        </Card>
+        <Card title='Account details'>
+          <UpdatePassword />
         </Card>
       </Container>
     </>

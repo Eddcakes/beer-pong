@@ -75,13 +75,13 @@ export function SignIn({ updatePageTitle }) {
     updatePageTitle('Sign in');
   }, [updatePageTitle]);
   return (
-    <Container maxW='max-w-screen-md'>
+    <Container maxW='max-w-screen-sm'>
       <div className='flex justify-center pb-4'>
         <Logo />
       </div>
       <Card
         title={
-          <div className='grid justify-center'>
+          <div className='flex flex-col text-center'>
             <Decoration />
             <h2 className='text-3xl font-semibold text-primary-text py-2'>
               Sign in
@@ -89,33 +89,35 @@ export function SignIn({ updatePageTitle }) {
           </div>
         }
       >
-        <form>
+        <form onSubmit={handleSubmit}>
           <Input
             label='Username'
+            id='username'
             name='username'
             required={true}
             value={username}
             onChange={handleUsername}
+            autoComplete='username'
           />
           <Input
             label='Password'
+            id='password'
             name='password'
             type='password'
             required={true}
             value={password}
             onChange={handlePassword}
+            autoComplete='current-password'
           />
-          <Link to='/' className='text-link-text hover:underline'>
+          <Link
+            to='/forgot-password'
+            className='text-link-text hover:underline'
+          >
             Forgotten password?
           </Link>
           {errorMsg.length > 0 && <p className='text-negative'>{errorMsg}</p>}
           <div className='pt-2'>
-            <Button
-              text='Sign in'
-              handleClick={handleSubmit}
-              color='outlined'
-              fullWidth
-            />
+            <Button text='Sign in' color='outlined' fullWidth type='submit' />
           </div>
           <Link to='/signup' className='text-link-text hover:underline'>
             Or sign up here

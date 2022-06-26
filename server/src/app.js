@@ -1,4 +1,5 @@
 import express from 'express';
+import path from 'path';
 import morgan from 'morgan'; //logger
 import cors from 'cors';
 import session from 'express-session';
@@ -8,6 +9,8 @@ import helmet from 'helmet';
 import { notFound, errorHandler } from './middlewares.js';
 import { apiWithDb } from './api/index.js';
 import { poolPromise } from './db.js';
+
+const __dirname = path.resolve();
 
 export default function (database) {
   const app = express();
@@ -41,6 +44,16 @@ export default function (database) {
   }
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
+
+  // in production use the build file, in dev run server & front end individually
+  // space in package.json as:production means we have to trim
+  if (process.env.NODE_ENV.toLowerCase().trim() === 'production') {
+    app.use(express.static(path.join(__dirname, 'build')));
+
+    app.get('/*', (req, res) => {
+      res.sendFile(path.join(__dirname, 'build', 'index.html'));
+    });
+  }
 
   //need to pass through database
   app.use('/api/v1', apiWithDb(database));

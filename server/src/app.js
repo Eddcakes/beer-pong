@@ -45,6 +45,9 @@ export default function (database) {
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
 
+  //need to pass through database
+  app.use('/api/v1', apiWithDb(database));
+
   // in production use the build file, in dev run server & front end individually
   // space in package.json as:production means we have to trim
   if (process.env.NODE_ENV.toLowerCase().trim() === 'production') {
@@ -54,9 +57,6 @@ export default function (database) {
       res.sendFile(path.join(__dirname, 'build', 'index.html'));
     });
   }
-
-  //need to pass through database
-  app.use('/api/v1', apiWithDb(database));
 
   app.use(notFound);
   app.use(errorHandler);

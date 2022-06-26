@@ -1,22 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.15d478c8.chunk.css",
-    "main.js": "/static/js/main.2a9d97ba.chunk.js",
-    "main.js.map": "/static/js/main.2a9d97ba.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.8c8b0d34.js",
-    "runtime-main.js.map": "/static/js/runtime-main.8c8b0d34.js.map",
-    "static/js/2.f8702f7a.chunk.js": "/static/js/2.f8702f7a.chunk.js",
-    "static/js/2.f8702f7a.chunk.js.map": "/static/js/2.f8702f7a.chunk.js.map",
+    "main.css": "/static/css/main.b91e52f9.css",
+    "main.js": "/static/js/main.512d2fdc.js",
+    "static/media/evt-placeholder.jpg": "/static/media/evt-placeholder.e1e8ba0892612742c979.jpg",
+    "static/media/beer-pong.svg": "/static/media/beer-pong.1d7e56cfc4c3080897e2a1ab34024a77.svg",
     "index.html": "/index.html",
-    "static/css/main.15d478c8.chunk.css.map": "/static/css/main.15d478c8.chunk.css.map",
-    "static/js/2.f8702f7a.chunk.js.LICENSE.txt": "/static/js/2.f8702f7a.chunk.js.LICENSE.txt",
-    "static/media/beer-pong.1d7e56cf.svg": "/static/media/beer-pong.1d7e56cf.svg",
-    "static/media/evt-placeholder.e1e8ba08.jpg": "/static/media/evt-placeholder.e1e8ba08.jpg"
+    "main.b91e52f9.css.map": "/static/css/main.b91e52f9.css.map",
+    "main.512d2fdc.js.map": "/static/js/main.512d2fdc.js.map"
   },
   "entrypoints": [
-    "static/js/runtime-main.8c8b0d34.js",
-    "static/js/2.f8702f7a.chunk.js",
-    "static/css/main.15d478c8.chunk.css",
-    "static/js/main.2a9d97ba.chunk.js"
+    "static/css/main.b91e52f9.css",
+    "static/js/main.512d2fdc.js"
   ]
 }

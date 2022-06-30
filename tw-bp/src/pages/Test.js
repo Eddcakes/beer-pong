@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
-
 import { Button, Header, Card, Match, Container, Swatch } from '../components';
 import { AuthContext } from '../contexts';
+import { usePageTitle } from '../hooks/usePageTitle';
 
-export function Test({ updatePageTitle }) {
+export function Test() {
+  usePageTitle(`Test components page`);
   const testGame = {
     home_name: 'home player',
     home_id: 1,
@@ -17,10 +17,6 @@ export function Test({ updatePageTitle }) {
     notes: 'notes',
   };
 
-  useEffect(() => {
-    //probably fill this in with name / or doesnt exist after loaded player details
-    updatePageTitle(`Test components page`);
-  }, [updatePageTitle]);
   return (
     <AuthContext.Consumer>
       {({ user }) => (

@@ -1,13 +1,15 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 
 import { Container, Header } from '../components';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { fetchRecords } from '../queries';
 
 /* like premier league stats centre */
 
-export function Records({ updatePageTitle }) {
+export function Records() {
+  usePageTitle('Records');
   const { isLoading, error, data } = useQuery('tournaments', fetchRecords);
   const groupedRecords = useMemo(() => {
     let grouped = {};
@@ -23,10 +25,6 @@ export function Records({ updatePageTitle }) {
     }
     return grouped;
   }, [data]);
-
-  useEffect(() => {
-    updatePageTitle(`Records`);
-  }, [updatePageTitle]);
   return (
     <>
       <Header />

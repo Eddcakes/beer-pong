@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 import {
   Card,
   Container,
@@ -8,11 +6,10 @@ import {
   UserPreferences,
 } from '../components';
 import { UpdatePassword } from '../components/forms/UpdatePassword';
+import { usePageTitle } from '../hooks/usePageTitle';
 
-export function Settings({ updatePageTitle }) {
-  useEffect(() => {
-    updatePageTitle('Settings');
-  }, [updatePageTitle]);
+export function Settings() {
+  usePageTitle('Settings');
   return (
     <>
       <Header />

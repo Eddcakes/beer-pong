@@ -1,8 +1,9 @@
 import Joi from 'joi';
-import { useEffect, useReducer, useState } from 'react';
+import { useReducer, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 
 import { Header, Card, Container, Input, Button } from '../components';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { postNewPlayer } from '../queries';
 
 const schema = Joi.object().keys({
@@ -24,7 +25,8 @@ function reducer(state, action) {
   }
 }
 
-export function NewPlayer({ updatePageTitle }) {
+export function NewPlayer() {
+  usePageTitle('New player');
   const [errorMsg, setErrorMsg] = useState('');
   const [formState, dispatch] = useReducer(reducer, initialForm);
   const queryClient = useQueryClient();
@@ -70,10 +72,6 @@ export function NewPlayer({ updatePageTitle }) {
       mutate(formState);
     }
   };
-
-  useEffect(() => {
-    updatePageTitle('New player');
-  }, [updatePageTitle]);
   return (
     <>
       <Header />

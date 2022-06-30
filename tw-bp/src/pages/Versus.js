@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useNavigate, useLocation } from 'react-router';
 
@@ -10,12 +10,13 @@ import {
   Header,
   Container,
 } from '../components';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { fetchPlayerOverview, fetchPlayers } from '../queries';
 
-export function Versus({ updatePageTitle }) {
+export function Versus() {
+  usePageTitle('Compare player stats');
   let navigate = useNavigate();
   let location = useLocation();
-  console.log(location);
   const [players, setPlayers] = useState({
     player1: '',
     player2: '',
@@ -69,11 +70,6 @@ export function Versus({ updatePageTitle }) {
         });
     }
   };
-
-  useEffect(() => {
-    updatePageTitle('Compare player stats');
-  }, [updatePageTitle]);
-
   useEffect(() => {
     // joi validation for path?
     const splitPath = window.location.pathname.split('/');

@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import { useReducer, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Joi from 'joi';
 
@@ -18,6 +18,7 @@ import {
 import { createInitialCups } from '../utils/tableMachine';
 import { fetchPlayers, fetchVenues, postNewGame } from '../queries';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 /* clicking on tournament match, would auto fill in game page if not played*/
 /* list of error msgs https://github.com/sideway/joi/blob/master/API.md#list-of-errors */
@@ -58,7 +59,8 @@ function reducer(state, action) {
   }
 }
 
-export function NewGame({ updatePageTitle }) {
+export function NewGame() {
+  usePageTitle('Friendlies');
   let navigate = useNavigate();
   const queryClient = useQueryClient();
   const { mutate } = useMutation(postNewGame, {
@@ -263,10 +265,6 @@ export function NewGame({ updatePageTitle }) {
       }),
     forfeit: Joi.boolean().required(),
   });
-
-  useEffect(() => {
-    updatePageTitle('Friendlies');
-  }, [updatePageTitle]);
   return (
     <>
       <Header />

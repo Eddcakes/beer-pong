@@ -1,14 +1,12 @@
-import { useEffect } from 'react';
 import { useQuery } from 'react-query';
 
 import { Button, Container, Header, MatchGrid } from '../components';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { fetchGames } from '../queries';
 
-export function Games({ updatePageTitle }) {
+export function Games() {
   const { isLoading, error, data } = useQuery('games', fetchGames);
-  useEffect(() => {
-    updatePageTitle(`Game`);
-  }, [updatePageTitle]);
+  usePageTitle('Game');
   return (
     <>
       <Header />

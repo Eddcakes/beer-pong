@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Joi from 'joi';
 import { useMutation } from 'react-query';
 import {
@@ -11,6 +11,7 @@ import {
 } from '../components';
 import { Link } from 'react-router-dom';
 import { postForgotPassword } from '../queries/postForgotPassword';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const schema = Joi.object().keys({
   email: Joi.string()
@@ -19,7 +20,8 @@ const schema = Joi.object().keys({
     .required(),
 });
 
-export function ForgotPassword({ updatePageTitle }) {
+export function ForgotPassword() {
+  usePageTitle('Forgotten password');
   const [email, setEmail] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
@@ -67,10 +69,6 @@ export function ForgotPassword({ updatePageTitle }) {
       return false;
     }
   }
-
-  useEffect(() => {
-    updatePageTitle('Forgotten password');
-  }, [updatePageTitle]);
   return (
     <Container maxW='max-w-screen-sm'>
       <div className='flex justify-center pb-4'>

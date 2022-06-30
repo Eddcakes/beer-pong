@@ -1,11 +1,8 @@
-import React, { useEffect } from 'react';
-
 import { Header } from '../components';
+import { usePageTitle } from '../hooks/usePageTitle';
 
-export function E404({ updatePageTitle }) {
-  useEffect(() => {
-    updatePageTitle('Error 404 page was not found');
-  });
+export function E404() {
+  usePageTitle('Error 404 page was not found');
   return (
     <>
       <Header />

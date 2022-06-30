@@ -1,21 +1,16 @@
-import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 
 import { Header, Container, PlayerDetails } from '../components';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { fetchPlayerById } from '../queries';
 
-export function Player({ updatePageTitle }) {
+export function Player() {
   const { playerId } = useParams();
   const { data, isLoading } = useQuery(['player', playerId], () =>
     fetchPlayerById(playerId)
   );
-  //set page title
-  useEffect(() => {
-    //probably fill this in with name / or doesnt exist after loaded player details
-    updatePageTitle(`Player: ${playerId}`);
-  }, [updatePageTitle, playerId]);
-
+  usePageTitle(`Player: ${playerId}`);
   return (
     <>
       <Header />

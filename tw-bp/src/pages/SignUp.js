@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Joi from 'joi';
 
@@ -11,6 +11,7 @@ import {
   Logo,
 } from '../components';
 import { useAuth } from '../hooks/useAuth';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const schema = Joi.object().keys({
   username: Joi.string()
@@ -23,7 +24,8 @@ const schema = Joi.object().keys({
   confirmPassword: Joi.string().trim().min(6).required(),
 });
 
-export function SignUp({ updatePageTitle }) {
+export function SignUp() {
+  usePageTitle('Sign up');
   let navigate = useNavigate();
   const auth = useAuth();
   const [username, setUsername] = useState('');
@@ -76,11 +78,6 @@ export function SignUp({ updatePageTitle }) {
       setErrorMsg('Password and Confirm password must be the same');
     }
   }
-
-  useEffect(() => {
-    updatePageTitle('Sign up');
-  }, [updatePageTitle]);
-
   return (
     <Container maxW='max-w-screen-sm'>
       <div className='flex justify-center pb-4'>

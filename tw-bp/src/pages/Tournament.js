@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 
@@ -8,17 +7,15 @@ import {
   TournamentList,
   TournamentDetail,
 } from '../components';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { fetchTournamentById } from '../queries';
 
-export function Tournament({ updatePageTitle }) {
+export function Tournament() {
   const { tournamentId } = useParams();
+  usePageTitle(`Tournament: ${tournamentId}`);
   const { data, isLoading } = useQuery(['tournamentsById', tournamentId], () =>
     fetchTournamentById(tournamentId)
   );
-
-  useEffect(() => {
-    updatePageTitle(`Tournament: ${tournamentId}`);
-  }, [updatePageTitle, tournamentId]);
   return (
     <>
       <Header />

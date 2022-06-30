@@ -1,13 +1,10 @@
-import { useEffect } from 'react';
-
 import { Header, Container } from '../components';
 import { useAuth } from '../hooks/useAuth';
+import { usePageTitle } from '../hooks/usePageTitle';
 
-export function Unauthorised({ updatePageTitle }) {
+export function Unauthorised() {
+  usePageTitle('Unauthorised');
   const { user } = useAuth();
-  useEffect(() => {
-    updatePageTitle('Unauthorised');
-  }, [updatePageTitle]);
   return (
     <>
       <Header />

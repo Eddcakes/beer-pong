@@ -1,29 +1,27 @@
-import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 //import { useAuth } from '../hooks/useAuth';
 import { Container, Header, Card, GamePlay, GameView } from '../components';
 import { fetchGameById } from '../queries';
 import { useQuery } from 'react-query';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 /*
   only "authorised" users for this game should be able to save changes
 */
 
 /* owner -> playerId, side -> home/away, how to calculate for 10 cups/team games */
-export function Game({ updatePageTitle }) {
+export function Game() {
   //const auth = useAuth();
   //{JSON.stringify(auth.user)}
   const { gameId } = useParams();
+  usePageTitle(`Game: ${gameId}`);
   // might be nice to save first throw
   // const [firstThrow, setFirstThrow] = useState(null)
   const { isLoading, error, data } = useQuery(['game', gameId], () =>
     fetchGameById(gameId)
   );
 
-  useEffect(() => {
-    updatePageTitle(`Game: ${gameId}`);
-  }, [updatePageTitle, gameId]);
   return (
     <>
       <Header />

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Joi from 'joi';
 import jwt_decode from 'jwt-decode';
 import { useMutation } from 'react-query';
@@ -13,6 +13,7 @@ import {
   Logo,
 } from '../components';
 import { postResetPassword } from '../queries';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const schema = Joi.object().keys({
   newPassword: Joi.string().trim().min(6).required(),
@@ -25,7 +26,8 @@ const schema = Joi.object().keys({
     }),
 });
 
-export function ForgotPasswordReset({ updatePageTitle }) {
+export function ForgotPasswordReset() {
+  usePageTitle('Forgotten password');
   const { token } = useParams();
   let navigate = useNavigate();
   const [newPassword, setNewPassword] = useState('');
@@ -93,10 +95,6 @@ export function ForgotPasswordReset({ updatePageTitle }) {
     }
     return result;
   }
-
-  useEffect(() => {
-    updatePageTitle('Forgotten password');
-  }, [updatePageTitle]);
   if (tokenDetails?.error) {
     return (
       <Container maxW='max-w-screen-sm'>

@@ -1,12 +1,10 @@
-import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Header, Container, TournamentList, News } from '../components';
+import { usePageTitle } from '../hooks/usePageTitle';
 
-export function Home({ updatePageTitle }) {
-  useEffect(() => {
-    updatePageTitle(`Home`);
-  }, [updatePageTitle]);
+export function Home() {
+  usePageTitle('Home');
 
   return (
     <>

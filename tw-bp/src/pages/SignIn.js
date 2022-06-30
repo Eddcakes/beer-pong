@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Joi from 'joi';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 
@@ -11,6 +11,7 @@ import {
   Logo,
 } from '../components';
 import { useAuth } from '../hooks/useAuth';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const schema = Joi.object().keys({
   username: Joi.string()
@@ -22,7 +23,8 @@ const schema = Joi.object().keys({
   password: Joi.string().trim().min(6).required(),
 });
 
-export function SignIn({ updatePageTitle }) {
+export function SignIn() {
+  usePageTitle('Sign in');
   let navigate = useNavigate();
   let location = useLocation();
   /* redirect from location, or redirect home */
@@ -70,10 +72,6 @@ export function SignIn({ updatePageTitle }) {
       return false;
     }
   }
-
-  useEffect(() => {
-    updatePageTitle('Sign in');
-  }, [updatePageTitle]);
   return (
     <Container maxW='max-w-screen-sm'>
       <div className='flex justify-center pb-4'>

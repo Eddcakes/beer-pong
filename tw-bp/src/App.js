@@ -46,8 +46,6 @@ function App() {
   //probably want a authentication provider so in <Route render can redirect depending if logged in or not
   //if its null, its not loaded yet. if undefined user not logged in
   const [theme, setTheme] = useState(defaultTheme);
-  const [pageTitle, setPageTitle] = useState('');
-  const updatePageTitle = (newTitle) => setPageTitle(newTitle);
   const changeTheme = (evt) => {
     localStorage.setItem('tw-bp:theme', evt.target.value);
     setTheme(evt.target.value);
@@ -56,11 +54,6 @@ function App() {
   useEffect(() => {
     applyTheme(theme);
   }, [theme]);
-
-  useEffect(() => {
-    document.title = pageTitle;
-  }, [pageTitle]);
-
   return (
     <ThemeProvider theme={theme} changeTheme={changeTheme}>
       <AuthProvider>
@@ -68,40 +61,23 @@ function App() {
           <Refreshing />
           <Router>
             <Routes>
-              <Route
-                path='/versus/*'
-                element={<Versus updatePageTitle={updatePageTitle} />}
-              />
+              <Route path='/versus/*' element={<Versus />} />
               <Route
                 path='/player/new'
                 element={
-                  <RequireRole
-                    redirectTo='/signin'
-                    minimumRole={5}
-                    updatePageTitle={updatePageTitle}
-                  >
-                    <NewPlayer updatePageTitle={updatePageTitle} />
+                  <RequireRole redirectTo='/signin' minimumRole={5}>
+                    <NewPlayer />
                   </RequireRole>
                 }
               />
-              <Route
-                path='/player/:playerId'
-                element={<Player updatePageTitle={updatePageTitle} />}
-              />
-              <Route
-                path='/records/'
-                element={<Records updatePageTitle={updatePageTitle} />}
-              />
-              <Route
-                path='/games/'
-                exact
-                element={<Games updatePageTitle={updatePageTitle} />}
-              />
+              <Route path='/player/:playerId' element={<Player />} />
+              <Route path='/records/' element={<Records />} />
+              <Route path='/games/' exact element={<Games />} />
               <Route
                 path='/games/new'
                 element={
                   <RequireRole redirectTo='/signin' minimumRole={1}>
-                    <NewGame updatePageTitle={updatePageTitle} />
+                    <NewGame />
                   </RequireRole>
                 }
               />
@@ -109,28 +85,21 @@ function App() {
                 path='/games/:gameId'
                 element={
                   <RequireRole redirectTo='/signin' minimumRole={1}>
-                    <Game updatePageTitle={updatePageTitle} />
+                    <Game />
                   </RequireRole>
                 }
               />
-              <Route
-                path='/tournaments'
-                exact
-                element={<Tournament updatePageTitle={updatePageTitle} />}
-              />
+              <Route path='/tournaments' exact element={<Tournament />} />
               <Route
                 path='/tournaments/:tournamentId'
-                element={<Tournament updatePageTitle={updatePageTitle} />}
+                element={<Tournament />}
               />
-              <Route
-                path='/settings'
-                element={<Settings updatePageTitle={updatePageTitle} />}
-              ></Route>
+              <Route path='/settings' element={<Settings />}></Route>
               <Route
                 path='/signin'
                 element={
                   <AlreadySignedIn>
-                    <SignIn updatePageTitle={updatePageTitle} />
+                    <SignIn />
                   </AlreadySignedIn>
                 }
               />
@@ -138,7 +107,7 @@ function App() {
                 path='/signup'
                 element={
                   <AlreadySignedIn>
-                    <SignUp updatePageTitle={updatePageTitle} />
+                    <SignUp />
                   </AlreadySignedIn>
                 }
               />
@@ -146,7 +115,7 @@ function App() {
                 path='/forgot-password'
                 element={
                   <AlreadySignedIn>
-                    <ForgotPassword updatePageTitle={updatePageTitle} />
+                    <ForgotPassword />
                   </AlreadySignedIn>
                 }
               />
@@ -154,23 +123,13 @@ function App() {
                 path='/forgot-password/:token'
                 element={
                   <AlreadySignedIn>
-                    <ForgotPasswordReset updatePageTitle={updatePageTitle} />
+                    <ForgotPasswordReset />
                   </AlreadySignedIn>
                 }
               />
-              <Route
-                path='/test'
-                element={<Test updatePageTitle={updatePageTitle} />}
-              />
-              <Route
-                path='/'
-                exact
-                element={<Home updatePageTitle={updatePageTitle} />}
-              />
-              <Route
-                path='/*'
-                element={<E404 updatePageTitle={updatePageTitle} />}
-              />
+              <Route path='/test' element={<Test />} />
+              <Route path='/' exact element={<Home />} />
+              <Route path='/*' element={<E404 />} />
             </Routes>
           </Router>
           <ReactQueryDevtools />

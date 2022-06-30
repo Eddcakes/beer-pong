@@ -93,8 +93,7 @@ export default class AuthDAO {
   }
   static async signin(username, attemptedPassword) {
     try {
-      client = await poolRef.connect();
-      const userData = await client.query(selectUserLoginWithRole, [username]);
+      const userData = await poolRef.query(selectUserLoginWithRole, [username]);
       if (userData.rowCount > 0) {
         const { password, ...details } = userData.rows[0];
         const compareHashedPassword = await bcrypt.compare(
@@ -112,8 +111,6 @@ export default class AuthDAO {
       }
     } catch (err) {
       throw new Error(err);
-    } finally {
-      client.release();
     }
   }
   static async signup(username, password) {
@@ -122,20 +119,19 @@ export default class AuthDAO {
       throw new Error('Sign up is currently disabled.');
     }
     try {
-      client = await poolRef.connect();
-      const userData = await client.query(selectUserByUsername, [username]);
+      const userData = await poolRef.query(selectUserByUsername, [username]);
       if (userData.rowCount > 0) {
         // status 409 (same username)
         throw new Error('Sorry username is taken. Please choose another one.');
       }
       const newHashedPass = await bcrypt.hash(password, 12);
-      const signUpUser = await client.query(insertUser, [
+      const signUpUser = await poolRef.query(insertUser, [
         username,
         newHashedPass,
       ]);
       if (signUpUser.rowCount > 0) {
         const { password, ...details } = signUpUser.rows[0];
-        const newUserAndRole = await client.query(selectUserWithRoleById, [
+        const newUserAndRole = await poolRef.query(selectUserWithRoleById, [
           details.id,
         ]);
         if (newUserAndRole.rowCount > 0) {
@@ -147,29 +143,23 @@ export default class AuthDAO {
       throw new Error('Could not find new user');
     } catch (err) {
       throw new Error(err);
-    } finally {
-      client.release();
     }
   }
   static async updatePassword(username, password) {
     try {
-      client = await poolRef.connect();
       const newHashedPass = await bcrypt.hash(password, 12);
-      const updateUserPassword = await client.query(updateUserPW, [
+      const updateUserPassword = await poolRef.query(updateUserPW, [
         newHashedPass,
         username,
       ]);
       return updateUserPassword.rows;
     } catch (err) {
       throw new Error(err);
-    } finally {
-      client.release();
     }
   }
   static async forgotPassword(email) {
     try {
-      client = await poolRef.connect();
-      const foundEmail = await client.query(selectByEmail, [email]);
+      const foundEmail = await poolRef.query(selectByEmail, [email]);
       if (foundEmail.rowCount > 0) {
         const {
           username,
@@ -192,7 +182,7 @@ export default class AuthDAO {
         const timeSinceReset = Math.trunc(nowEpoch) - dbEpochTime;
         if (timeSinceReset > 600) {
           const newToken = jwt.sign(tokenDetails, hashedP, { expiresIn: '1h' });
-          const updateTime = await client.query(updateResetTime, [email]);
+          const updateTime = await poolRef.query(updateResetTime, [email]);
           if (updateTime.rowCount > 0) {
             const opts = {
               subject: 'Pongleby password reset requested',
@@ -213,18 +203,15 @@ export default class AuthDAO {
       };
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
   static async resetForgotPassword(token, username, newPassword) {
     try {
-      client = await poolRef.connect();
       const decoded = jwt.decode(token);
       if (!(decoded.username.toLowerCase() === username)) {
         throw new Error('Decoded username does not match request');
       }
-      const userDetails = await client.query(selectByUsername, [username]);
+      const userDetails = await poolRef.query(selectByUsername, [username]);
       let secret = '';
       if (userDetails.rowCount > 0) {
         secret = userDetails.rows[0].password;
@@ -232,7 +219,7 @@ export default class AuthDAO {
       const validateJWT = jwt.verify(token, secret);
       if (validateJWT) {
         const newHashedPass = await bcrypt.hash(newPassword, 12);
-        const updateUserPassword = await client.query(updateUserPW, [
+        const updateUserPassword = await poolRef.query(updateUserPW, [
           newHashedPass,
           username,
         ]);
@@ -240,8 +227,6 @@ export default class AuthDAO {
       }
     } catch (err) {
       throw new Error(err);
-    } finally {
-      client.release();
     }
   }
 }

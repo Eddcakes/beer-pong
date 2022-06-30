@@ -38,28 +38,22 @@ export default class NewsDAO {
   }
   static async getNews() {
     try {
-      client = await poolRef.connect();
-      const news = await client.query(
+      const news = await poolRef.query(
         `${selectNewsAndUsers} ${whereApproved} ${orderByDesc}`
       );
       return news.rows;
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
   static async getNewsById(newsId) {
     try {
-      client = await poolRef.connect();
-      const newsById = await client.query(`${selectNewsAndUsers} ${whereId}`, [
+      const newsById = await poolRef.query(`${selectNewsAndUsers} ${whereId}`, [
         newsId,
       ]);
       return newsById.rows;
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
 }

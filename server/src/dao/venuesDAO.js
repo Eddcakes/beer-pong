@@ -21,13 +21,10 @@ export default class VenuesDAO {
   }
   static async getAllVenues() {
     try {
-      client = await poolRef.connect();
-      const venues = await client.query(allVenues);
+      const venues = await poolRef.query(allVenues);
       return venues.rows;
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
 }

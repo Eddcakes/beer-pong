@@ -22,7 +22,7 @@ export default class UsersDAO {
   static async getAllUsers() {
     try {
       client = await poolRef.connect();
-      const users = await client.query(allUsers);
+      const users = await poolRef.query(allUsers);
       return users.rows;
     } catch (err) {
       console.error(err.message);
@@ -32,16 +32,15 @@ export default class UsersDAO {
   }
   static async patchUser(userId, userDetails) {
     try {
-      client = await poolRef.connect();
       const dataArray = Object.keys(userDetails).map((col) => {
         return `${col} = '${userDetails[col]}'`;
       });
       const sqlParam = dataArray.join(', ');
       const rebuildQuery = `UPDATE ${process.env.DATABASE}.users SET ${sqlParam} WHERE id = $1`;
       // userDetails
-      const userExists = await client.query(getUser, [userId]);
+      const userExists = await poolRef.query(getUser, [userId]);
       if (userExists.rowCount > 0) {
-        const updateUser = await client.query(rebuildQuery, [userId]);
+        const updateUser = await poolRef.query(rebuildQuery, [userId]);
         return updateUser.rows;
       } else {
         const cannotFindUser = new Error('Cannot find user');
@@ -49,8 +48,6 @@ export default class UsersDAO {
       }
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
 }

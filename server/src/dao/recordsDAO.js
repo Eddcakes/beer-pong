@@ -41,56 +41,44 @@ export default class RecordsDAO {
   }
   static async getCurrentRecords() {
     try {
-      client = await poolRef.connect();
-      const records = await client.query(
+      const records = await poolRef.query(
         `${selectRecordsAndPlayers} ${whereCurrentRecord} ${orderByDesc}`
       );
       return records.rows;
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
   static async getAllRecords() {
     try {
-      client = await poolRef.connect();
-      const allRecords = await client.query(
+      const allRecords = await poolRef.query(
         `${selectRecordsAndPlayers} ${orderByDesc}`
       );
       return allRecords.rows;
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
   static async getRecordsByPlayerId(playerId) {
     try {
-      client = await poolRef.connect();
-      const records = await client.query(
+      const records = await poolRef.query(
         `${selectRecordsAndPlayers} ${wherePlayerId}`,
         [playerId]
       );
       return records.rows;
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
   static async getRecordsByTypeId(typeId) {
     try {
-      client = await poolRef.connect();
-      const recordsByType = await client.query(
+      const recordsByType = await poolRef.query(
         `${selectRecordsAndPlayers} ${whereRecordTypeId} ${orderByDesc}`,
         [typeId]
       );
       return recordsByType.rows;
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
 }

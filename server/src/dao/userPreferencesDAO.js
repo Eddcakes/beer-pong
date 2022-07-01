@@ -24,27 +24,23 @@ export default class UserPreferencesDAO {
   }
   static async getUserPreferences(userId) {
     try {
-      client = await poolRef.connect();
-      const preferences = await client.query(selectUserPreferences, [userId]);
+      const preferences = await poolRef.query(selectUserPreferences, [userId]);
       return preferences.rows;
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
   static async postUserPreferences(userId, prefs) {
     try {
-      client = await poolRef.connect();
       // query is different depending if user profile exists
-      const userPreferences = await client.query(`${selectUserPreferences}`, [
+      const userPreferences = await poolRef.query(`${selectUserPreferences}`, [
         userId,
       ]);
       if (userPreferences.rowCount > 0) {
         const update = `UPDATE ${process.env.DATABASE}.preferences
         SET avatar_link=$1
         WHERE user_id=$2`;
-        const updateUserPreferences = await client.query(update, [
+        const updateUserPreferences = await poolRef.query(update, [
           prefs,
           userId,
         ]);
@@ -52,7 +48,7 @@ export default class UserPreferencesDAO {
         return updateUserPreferences.rows;
       } else {
         const values = [userId, prefs];
-        const createUserPreferences = await client.query(
+        const createUserPreferences = await poolRef.query(
           insertUserPreferences,
           values
         );
@@ -61,8 +57,6 @@ export default class UserPreferencesDAO {
       }
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
 }

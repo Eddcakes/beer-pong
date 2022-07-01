@@ -28,8 +28,7 @@ export default class VersusDAO {
   }
   static async getVersusResults(player1Id, player2Id) {
     try {
-      client = await poolRef.connect();
-      const data = await client.query(`${query} ${pvp}`, [
+      const data = await poolRef.query(`${query} ${pvp}`, [
         player1Id,
         player2Id,
         player1Id,
@@ -38,8 +37,6 @@ export default class VersusDAO {
       return data.rows;
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
 }

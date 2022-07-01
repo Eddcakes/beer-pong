@@ -46,42 +46,33 @@ export default class TournamentsDAO {
   }
   static async getTournaments() {
     try {
-      client = await poolRef.connect();
-      const tournaments = await client.query(
+      const tournaments = await poolRef.query(
         `${selectTournaments} ${orderByDate}`
       );
       return tournaments.rows;
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
   static async getRecentTournaments() {
     try {
-      client = await poolRef.connect();
-      const tournaments = await client.query(
+      const tournaments = await poolRef.query(
         `${selectTournaments} ${orderByDate} ${limitByRecent}`
       );
       return tournaments.rows;
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
   static async getTournamentById(tournamentId) {
     try {
-      client = await poolRef.connect();
-      const tournaments = await client.query(
+      const tournaments = await poolRef.query(
         `${selectTournaments} ${whereId}`,
         [tournamentId]
       );
       return tournaments.rows;
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
 }

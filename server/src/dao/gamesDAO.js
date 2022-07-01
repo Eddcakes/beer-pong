@@ -66,75 +66,59 @@ export default class GamesDAO {
   }
   static async getGames() {
     try {
-      client = await poolRef.connect();
-      const games = await client.query(
+      const games = await poolRef.query(
         `${selectAndExpandGames} ${orderByIdDesc}`
       );
       return games.rows;
     } catch (err) {
       console.error(err.message);
       return [];
-    } finally {
-      client.release();
     }
   }
   static async getGameById(gameId) {
     try {
-      client = await poolRef.connect();
-      const gameById = await client.query(
+      const gameById = await poolRef.query(
         `${selectAndExpandGames} ${whereGameId}`,
         [gameId]
       );
       return gameById.rows;
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
 
   static async getTournamentGamesById(gameId) {
     try {
-      client = await poolRef.connect();
-      const data = await client.query(
+      const data = await poolRef.query(
         `${selectAndExpandGames} ${whereTournamentId}`,
         [gameId]
       );
       return data.rows;
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
   static async getRecentGamesByPlayerId(playerId) {
     try {
-      client = await poolRef.connect();
-      const data = await client.query(
+      const data = await poolRef.query(
         `${selectAndExpandGames} ${wherePlayerId} ${orderByDateDesc} ${limitByRecent}`,
         [playerId, playerId]
       );
       return data.rows;
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
   static async postNewGame(details) {
     try {
-      client = await poolRef.connect();
-      const createNewGame = await client.query(insertNewGame, details);
+      const createNewGame = await poolRef.query(insertNewGame, details);
       return createNewGame;
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
   static async patchGame(homeCupsLeft, awayCupsLeft, table, gameId) {
     try {
-      client = await poolRef.connect();
       const lockOnWin =
         homeCupsLeft === 0 || awayCupsLeft === 0 ? 'locked=true,' : '';
       const updateSql = `UPDATE ${process.env.DATABASE}.games 
@@ -144,7 +128,7 @@ export default class GamesDAO {
         game_table=$3
         WHERE ${process.env.DATABASE}.games.id=$4
         `;
-      const updateGame = await client.query(updateSql, [
+      const updateGame = await poolRef.query(updateSql, [
         homeCupsLeft,
         awayCupsLeft,
         table,
@@ -153,8 +137,6 @@ export default class GamesDAO {
       return updateGame;
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
 }

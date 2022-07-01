@@ -25,26 +25,20 @@ export default class NicknamesDAO {
   }
   static async getNicknames() {
     try {
-      client = await poolRef.connect();
-      const nicknames = await client.query(selectNicks);
+      const nicknames = await poolRef.query(selectNicks);
       return nicknames.rows;
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
   static async getNicknameOfPlayerId(playerId) {
     try {
-      client = await poolRef.connect();
-      const nicknames = await client.query(`${selectNicks} ${wherePlayerId}`, [
+      const nicknames = await poolRef.query(`${selectNicks} ${wherePlayerId}`, [
         playerId,
       ]);
       return nicknames.rows;
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
 }

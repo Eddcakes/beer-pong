@@ -44,8 +44,7 @@ export default class OverviewDAO {
   }
   static async getOverviewByPlayerId(playerId) {
     try {
-      client = await poolRef.connect();
-      const playerOverview = await client.query(`${collate}`, [
+      const playerOverview = await poolRef.query(`${collate}`, [
         playerId,
         playerId,
         playerId,
@@ -59,8 +58,6 @@ export default class OverviewDAO {
       return playerOverview.rows;
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
 }

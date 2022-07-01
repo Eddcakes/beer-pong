@@ -30,33 +30,28 @@ export default class PlayersDAO {
   }
   static async getPlayers() {
     try {
-      client = await poolRef.connect();
-      const players = await client.query(allPlayers);
+      const players = await poolRef.query(allPlayers);
       return players.rows;
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
   static async getPlayerById(playerId) {
     try {
-      client = await poolRef.connect();
-      const player = await client.query(`${playerDetails} ${wherePlayerId}`, [
+      const player = await poolRef.query(`${playerDetails} ${wherePlayerId}`, [
         playerId,
       ]);
       return player.rows;
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
   static async postNewPlayer(playerName) {
     try {
-      client = await poolRef.connect();
       const values = [playerName];
-      const checkPlayers = await client.query(selectPlayerByName, [playerName]);
+      const checkPlayers = await poolRef.query(selectPlayerByName, [
+        playerName,
+      ]);
       if (checkPlayers.rowCount > 0) {
         //user already exists with this username
         const playerAlreadyExists = new Error(
@@ -64,7 +59,7 @@ export default class PlayersDAO {
         );
         return playerAlreadyExists;
       } else {
-        const createNewPlayer = client.query(insertNewPlayer, values);
+        const createNewPlayer = poolRef.query(insertNewPlayer, values);
         if (createNewPlayer) {
           return createNewPlayer;
         } else {
@@ -74,8 +69,6 @@ export default class PlayersDAO {
       }
     } catch (err) {
       console.error(err.message);
-    } finally {
-      client.release();
     }
   }
 }

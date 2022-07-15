@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.b91e52f9.css",
-    "main.js": "/static/js/main.512d2fdc.js",
+    "main.css": "/static/css/main.1e0ca642.css",
+    "main.js": "/static/js/main.e1f4d51d.js",
     "static/media/evt-placeholder.jpg": "/static/media/evt-placeholder.e1e8ba0892612742c979.jpg",
     "static/media/beer-pong.svg": "/static/media/beer-pong.1d7e56cfc4c3080897e2a1ab34024a77.svg",
     "index.html": "/index.html",
-    "main.b91e52f9.css.map": "/static/css/main.b91e52f9.css.map",
-    "main.512d2fdc.js.map": "/static/js/main.512d2fdc.js.map"
+    "main.1e0ca642.css.map": "/static/css/main.1e0ca642.css.map",
+    "main.e1f4d51d.js.map": "/static/js/main.e1f4d51d.js.map"
   },
   "entrypoints": [
-    "static/css/main.b91e52f9.css",
-    "static/js/main.512d2fdc.js"
+    "static/css/main.1e0ca642.css",
+    "static/js/main.e1f4d51d.js"
   ]
 }

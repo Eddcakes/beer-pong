@@ -22,6 +22,7 @@ import {
   NewPlayer,
   ForgotPassword,
   ForgotPasswordReset,
+  NewTournament,
 } from './pages';
 import { AlreadySignedIn, RequireRole, Refreshing } from './components';
 
@@ -65,7 +66,7 @@ function App() {
               <Route
                 path='/player/new'
                 element={
-                  <RequireRole redirectTo='/signin' minimumRole={5}>
+                  <RequireRole redirectTo='/signin' minimumRole={3}>
                     <NewPlayer />
                   </RequireRole>
                 }
@@ -90,6 +91,14 @@ function App() {
                 }
               />
               <Route path='/tournaments' exact element={<Tournament />} />
+              <Route
+                path='/tournaments/new'
+                element={
+                  <RequireRole redirectTo='/signin' minimumRole={3}>
+                    <NewTournament />
+                  </RequireRole>
+                }
+              />
               <Route
                 path='/tournaments/:tournamentId'
                 element={<Tournament />}

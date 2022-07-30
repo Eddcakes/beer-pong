@@ -68,6 +68,7 @@ export function NewPlayer() {
   };
   const handleSubmit = async (evt) => {
     evt.preventDefault();
+    setErrorMsg('');
     if (validForm()) {
       mutate(formState);
     }

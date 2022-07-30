@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 import placeholderImg from '../../assets/evt-placeholder.jpg';
 import { fetchTournaments } from '../../queries';
+import { Button } from '../Button';
 
 /* sidebar on homepage */
 export function TournamentList() {
@@ -12,6 +13,9 @@ export function TournamentList() {
   }
   return (
     <>
+      <div className='text-center'>
+        <Button text='New Tournament' to='/tournaments/new' />
+      </div>
       <div>
         <h3 className='text-right italic bg-sec-background pr-4'>Upcoming</h3>
         {isLoading && <div>loading...</div>}

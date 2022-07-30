@@ -12,7 +12,7 @@ import { fetchTournamentById } from '../queries';
 
 export function Tournament() {
   const { tournamentId } = useParams();
-  usePageTitle(`Tournament: ${tournamentId}`);
+  usePageTitle(`Tournament ${tournamentId ? `: ${tournamentId}` : 'list'}`);
   const { data, isLoading } = useQuery(['tournamentsById', tournamentId], () =>
     fetchTournamentById(tournamentId)
   );

@@ -58,6 +58,17 @@ export function isAdmin(req, res, next) {
   next();
 }
 
+export const isRole = (minimumRole) => (req, res, next) => {
+  const { user } = req.session;
+  if (Number(user.role_level) >= minimumRole) {
+    next();
+  } else {
+    const error = new Error('Unauthorised ⛔');
+    res.status(401);
+    next(error);
+  }
+};
+
 export const validateUser = (defaultErrorMsg) => (req, res, next) => {
   const creds = authSchema.validate(req.body);
   if (!creds.error) {

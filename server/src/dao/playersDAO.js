@@ -10,6 +10,18 @@ FROM ${process.env.DATABASE}.players`;
 
 const wherePlayerId = `WHERE players.id = $1`;
 
+const selectPlayerByName = `
+SELECT players.id,
+players.name
+FROM ${process.env.DATABASE}.players
+WHERE LOWER(players.name) = LOWER($1)`;
+
+const insertNewPlayer = `
+INSERT INTO ${process.env.DATABASE}.players
+(name, active)
+VALUES($1, $2)
+RETURNING id, name`;
+
 let client;
 let poolRef;
 export default class PlayersDAO {
@@ -48,7 +60,7 @@ export default class PlayersDAO {
   }
   static async postNewPlayer(playerName) {
     try {
-      const values = [playerName];
+      const values = [playerName, true];
       const checkPlayers = await poolRef.query(selectPlayerByName, [
         playerName,
       ]);

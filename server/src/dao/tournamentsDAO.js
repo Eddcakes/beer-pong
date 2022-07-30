@@ -26,6 +26,12 @@ const orderByDate = `ORDER BY tournaments.date DESC`;
 const limitByRecent = `LIMIT ${process.env.RECENT_ITEMS}`;
 const whereId = `WHERE tournaments.id = $1`;
 
+const insertNewTournament = `
+INSERT INTO ${process.env.DATABASE}.tournaments
+(title, date, venue_id)
+VALUES($1, $2, $3)
+RETURNING title, date, venue_id`;
+
 let client;
 let poolRef;
 export default class TournamentsDAO {
@@ -71,6 +77,17 @@ export default class TournamentsDAO {
         [tournamentId]
       );
       return tournaments.rows;
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+  static async postNewTournament(details) {
+    try {
+      const createNewTournament = await poolRef.query(
+        insertNewTournament,
+        details
+      );
+      return createNewTournament;
     } catch (err) {
       console.error(err.message);
     }

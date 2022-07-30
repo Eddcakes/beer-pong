@@ -50,6 +50,7 @@ const app = makeApp({
   getTournaments: TournamentsDAO.getTournaments,
   getRecentTournaments: TournamentsDAO.getRecentTournaments,
   getTournamentById: TournamentsDAO.getTournamentById,
+  postNewTournament: TournamentsDAO.postNewTournament,
   getUserPreferences: UserPreferencesDAO.getUserPreferences,
   postUserPreferences: UserPreferencesDAO.postUserPreferences,
   getAllUsers: UsersDAO.getAllUsers,

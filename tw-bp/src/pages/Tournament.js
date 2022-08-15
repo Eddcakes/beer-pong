@@ -6,6 +6,7 @@ import {
   Header,
   TournamentList,
   TournamentDetail,
+  Button,
 } from '../components';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { fetchTournamentById } from '../queries';
@@ -29,7 +30,12 @@ export function Tournament() {
             'This tournament does not exist!'
           )
         ) : (
-          <TournamentList />
+          <>
+            <div className='text-center'>
+              <Button text='New Tournament' to='/tournaments/new' />
+            </div>
+            <TournamentList />
+          </>
         )}
       </Container>
     </>

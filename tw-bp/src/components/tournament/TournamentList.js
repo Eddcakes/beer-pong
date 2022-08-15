@@ -3,44 +3,34 @@ import { Link } from 'react-router-dom';
 
 import placeholderImg from '../../assets/evt-placeholder.jpg';
 import { fetchTournaments } from '../../queries';
-import { Button } from '../Button';
 
-/* sidebar on homepage */
 export function TournamentList() {
   const { isLoading, error, data } = useQuery('tournaments', fetchTournaments);
+  const todaysDate = new Date();
+  const [previousEvents, upcomingEvents] = splitDataByDate(todaysDate, data);
+
   if (error) {
     <div>Error with tournaments</div>;
   }
   return (
     <>
-      <div className='text-center'>
-        <Button text='New Tournament' to='/tournaments/new' />
-      </div>
       <div>
         <h3 className='text-right italic bg-sec-background pr-4'>Upcoming</h3>
         {isLoading && <div>loading...</div>}
-        {!isLoading &&
-          data
-            .filter((event) => {
-              const date = new Date(event.date);
-              return date > new Date();
-            })
-            .map((t) => (
-              <Short key={`${t.id}`} id={t.id} title={t.title} date={t.date} />
-            ))}
+        {upcomingEvents.length > 0 ? (
+          upcomingEvents.map((t) => (
+            <Short key={`${t.id}`} id={t.id} title={t.title} date={t.date} />
+          ))
+        ) : (
+          <div className='px-2 py-8'>Maybe we should plan something...</div>
+        )}
       </div>
       <div>
         <h3 className='text-right italic bg-sec-background pr-4'>Previous</h3>
         {isLoading && <div>loading...</div>}
-        {!isLoading &&
-          data
-            .filter((event) => {
-              const date = new Date(event.date);
-              return date < new Date();
-            })
-            .map((t) => (
-              <Short key={`${t.id}`} id={t.id} title={t.title} date={t.date} />
-            ))}
+        {previousEvents.map((t) => (
+          <Short key={`${t.id}`} id={t.id} title={t.title} date={t.date} />
+        ))}
       </div>
     </>
   );
@@ -79,3 +69,19 @@ function Short({ image = '', id, title, date }) {
           {date}
         </figcaption>
 */
+
+function splitDataByDate(checkDate, data) {
+  let before = [];
+  let after = [];
+  if (data) {
+    data.forEach((event) => {
+      const eventDate = new Date(event.date);
+      if (eventDate > checkDate) {
+        after.push(event);
+      } else {
+        before.push(event);
+      }
+    });
+  }
+  return [before, after];
+}

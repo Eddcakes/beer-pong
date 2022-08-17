@@ -39,7 +39,7 @@ function TournamentInfo({ tournament }) {
       <div>
         <h2>{tournament.venue_title}</h2>
         <div>{tournament.date}</div>
-        <div>num of participants</div>
+        <div>{tournament.participants.length} participants</div>
         <div>tournament stages (groups into single elim)</div>
       </div>
     </Card>

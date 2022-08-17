@@ -6,6 +6,7 @@ import NicknamesDAO from './dao/nicknamesDAO.js';
 import PlayersDAO from './dao/playersDAO.js';
 import RecordsDAO from './dao/recordsDAO.js';
 import TournamentsDAO from './dao/tournamentsDAO.js';
+import ParticipantsDAO from './dao/participantsDAO.js';
 import UserPreferencesDAO from './dao/userPreferencesDAO.js';
 import UsersDAO from './dao/usersDAO.js';
 import VenuesDAO from './dao/venuesDAO.js';
@@ -22,6 +23,7 @@ await NicknamesDAO.injectDB(poolPromise);
 await PlayersDAO.injectDB(poolPromise);
 await RecordsDAO.injectDB(poolPromise);
 await TournamentsDAO.injectDB(poolPromise);
+await ParticipantsDAO.injectDB(poolPromise);
 await UserPreferencesDAO.injectDB(poolPromise);
 await UsersDAO.injectDB(poolPromise);
 await VenuesDAO.injectDB(poolPromise);
@@ -51,6 +53,7 @@ const app = makeApp({
   getRecentTournaments: TournamentsDAO.getRecentTournaments,
   getTournamentById: TournamentsDAO.getTournamentById,
   postNewTournament: TournamentsDAO.postNewTournament,
+  getParticipantsByTournamentId: ParticipantsDAO.getParticipantsByTournamentId,
   getUserPreferences: UserPreferencesDAO.getUserPreferences,
   postUserPreferences: UserPreferencesDAO.postUserPreferences,
   getAllUsers: UsersDAO.getAllUsers,

@@ -5,6 +5,7 @@ import {
   apiGetRecentTournaments,
   apiGetTournamentById,
   apiPostNewTournament,
+  apiGetParticipantsByTournamentId,
 } from './tournaments.controller.js';
 import { validId } from '../../middlewares.js';
 
@@ -37,6 +38,11 @@ export const tournamentsRouter = (db) => {
     '/:id',
     validId('Not a valid tournament ID'),
     apiGetTournamentById(db)
+  );
+  router.get(
+    '/:id/participants',
+    validId('Not a valid tournament ID'),
+    apiGetParticipantsByTournamentId(db)
   );
   return router;
 };

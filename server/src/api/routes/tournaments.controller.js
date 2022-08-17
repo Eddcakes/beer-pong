@@ -45,3 +45,14 @@ export const apiPostNewTournament = (db) => async (req, res) => {
     res.send(err.message);
   }
 };
+
+export const apiGetParticipantsByTournamentId = (db) => async (req, res) => {
+  try {
+    const { id } = req.params;
+    const getParticipants = await db.getParticipantsByTournamentId(id);
+    res.json(getParticipants);
+  } catch (err) {
+    res.status(500);
+    res.send(err.message);
+  }
+};

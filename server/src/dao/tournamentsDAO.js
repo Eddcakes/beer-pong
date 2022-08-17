@@ -32,6 +32,29 @@ INSERT INTO ${process.env.DATABASE}.tournaments
 VALUES($1, $2, $3)
 RETURNING title, date, venue_id`;
 
+// duplicated from participantsDAO
+const participantsByTournamentId = `
+SELECT 
+participants.id,
+participants.tournament_id,
+players.id as player_id,
+players.name as player_name,
+players.active as player_active
+FROM ${process.env.DATABASE}.participants
+LEFT JOIN ${process.env.DATABASE}.players ON participants.player_id = players.id
+WHERE participants.tournament_id = $1`;
+
+// in tournaments DAO do i want to add participants to resp?
+const t = {
+  tournament_id: 5,
+  tournament_title: 'the title',
+  tournament_data: '',
+  participants: [
+    { player_id: 6, player_name: 'Paul', id: 47 },
+    { player_id: 9, player_name: 'Lewis', id: 48 },
+  ],
+};
+
 let client;
 let poolRef;
 export default class TournamentsDAO {
@@ -76,7 +99,12 @@ export default class TournamentsDAO {
         `${selectTournaments} ${whereId}`,
         [tournamentId]
       );
-      return tournaments.rows;
+      const participants = await poolRef.query(participantsByTournamentId, [
+        tournamentId,
+      ]);
+      const withParticipants = tournaments.rows;
+      withParticipants[0].participants = participants.rows;
+      return withParticipants;
     } catch (err) {
       console.error(err.message);
     }

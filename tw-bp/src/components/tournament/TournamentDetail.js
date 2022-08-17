@@ -1,8 +1,8 @@
 import { useQuery } from 'react-query';
 
-import { fetchGamesByTournamentId, fetchTournamentById } from '../../queries';
-import { MatchGrid, Card } from '../index';
-import { Group } from './Group';
+import { fetchTournamentById } from '../../queries';
+import { Card } from '../index';
+import { TournamentGames } from './TournamentGames';
 
 export function TournamentDetail({ id }) {
   const {
@@ -44,41 +44,4 @@ function TournamentInfo({ tournament }) {
       </div>
     </Card>
   );
-}
-
-function TournamentGames({ id }) {
-  const { data: games, isLoading: isLoadingGames } = useQuery(
-    ['gamesByTournamentId', id],
-    () => fetchGamesByTournamentId(id)
-  );
-  const gamesByStages = groupByStage(games);
-  /* do we want to split these, so can have seperate group stage
-  final stage */
-  return (
-    <div className='space-y-4'>
-      {isLoadingGames && <div>loading games...</div>}
-      {gamesByStages?.group1 && (
-        <Group details={gamesByStages?.group1} title='group1' />
-      )}
-      {gamesByStages?.group2 && (
-        <Group details={gamesByStages?.group2} title='group2' />
-      )}
-      {!isLoadingGames && <MatchGrid games={games} />}
-    </div>
-  );
-}
-
-function groupByStage(games) {
-  if (games == null) return {};
-  let stages = {};
-  let seen = [];
-  games.forEach((game) => {
-    if (seen.includes(game.stage)) {
-      stages[game.stage].push(game);
-    } else {
-      seen.push(game.stage);
-      stages[game.stage] = [game];
-    }
-  });
-  return stages;
 }

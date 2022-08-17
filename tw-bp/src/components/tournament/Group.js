@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Table, Td, Th } from '../layout';
+
 import { Tab, TabContent, Tabs } from '../layout/Tabs';
+import { Standings } from './Standings';
 
 export function Group({ details, title }) {
   const [tab, setTab] = useState('initialTab');
@@ -15,148 +15,80 @@ export function Group({ details, title }) {
         <Tab label='Matches' tabId='secondTab' panelId='tab-content-2' />
       </Tabs>
       <TabContent value={tab} tabId='initialTab' panelId='tab-content-1'>
-        <StandingsTable details={details} />
+        <Standings details={details} />
       </TabContent>
       <TabContent value={tab} tabId='secondTab' panelId='tab-content-2'>
-        <p>Tab #2</p>
+        <GroupGames games={details} />
       </TabContent>
     </div>
   );
 }
 
-function StandingsTable({ details }) {
-  const standings = createStandings(details);
+function GroupGames({ games }) {
+  const [highlightPlayer, setHighlightPlayer] = useState('');
+  const handleHighlight = (evt, playerId) => {
+    setHighlightPlayer(playerId);
+  };
   return (
-    <Table>
-      <thead>
-        <tr>
-          <Th aria-label='position'>#</Th>
-          <Th>Player</Th>
-          <Th>Won</Th>
-          <Th>Lost</Th>
-          <Th>Cup difference</Th>
-          <Th>Form</Th>
-        </tr>
-      </thead>
-      <tbody>
-        {sortStandings(standings).map((stats, idx) => {
-          return <StandingsRow key={stats.id} details={stats} rank={idx + 1} />;
-        })}
-      </tbody>
-    </Table>
+    <div className='grid gap-4 grid-cols-3 grid-rows-3 py-2'>
+      {games.map((game) => {
+        return (
+          <GroupMatch
+            key={game.id}
+            details={game}
+            handleHighlight={handleHighlight}
+            highlightPlayer={highlightPlayer}
+          />
+        );
+      })}
+    </div>
   );
 }
 
-function StandingsRow({ details, rank }) {
+function GroupMatch({ details, handleHighlight, highlightPlayer }) {
+  const highlight = (cur) =>
+    cur === highlightPlayer ? 'bg-primary text-white' : '';
+
   return (
-    <tr>
-      <Td>{rank}</Td>
-      <Td>
-        <Link className='text-link-text underline' to={`/player/${details.id}`}>
-          {details.name}
-        </Link>
-      </Td>
-      <Td>{details.won}</Td>
-      <Td>{details.lost}</Td>
-      <Td>{details.cupDifference}</Td>
-      <Td>
-        {details.history.map((g) => (
-          <FormBadge key={g.against} result={g.result} />
-        ))}
-      </Td>
-    </tr>
+    <div className='border p-2'>
+      <PlayerScore
+        playerId={details.home_id}
+        playerName={details.home_name}
+        playerCupsLeft={details.home_cups_left}
+        handleHighlight={handleHighlight}
+        highlight={highlight}
+      />
+
+      <PlayerScore
+        playerId={details.away_id}
+        playerName={details.away_name}
+        playerCupsLeft={details.away_cups_left}
+        handleHighlight={handleHighlight}
+        highlight={highlight}
+      />
+    </div>
   );
 }
 
-function FormBadge({ result }) {
-  const bg = result.toUpperCase() === 'W' ? 'bg-positive' : 'bg-negative';
+function PlayerScore({
+  playerId,
+  playerName,
+  playerCupsLeft,
+  handleHighlight,
+  highlight,
+}) {
+  const mouseEnter = (evt) => handleHighlight(evt, playerId);
+  const mouseExit = (evt) => handleHighlight(evt, '');
   return (
-    <span className={`${bg} text-white p-2 mx-1 font-mono text`}>{result}</span>
+    <div className='flex'>
+      <div
+        className={`grow text-center ${highlight(playerId)}`}
+        onMouseEnter={mouseEnter}
+        onMouseLeave={mouseExit}
+      >
+        {playerName}
+      </div>
+      <div className='border-l px-3'>{playerCupsLeft}</div>
+    </div>
   );
-}
-
-function createStandings(games) {
-  let players = [];
-  let seen = [];
-  games.forEach((game) => {
-    let winner = null;
-    if (game.home_cups_left === 0) {
-      winner = game.away_id;
-    } else if (game.away_cups_left === 0) {
-      winner = game.home_id;
-    }
-    if (!seen.includes(game.home_id)) {
-      seen.push(game.home_id);
-      players.push({
-        id: game.home_id,
-        name: game.home_name,
-        won: 0,
-        lost: 0,
-        cupDifference: 0,
-        history: [],
-      });
-    }
-    if (!seen.includes(game.away_id)) {
-      seen.push(game.away_id);
-      players.push({
-        id: game.away_id,
-        name: game.away_name,
-        won: 0,
-        lost: 0,
-        cupDifference: 0,
-        history: [],
-      });
-    }
-    if (winner == null) return;
-    const homeIdx = seen.indexOf(game.home_id);
-    const awayIdx = seen.indexOf(game.away_id);
-    if (winner === game.home_id) {
-      players[homeIdx].won += 1;
-      players[homeIdx].history.push({ against: game.away_id, result: 'W' });
-    } else {
-      players[homeIdx].lost += 1;
-      players[homeIdx].history.push({ against: game.away_id, result: 'L' });
-    }
-    if (winner === game.away_id) {
-      players[awayIdx].won += 1;
-      players[awayIdx].history.push({ against: game.home_id, result: 'W' });
-    } else {
-      players[awayIdx].lost += 1;
-      players[awayIdx].history.push({ against: game.home_id, result: 'L' });
-    }
-    players[homeIdx].cupDifference += game.home_cups_left - game.away_cups_left;
-    players[awayIdx].cupDifference += game.away_cups_left - game.home_cups_left;
-  });
-  return players;
-}
-
-function sortStandings(rankedGames) {
-  return [...rankedGames].sort((a, b) => {
-    if (a.won > b.won) {
-      return -1;
-    }
-    if (a.won < b.won) {
-      return 1;
-    }
-    if (a.won === b.won) {
-      if (a.cupDifference > b.cupDifference) {
-        return -1;
-      }
-      if (a.cupDifference < b.cupDifference) {
-        return 1;
-      }
-      if (a.cupDifference === b.cupDifference) {
-        const h2hResult = a.history.find((res) => res.against === b.id);
-        if (h2hResult.result === 'W') {
-          return -1;
-        }
-        if (h2hResult.result === 'L') {
-          return 1;
-        }
-        return 0;
-      }
-      return 0;
-    }
-    return 0;
-  });
 }

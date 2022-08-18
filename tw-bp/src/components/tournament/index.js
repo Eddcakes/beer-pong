@@ -1,3 +1,4 @@
+export * from './Finals';
 export * from './Group';
 export * from './Participants';
 export * from './TournamentDetail';

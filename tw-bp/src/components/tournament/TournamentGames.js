@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 
 import { fetchGamesByTournamentId } from '../../queries';
 import { Tab, TabContent, Tabs } from '../layout';
-import { MatchGrid } from '../MatchGrid';
+import { Finals } from './Finals';
 import { Group } from './Group';
 import { Participants } from './Participants';
 
@@ -25,7 +25,7 @@ export function TournamentGames({ id }) {
       <Tabs value={tab} onChange={handleTabChange}>
         <Tab label='Groups' tabId='groups' panelId='tournament-tab-1' />
         <Tab label='Finals' tabId='finals' panelId='tournament-tab-2' />
-        <Tab label='Participants' tabId='players' panelId='tournament-tab-3' />
+        <Tab label='Entrants' tabId='players' panelId='tournament-tab-3' />
       </Tabs>
       <TabContent value={tab} tabId='groups' panelId='tournament-tab-1'>
         {isLoadingGames && <div>loading games...</div>}
@@ -34,12 +34,11 @@ export function TournamentGames({ id }) {
         })}
       </TabContent>
       <TabContent value={tab} tabId='finals' panelId='tournament-tab-2'>
-        <div>finals</div>
+        {!isLoadingGames && <Finals games={games} />}
       </TabContent>
       <TabContent value={tab} tabId='players' panelId='tournament-tab-3'>
         <Participants tournamentId={id} />
       </TabContent>
-      {!isLoadingGames && <MatchGrid games={games} />}
     </div>
   );
 }

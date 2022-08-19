@@ -1,7 +1,7 @@
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 
-import { Header, Container, PlayerDetails } from '../components';
+import { Header, Container, PlayerDetails, MobileSpacer } from '../components';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { fetchPlayerById } from '../queries';
 
@@ -29,6 +29,7 @@ export function Player() {
           )}
         </div>
       </Container>
+      <MobileSpacer />
     </>
   );
 }

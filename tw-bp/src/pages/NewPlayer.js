@@ -2,7 +2,14 @@ import Joi from 'joi';
 import { useReducer, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 
-import { Header, Card, Container, Input, Button } from '../components';
+import {
+  Header,
+  Card,
+  Container,
+  Input,
+  Button,
+  MobileSpacer,
+} from '../components';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { postNewPlayer } from '../queries';
 
@@ -96,6 +103,7 @@ export function NewPlayer() {
           </form>
         </Card>
       </Container>
+      <MobileSpacer />
     </>
   );
 }

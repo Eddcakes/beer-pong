@@ -1,6 +1,12 @@
 import { Link } from 'react-router-dom';
 
-import { Header, Container, TournamentList, News } from '../components';
+import {
+  Header,
+  Container,
+  TournamentList,
+  News,
+  MobileSpacer,
+} from '../components';
 import { usePageTitle } from '../hooks/usePageTitle';
 
 export function Home() {
@@ -27,6 +33,7 @@ export function Home() {
           </aside>
         </div>
       </Container>
+      <MobileSpacer />
     </>
   );
 }

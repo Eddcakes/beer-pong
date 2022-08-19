@@ -2,6 +2,7 @@ import {
   Card,
   Container,
   Header,
+  MobileSpacer,
   ThemeSwitcher,
   UserPreferences,
 } from '../components';
@@ -24,6 +25,7 @@ export function Settings() {
           <UpdatePassword />
         </Card>
       </Container>
+      <MobileSpacer />
     </>
   );
 }

@@ -14,6 +14,7 @@ import {
   PlayerPicker,
   Select,
   Toggle,
+  MobileSpacer,
 } from '../components';
 import { createInitialCups } from '../utils/tableMachine';
 import { fetchPlayers, fetchVenues, postNewGame } from '../queries';
@@ -374,7 +375,7 @@ export function NewGame() {
           </Card>
         )}
       </Container>
-      <div className='spacer py-8'></div>
+      <MobileSpacer />
     </>
   );
 }

@@ -2,7 +2,15 @@ import Joi from 'joi';
 import { useReducer, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
-import { Header, Card, Container, Input, Button, Select } from '../components';
+import {
+  Header,
+  Card,
+  Container,
+  Input,
+  Button,
+  Select,
+  MobileSpacer,
+} from '../components';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { fetchVenues, postNewTournament } from '../queries';
 
@@ -131,6 +139,7 @@ export function NewTournament() {
           </form>
         </Card>
       </Container>
+      <MobileSpacer />
     </>
   );
 }

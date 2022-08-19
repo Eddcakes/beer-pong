@@ -6,6 +6,7 @@ import {
   TournamentList,
   TournamentDetail,
   Button,
+  MobileSpacer,
 } from '../components';
 import { usePageTitle } from '../hooks/usePageTitle';
 
@@ -27,6 +28,7 @@ export function Tournament() {
           </>
         )}
       </Container>
+      <MobileSpacer />
     </>
   );
 }

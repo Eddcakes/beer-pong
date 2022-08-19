@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 
-import { Container, Header } from '../components';
+import { Container, Header, MobileSpacer } from '../components';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { fetchRecords } from '../queries';
 
@@ -39,7 +39,7 @@ export function Records() {
           </div>
         )}
       </Container>
-      <div className='spacer py-8'></div>
+      <MobileSpacer />
     </>
   );
 }

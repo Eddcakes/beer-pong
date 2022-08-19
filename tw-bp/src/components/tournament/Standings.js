@@ -13,7 +13,7 @@ export function Standings({ details }) {
           <Th>Won</Th>
           <Th>Lost</Th>
           <Th>Cup difference</Th>
-          <Th>Form</Th>
+          <Th hideSmall>Form</Th>
         </tr>
       </thead>
       <tbody>
@@ -37,7 +37,7 @@ function StandingsRow({ details, rank }) {
       <Td>{details.won}</Td>
       <Td>{details.lost}</Td>
       <Td>{details.cupDifference}</Td>
-      <Td>
+      <Td hideSmall>
         {details.history.map((g) => (
           <FormBadge key={g.against} result={g.result} />
         ))}

@@ -30,7 +30,7 @@ export function TournamentGames({ id }) {
       <TabContent value={tab} tabId='groups' panelId='tournament-tab-1'>
         {isLoadingGames && <div>loading games...</div>}
         {groupGames.map((key) => {
-          return <Group details={gamesByStages[key]} title={key} />;
+          return <Group key={key} details={gamesByStages[key]} title={key} />;
         })}
       </TabContent>
       <TabContent value={tab} tabId='finals' panelId='tournament-tab-2'>

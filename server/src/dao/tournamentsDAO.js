@@ -30,7 +30,7 @@ const insertNewTournament = `
 INSERT INTO ${process.env.DATABASE}.tournaments
 (title, date, venue_id)
 VALUES($1, $2, $3)
-RETURNING title, date, venue_id`;
+RETURNING id, title, date, venue_id`;
 
 // duplicated from participantsDAO
 const participantsByTournamentId = `
@@ -43,17 +43,6 @@ players.active as player_active
 FROM ${process.env.DATABASE}.participants
 LEFT JOIN ${process.env.DATABASE}.players ON participants.player_id = players.id
 WHERE participants.tournament_id = $1`;
-
-// in tournaments DAO do i want to add participants to resp?
-const t = {
-  tournament_id: 5,
-  tournament_title: 'the title',
-  tournament_data: '',
-  participants: [
-    { player_id: 6, player_name: 'Paul', id: 47 },
-    { player_id: 9, player_name: 'Lewis', id: 48 },
-  ],
-};
 
 let client;
 let poolRef;

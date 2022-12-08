@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import { useReducer, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Header,
@@ -21,7 +22,7 @@ const schema = Joi.object().keys({
   date: Joi.string()
     .required()
     .messages({ 'string.base': 'Starting date must be entered' }),
-  venue_id: Joi.number()
+  venue: Joi.number()
     .required()
     .messages({ 'number.base': 'A venue is required' }),
 });
@@ -47,6 +48,7 @@ export function NewTournament() {
   usePageTitle('New tournament');
   const [errorMsg, setErrorMsg] = useState('');
   const [formState, dispatch] = useReducer(reducer, initialForm);
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const mutation = useMutation(postNewTournament, {
     onError: (error) => {
@@ -57,7 +59,7 @@ export function NewTournament() {
         setErrorMsg(data.error);
       } else {
         queryClient.invalidateQueries('tournaments');
-        // redirect with history.push
+        navigate(`/tournaments/${data.id}`);
       }
     },
   });
@@ -111,10 +113,15 @@ export function NewTournament() {
           <form onSubmit={handleSubmit} className='space-y-2'>
             <Input
               label='Enter tournament title'
-              name='tournamentTitle'
+              name='title'
               onChange={handleInput}
             />
-            <Input label='Enter tournament date' name='date' type='date' />
+            <Input
+              label='Enter tournament date'
+              name='date'
+              type='date'
+              onChange={handleInput}
+            />
             {venues.isLoading && <div>Loading players...</div>}
             {!venues.isLoading && (
               <Select name='venue' onChange={handleSelect}>

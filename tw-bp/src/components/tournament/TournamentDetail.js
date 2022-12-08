@@ -10,7 +10,6 @@ export function TournamentDetail({ id }) {
     isLoading: isLoadingTournament,
     isError: tournamentError,
   } = useQuery(['tournamentsById', id], () => fetchTournamentById(id));
-
   if (tournament?.error) {
     return <div>{tournament.message}</div>;
   }
@@ -18,7 +17,7 @@ export function TournamentDetail({ id }) {
     <div>
       {isLoadingTournament ? (
         <div>Loading details...</div>
-      ) : tournament.length > 0 ? (
+      ) : tournament?.length > 0 ? (
         <div>
           <div className='mb-4'>
             <TournamentInfo tournament={tournament[0]} />
@@ -39,7 +38,7 @@ function TournamentInfo({ tournament }) {
       <div>
         <h2>{tournament.venue_title}</h2>
         <div>{tournament.date}</div>
-        <div>{tournament.participants.length} participants</div>
+        <div>{tournament?.participants.length} participants</div>
         <div>tournament stages (groups into single elim)</div>
       </div>
     </Card>

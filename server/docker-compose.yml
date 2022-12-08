@@ -1,14 +1,14 @@
-version: '3.8'
+version: '3.9'
 
 services:
   pgdb:
-    container_name: beer_pong
+    container_name: beer_pong_from_live
     image: postgres
     restart: always
     ports:
-      - '5433:5432'
+      - '5435:5432'
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./latest.dump:/docker-entrypoint-initdb.d/latest.dump
     environment:
       POSTGRES_USER: '${PGUSER}'
       POSTGRES_PASSWORD: '${PGPASSWORD}'

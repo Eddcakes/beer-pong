@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@g-loot/react-tournament-brackets": "^1.0.18-beta.1",
     "@xstate/react": "^3.0.0",
     "joi": "^17.6.0",
     "jwt-decode": "^3.1.2",

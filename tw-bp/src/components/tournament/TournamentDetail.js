@@ -1,35 +1,46 @@
 import { useQuery } from 'react-query';
 
-import { fetchGamesByTournamentId, fetchTournamentById } from '../../queries';
-import { MatchGrid } from '../index';
+import { fetchTournamentById } from '../../queries';
+import { Card } from '../index';
+import { TournamentGames } from './TournamentGames';
 
 export function TournamentDetail({ id }) {
-  const { data: games, isLoading: isLoadingGames } = useQuery(
-    ['gamesByTournamentId', id],
-    () => fetchGamesByTournamentId(id)
-  );
-  const { data: tournament, isLoading: isLoadingTournament } = useQuery(
-    ['tournamentsById', id],
-    () => fetchTournamentById(id)
-  );
-
-  const isLoading = isLoadingGames || isLoadingTournament;
-  if (isLoading) {
-    return <div>Loading...</div>;
+  const {
+    data: tournament,
+    isLoading: isLoadingTournament,
+    isError: tournamentError,
+  } = useQuery(['tournamentsById', id], () => fetchTournamentById(id));
+  if (tournament?.error) {
+    return <div>{tournament.message}</div>;
   }
   return (
     <div>
-      <div>This is Tournament: {id}</div>
-      <>
+      {isLoadingTournament ? (
+        <div>Loading details...</div>
+      ) : tournament?.length > 0 ? (
         <div>
-          details:
-          <pre>{JSON.stringify(tournament, null, 2)}</pre>
+          <div className='mb-4'>
+            <TournamentInfo tournament={tournament[0]} />
+          </div>
+          <TournamentGames id={id} />
         </div>
-        <>
-          <h2 className='text-lg'>Games</h2>
-          <MatchGrid games={games} />
-        </>
-      </>
+      ) : (
+        <div>Tournament does not exist</div>
+      )}
+      {tournamentError && <div>Error trying to fetch tournament {id}</div>}
     </div>
+  );
+}
+
+function TournamentInfo({ tournament }) {
+  return (
+    <Card title={tournament.title}>
+      <div>
+        <h2>{tournament.venue_title}</h2>
+        <div>{tournament.date}</div>
+        <div>{tournament?.participants.length} participants</div>
+        <div>tournament stages (groups into single elim)</div>
+      </div>
+    </Card>
   );
 }

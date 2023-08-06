@@ -1,4 +1,3 @@
-import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -6,37 +5,30 @@ import {
   Header,
   TournamentList,
   TournamentDetail,
+  Button,
+  MobileSpacer,
 } from '../components';
 import { usePageTitle } from '../hooks/usePageTitle';
-import { fetchTournamentById } from '../queries';
 
 export function Tournament() {
   const { tournamentId } = useParams();
-  usePageTitle(`Tournament: ${tournamentId}`);
-  const { data, isLoading } = useQuery(['tournamentsById', tournamentId], () =>
-    fetchTournamentById(tournamentId)
-  );
+  usePageTitle(`Tournament ${tournamentId ? `: ${tournamentId}` : 'list'}`);
   return (
     <>
       <Header />
       <Container>
         {tournamentId ? (
-          isLoading ? (
-            'loading...'
-          ) : data.length > 0 ? (
-            <TournamentDetail id={tournamentId} />
-          ) : (
-            'This tournament does not exist!'
-          )
+          <TournamentDetail id={tournamentId} />
         ) : (
-          <TournamentList />
+          <>
+            <div className='text-center'>
+              <Button text='New Tournament' to='/tournaments/new' />
+            </div>
+            <TournamentList />
+          </>
         )}
       </Container>
+      <MobileSpacer />
     </>
   );
 }
-
-/* 
-New tournament or new game button should look like this Group-hover element
-https://tailwindcss.com/docs/pseudo-class-variants
-*/

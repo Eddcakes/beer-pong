@@ -1,4 +1,4 @@
-import { Header, Container } from '../components';
+import { Header, Container, MobileSpacer } from '../components';
 import { useAuth } from '../hooks/useAuth';
 import { usePageTitle } from '../hooks/usePageTitle';
 
@@ -26,6 +26,7 @@ export function Unauthorised() {
           access to this resource please ask the admin.
         </p>
       </Container>
+      <MobileSpacer />
     </>
   );
 }

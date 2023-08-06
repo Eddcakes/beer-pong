@@ -26,6 +26,24 @@ const orderByDate = `ORDER BY tournaments.date DESC`;
 const limitByRecent = `LIMIT ${process.env.RECENT_ITEMS}`;
 const whereId = `WHERE tournaments.id = $1`;
 
+const insertNewTournament = `
+INSERT INTO ${process.env.DATABASE}.tournaments
+(title, date, venue_id)
+VALUES($1, $2, $3)
+RETURNING id, title, date, venue_id`;
+
+// duplicated from participantsDAO
+const participantsByTournamentId = `
+SELECT 
+participants.id,
+participants.tournament_id,
+players.id as player_id,
+players.name as player_name,
+players.active as player_active
+FROM ${process.env.DATABASE}.participants
+LEFT JOIN ${process.env.DATABASE}.players ON participants.player_id = players.id
+WHERE participants.tournament_id = $1`;
+
 let client;
 let poolRef;
 export default class TournamentsDAO {
@@ -70,7 +88,23 @@ export default class TournamentsDAO {
         `${selectTournaments} ${whereId}`,
         [tournamentId]
       );
-      return tournaments.rows;
+      const participants = await poolRef.query(participantsByTournamentId, [
+        tournamentId,
+      ]);
+      const withParticipants = tournaments.rows;
+      withParticipants[0].participants = participants.rows;
+      return withParticipants;
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+  static async postNewTournament(details) {
+    try {
+      const createNewTournament = await poolRef.query(
+        insertNewTournament,
+        details
+      );
+      return createNewTournament;
     } catch (err) {
       console.error(err.message);
     }

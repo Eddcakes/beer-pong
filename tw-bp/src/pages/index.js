@@ -6,6 +6,7 @@ export { Games } from './Games';
 export { Home } from './Home';
 export { NewGame } from './NewGame';
 export { NewPlayer } from './NewPlayer';
+export { NewTournament } from './NewTournament';
 export { Player } from './Player';
 export { Records } from './Records';
 export { Settings } from './Settings';

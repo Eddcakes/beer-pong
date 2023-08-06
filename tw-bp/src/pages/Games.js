@@ -1,6 +1,12 @@
 import { useQuery } from 'react-query';
 
-import { Button, Container, Header, MatchGrid } from '../components';
+import {
+  Button,
+  Container,
+  Header,
+  MatchGrid,
+  MobileSpacer,
+} from '../components';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { fetchGames } from '../queries';
 
@@ -18,7 +24,7 @@ export function Games() {
         {!isLoading && <MatchGrid games={data} />}
         {error && <div>Error trying to fetch games</div>}
       </Container>
-      <div className='spacer py-8'></div>
+      <MobileSpacer />
     </>
   );
 }

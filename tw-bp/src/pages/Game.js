@@ -1,7 +1,14 @@
 import { useParams } from 'react-router-dom';
 
 //import { useAuth } from '../hooks/useAuth';
-import { Container, Header, Card, GamePlay, GameView } from '../components';
+import {
+  Container,
+  Header,
+  Card,
+  GamePlay,
+  GameView,
+  MobileSpacer,
+} from '../components';
 import { fetchGameById } from '../queries';
 import { useQuery } from 'react-query';
 import { usePageTitle } from '../hooks/usePageTitle';
@@ -95,7 +102,7 @@ export function Game() {
           }
         )}
       </Container>
-      <div className='spacer py-8'></div>
+      <MobileSpacer />
     </>
   );
 }
